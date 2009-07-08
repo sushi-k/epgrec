@@ -1,0 +1,205 @@
+<?php
+
+// 首都圏用地上デジタルチャンネルマップ
+// 識別子 => チャンネル番号
+$GR_CHANNEL_MAP = array(
+	"GR27" => "27",		// NHK
+	"GR26" => "26",		// 教育
+	"GR25" => "25",		// 日テレ
+	"GR22" => "22",		// 東京
+	"GR21" => "21",		// フジ
+	"GR24" => "24",		// テレ朝
+	"GR23" => "23",		// テレ東
+//	"GR20" => "20",		// MX TV
+//	"GR18" => "18",		// テレ神
+	"GR30" => "30",		// 千葉
+//	"GR32" => "32",		// テレ玉
+	"GR28" => "28",		// 大学
+);
+
+/*
+// 大阪地区デジタルチャンネルマップ（参考）
+$GR_CHANNEL_MAP = array(
+	"GR24" => "24",		// NHK
+	"GR13" => "13",		// 教育
+	"GR16" => "16",		// 毎日
+	"GR15" => "15",		// 朝日
+	"GR17" => "17",		// 関西
+	"GR14" => "14",		// 読売
+	"GR18" => "18",		// テレビ大阪
+);
+*/
+
+
+// 録画モード（option）
+
+$RECORD_MODE = array(
+	// ※ 0は必須で、変更不可です。
+	0 => array(
+		'name' => 'Full TS',
+		'suffix' => '.ts',
+	),
+	
+	/* Examples is as follows.
+	
+	1 => array(
+		'name' => 'Min PID',
+		'suffix' => '_tss.ts',
+	),
+	
+	2 => array(
+		'name' => '12Mbps MPEG4',
+		'suffix' => '.avi',
+	),
+	*/
+);
+
+
+
+define( "INSTALL_PATH", '/var/www/epgrec' );		// インストールパス
+define( "SPOOL", "/video" );						// 録画ビデオ格納ディレクトリ
+define( "THUMBS". "/thumbs" );						// サムネール保存先
+define( "INSTALL_URL", "http://localhost/epgrec" );	// インストール先URL
+
+define( "BS_TUNERS", 0 );							// BSデジタルチューナー数
+define( "GR_TUNERS", 1 );							// 地上デジタルチューナー数
+define( "USE_KUROBON", false );						// BSチューナーとしてFriio BS/CSを使うならtrue
+
+define( "FORMER_TIME", 20 );						// 予約実行を行う前に取る余裕時間（秒）
+define( "FORCE_CONT_REC", false );					// 終了時間を調節して連続する番組の予約を行う
+define( "REC_SWITCH_TIME", 5 );						// レコーダーの切り替え余裕時間
+
+define( "USE_THUMBS", true );						// サムネイルを生成するならtrue
+
+// データベース情報
+
+define( "DB_HOST", "localhost");					// DBホスト名
+define( "DB_NAME", "yourdbname" );					// DB名
+define( "DB_USER", "yourname" );					// DBユーザー名
+define( "DB_PASS", "yourpass");						// DBパスワード
+define( "TBL_PREFIX", "Recorder_" );				// テーブルの接頭辞
+
+// 使用コマンド
+
+define( "EPGDUMP", "/usr/local/bin/epgdump" );		// epgdumpのパス
+define( "AT" , "/usr/bin/at" );						// atのパス
+define( "ATRM", "/usr/bin/atrm" );					// atrmのパス
+define( "SLEEP", "/bin/sleep" );					// sleepのパス
+define( "FFMPEG", "/usr/bin/ffmpeg" );				// ffmpegのパス
+
+// 以降は必要に応じて変更する
+
+define( "PADDING_TIME", 180 );						// 詰め物時間
+define( "DO_RECORD", INSTALL_PATH . "/do-record.sh" );		// レコードスクリプト
+define( "COMPLETE_CMD", INSTALL_PATH . "/recomplete.php" );	// 録画終了コマンド
+define( "TEMP_DATA", "/tmp/__temp.ts" );			// テンポラリデータ
+define( "TEMP_XML",  "/tmp/__temp.xml" );			// テンポラリXML
+
+// 全国用BSデジタルチャンネルマップ
+$BS_CHANNEL_MAP = array(
+        "3001.ontvjapan.com" => "101",
+        "3002.ontvjapan.com" => "102",
+        "3003.ontvjapan.com" => "103",
+        "3004.ontvjapan.com" => "141",
+        "3005.ontvjapan.com" => "151",
+        "3006.ontvjapan.com" => "161",
+        "3007.ontvjapan.com" => "171",
+        "3008.ontvjapan.com" => "181",
+        "3009.ontvjapan.com" => "191",
+        "3010.ontvjapan.com" => "192",
+        "3011.ontvjapan.com" => "193",
+        "3013.ontvjapan.com" => "211",
+        "3014.ontvjapan.com" => "222",
+);
+
+if( USE_KUROBON ) {
+	$BS_CHANNEL_MAP = array(
+    	    "3001.ontvjapan.com" => "B10",
+	        "3002.ontvjapan.com" => "B10",
+	        "3003.ontvjapan.com" => "B11",
+	        "3004.ontvjapan.com" => "B8",
+	        "3005.ontvjapan.com" => "B1",
+	        "3006.ontvjapan.com" => "B2",
+	        "3007.ontvjapan.com" => "B4",
+	        "3008.ontvjapan.com" => "B9",
+	        "3009.ontvjapan.com" => "B3",
+	        "3010.ontvjapan.com" => "B3",
+	        "3011.ontvjapan.com" => "B3",
+	        "3013.ontvjapan.com" => "B5",
+	        "3014.ontvjapan.com" => "B7",
+	);
+}
+
+
+// DBテーブル情報　以下は変更しないでください
+
+define( "RESERVE_TBL",  "reserveTbl" );						// 予約テーブル
+define( "PROGRAM_TBL",  "programTbl" );						// 番組表
+define( "CHANNEL_TBL",  "channelTbl" );						// チャンネルテーブル
+define( "CATEGORY_TBL", "categoryTbl" );					// カテゴリテーブル
+define( "KEYWORD_TBL", "keywordTbl" );						// キーワードテーブル
+
+// 予約テーブル
+define( "RESERVE_STRUCT", 
+	"id integer not null auto_increment primary key,".		// ID
+	"channel_disc varchar(128) default 'none',".			// channel disc
+	"channel_id integer default '0',".						// channel ID
+	"program_id integer default '0',".						// Program ID
+	"type varchar(8) default 'GR',".						// 種別（GR/BS/CS）
+	"channel varchar(10) default '0',".						// チャンネル
+	"title varchar(512) default 'none',".					// タイトル
+	"description varchar(1024) default 'none',".			// 説明
+	"category_id integer default '0',".						// カテゴリID
+	"starttime datetime default '1970-01-01 00:00:00',".	// 開始時刻
+	"endtime datetime default '1970-01-01 00:00:00',".		// 終了時刻
+	"job integer default '0',".								// job番号
+	"path varchar(1024) default '/var/www/pool/',".			// 録画ファイルパス
+	"complete boolean default '0',".						// 完了フラグ
+	"reserve_disc varchar(128) default 'none',".			// 識別用hash
+	"autorec integer default '0',".							// キーワードID
+	"mode integer default '0'"								//録画モード
+);
+
+
+// 番組表テーブル
+define( "PROGRAM_STRUCT",
+	"id integer not null auto_increment primary key,".		// ID
+	"channel_disc varchar(128) default 'none',".			// channel disc
+	"channel_id integer default '0',".						// channel ID
+	"type varchar(8) default 'GR',".						// 種別（GR/BS/CS）
+	"channel varchar(10) default '0',".						// チャンネル
+	"title varchar(512) default 'none',".					// タイトル
+	"description varchar(1024) default 'none',".			// 説明
+	"category_id integer default '0',".						// カテゴリID
+	"starttime datetime default '1970-01-01 00:00:00',".	// 開始時刻
+	"endtime datetime default '1970-01-01 00:00:00',".		// 終了時刻
+	"program_disc char(128) default 'none',".	 			// 識別用hash
+	"autorec boolean default '1'"							// 自動録画有効無効
+);
+
+
+define( "CHANNEL_STRUCT",
+	"id integer not null auto_increment primary key,".		// ID
+	"type varchar(8) default 'GR',".						// 種別
+	"channel varchar(10) default '0',".						// channel
+	"name varchar(512) default 'none',".					// 表示名
+	"channel_disc varchar(128) default 'none'"				// 識別用hash
+);
+
+define( "CATEGORY_STRUCT",
+	"id integer not null auto_increment primary key,".		// ID
+	"name_jp varchar(512) default 'none',".					// 表示名
+	"name_en varchar(512) default 'none',".					// 同上
+	"category_disc varchar(128) default 'none'"				// 識別用hash
+);
+
+
+define( "KEYWORD_STRUCT",
+	"id integer not null auto_increment primary key,".		// ID
+	"keyword varchar(512) default '*',".					// 表示名
+	"type varchar(8) default '*',".							// 種別
+	"channel_id integer default '0',".						// channel ID
+	"category_id integer default '0',".						// カテゴリID
+	"use_regexp boolean default '0'"						// 正規表現を使用するなら1
+);
+?>

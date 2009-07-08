@@ -1,0 +1,474 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{$sitetitle}</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+{literal}
+
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<link rel="stylesheet" href="start/jquery-ui-1.7.2.custom.css" type="text/css">
+<script type="text/javascript" src="js/mdabasic.js"></script>
+<script type="text/javascript">
+	function tvtimes_scroll(){
+		var t2max = $('#tvtimes2').position().left;
+		var ftmin = $('#float_titles').position().top;
+		tvtimes2scrl();
+		$(window).scroll(function () {
+			$('#tvtimes').css('left', parseInt($(document ).scrollLeft())); 
+			var newTop = parseInt($(document ).scrollTop());
+			if(newTop < ftmin) {newTop = ftmin;}
+			$('#float_titles').css('top', newTop);
+			tvtimes2scrl();
+			$('#float_follows').css('left', parseInt($(document ).scrollLeft()));
+		});
+		$(window).resize(function () {  tvtimes2scrl();});
+		function tvtimes2scrl(){
+			var inwidth = parseInt($('body').innerWidth());
+			// IE6
+			if ($.browser.msie && $.browser.version == 6){ inwidth = document.documentElement.clientWidth;}
+			var newLeft = inwidth - parseInt($('#tvtimes2').width()) + parseInt($( document ).scrollLeft());
+			if(newLeft > t2max ) {newLeft = t2max}
+			$('#tvtimes2').css('left', newLeft);
+			$('#float_follows').width(inwidth);
+		}
+	}
+	function prg_hover(){
+		function aClick(){
+			var TG = $(this).children('.prg_dummy');
+			var startTime = new Date(TG.children('.prg_start').html());
+			var duration = parseInt(TG.children('.prg_duration').html());
+			var endTime = new Date(startTime.getTime() + duration * 1000);
+			var prgID = parseInt(TG.children('.prg_id').html());
+
+			var str = '<div class="prg_title">' + TG.children('.prg_title').html() +'</div>' + 
+				'<div class="prg_rec_cfg ui-corner-all"><div class="prg_channel"><span class=" labelLeft">チャンネル：</span><span class="bold">' + TG.children('.prg_channel').html() + '</span></div>' +
+				'<div class="prg_startTime" style="clear: left"><span class=" labelLeft">日時：</span>' + MDA.Days.time4Disp(startTime) + ' ～ ' + MDA.Days.time4DispH(endTime) + '</div>' +
+				'<div class="prg_duration" style="clear: left"><span class=" labelLeft">録画時間：</span><span class="bold">' + parseInt(duration / 60) +'</span>分' + ((duration % 60)>0?'<span class="bold">' + parseInt(duration % 60) + '</span>秒':'') + '</div>' +
+				'</div>';
+			if ($(this).hasClass('prg_rec')) {
+				str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.cancel(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">予約キャンセル</a></div>';
+			} else {
+				str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.rec(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">簡易予約</a>　<a href="reservation.php?program_id=' + prgID + '" style="color:red;">予約カスタマイズ</a></div>';
+			}
+			$('#floatBox4Dialog').html(str);
+			$('#floatBox4Dialog').dialog('open', 'center');
+		};
+		$('.prg').hover(
+			function(){
+				$('#tv_chs .prg_hover').removeClass('prg_hover');
+				if($(this).hasClass('prg_none')) return ;
+				$(this).addClass('prg_hover');
+				var TG = $(this).children('.prg_dummy');
+				var startTime = new Date(TG.children('.prg_start').html());
+				var duration = parseInt(TG.children('.prg_duration').html());
+				var endTime = new Date(startTime.getTime() + duration * 1000);
+				var str = '<div class="prg_title">' + TG.children('.prg_title').html() + '</div>' +
+					'<div class="prg_desc"><span class="prg_sub">' + TG.children('.prg_channel').html() + '：' + MDA.Days.time4Disp(startTime) + '～' + MDA.Days.time4DispH(endTime)  + ' </span>' + TG.children('.prg_desc').html() + '</div>';
+				$('#prg_info').html('<div class="prg_dummy">' + str + '</div>').show();
+				$(this).click(aClick);
+			},
+			function(){
+				$(this).removeClass('prg_hover');$('#prg_info').hide();
+				$(this).unbind('click',aClick);
+			}
+		);
+	}
+	var PRG = {
+		rec:function(id){
+			$.get(INISet.prgRecordURL, { program_id: id } ,function(data){
+				if(data.match(/^error/i)){
+					alert(data);
+				}else{
+					$('#prgID_' + id).addClass('prg_rec');
+					$('#floatBox4Dialog').dialog('close');
+				}
+			});
+		},
+		cancel:function(id){
+			$.get(INISet.prgCancelURL, { program_id: id } ,function(data){
+				if(data.match(/^error/i)){
+					alert(data);
+				}else{
+					$('#prgID_' + id).removeClass('prg_rec');
+					$('#floatBox4Dialog').dialog('close');
+				}
+			});
+		}
+	}
+	var CTG = {
+		CN:'ctg',
+		CV:'0.1',
+		defaultCk:[],
+		INI:function(){
+			var Ck = this.CkGet()[1];
+			if(Ck){ $.each(Ck.split(','), function(){CTG.select(this);})}
+		},
+		select:function(ctg){
+			if($('#category_select .ctg-hide.ctg_'+ctg).length){
+				$('#tv_chs .ctg_'+ctg).removeClass('ctg-hide');
+				$('#category_select a.ctg_'+ctg).removeClass('ctg-hide');
+			} else {
+				$('#tv_chs .ctg_'+ctg).addClass('ctg-hide');
+				$('#category_select a.ctg_'+ctg).addClass('ctg-hide');
+			}
+			this.oCk();
+		},
+		toggle:function (){$('#category_select ul').toggle();},
+		oCk:function(){
+			var T=$('#category_select ul li a.ctg-hide');
+			var X=[];
+			$.each(T.get(), function(){
+				$(this).attr('class').match(/ctg_([^ ]+)/);
+				var TMC=RegExp.$1;
+				X.push(TMC);
+			});
+			this.CkSet([X.join(',')]);
+		},
+		CkGet:function (){
+			var Ck = MDA.Cookie.get(this.CN);
+			if(!Ck){return this.defaultCk};
+			 Ck=Ck.replace(/^([^;]+;)/,'');
+			return Ck.split('+');
+		},
+		CkSet:function(V){
+			MDA.Cookie.set(this.CN,'ver='+this.CV+'+'+V.join('+'));
+		}
+	};
+	var nowBar = {
+		defaultID:'tableNowBas',
+		startTime:null,
+		endTime:null,
+		INI:function(){
+			if (INISet.tableStartTime && INISet.tableStartTime && INISet.dotMin) {
+				$('#tvtable').append('<div id="' + this.defaultID + '" style="display:none">now</div>');
+				this.startTime = new Date(INISet.tableStartTime);
+				this.endTime = new Date(INISet.tableEndTime);
+				$('#' + this.defaultID).width($('#float_titles').width());
+				this.ch();
+			}
+		},
+		ch:function(){
+			var now = new Date();
+			if(this.startTime){
+				if((now >= this.startTime) && (this.endTime >= now)){
+//					console.log((now - this.startTime) / 60000);
+					$('#' + this.defaultID).css({top:(now - this.startTime) / 60000 * INISet.dotMin}).show()
+				} else {
+					$('#' + this.defaultID).hide()
+				}
+			}
+		}
+	}
+
+	MDA.SCR = {
+		CN:'scr',
+		CV:'0.1',
+		defaultCk:{md:'',x:0,y:0},
+		jqSel:[{sel:'#jump-time a.jump',md:'x'},{sel:'#jump-day a.jump',md:'xy'},{sel:'#jump-day a.jump-today',md:'x'},{sel:'#jump-broadcast a.jump',md:'y'}],
+		INI:function(){
+//			this.defaultCk.y = $('#float_titles').position().top;
+			$.each(this.jqSel, function(){
+				var md = this.md;
+				$(this.sel).click(function(){MDA.SCR.oCk(md)})
+			});
+			var Ck = this.CkGet();
+//			console.log(Ck);
+			var x = (Ck.md.indexOf('x')>-1)?Ck.x:this.defaultCk.x;
+			var y = (Ck.md.indexOf('y')>-1)?Ck.y:this.defaultCk.y;
+			if (Ck.md) {
+				window.scrollBy(x, y);
+			}
+			this.CkClear();
+		},
+		channel:{
+			save:function(){},
+			load:function(){}
+		},
+		time: {
+		},
+		oCk:function(xy){
+			this.CkSet(['md=' + ((!xy)?'xy':xy),
+				'x=' + $(document ).scrollLeft(),
+				'y=' + $(document ).scrollTop()]);
+		},
+		CkGet:function (){
+			var Ck = MDA.Cookie.get(this.CN);
+			if(!Ck){return this.defaultCk};
+			Ck=Ck.replace(/^([^;]+;)/,'').split('+');
+			var ret = {};
+			$.each(Ck, function(){
+				var str = this.split('=', 2);
+				ret[str[0]] = str[1];
+			})
+			return ret;
+		},
+		CkSet:function(V){
+			MDA.Cookie.set(this.CN,'ver='+this.CV+'+'+V.join('+'));
+		},
+		CkClear:function(){
+			MDA.Cookie.del(this.CN);
+		}
+	};
+	
+	$(document).ready(function () {
+		MDA.Cookie.CookieName = 'tvProgmas_';
+		CTG.toggle();
+		tvtimes_scroll();
+		prg_hover();
+		var DG = $('#floatBox4Dialog');
+		DG.dialog({title:'録画予約',width:500});
+		DG.dialog('close');
+		nowBar.INI();
+		CTG.INI();
+		MDA.SCR.INI();	// 番組表の位置保存
+	});
+
+
+</script>
+
+<style type="text/css">
+<!--
+body {padding:0;margin:0;font-size:10pt;}
+a {text-decoration:none;}
+
+.bold {font-weight:bold;}
+.small {font-size:75%;}
+
+h2 {padding: 4px}
+
+#float_titles {position:absolute;background-image: url(imgs/trancBG50.png);}
+
+#float_titles div.set.ctg_sel {background-color:#BBB;color:#3CF}
+#float_titles .ctg_sel  a{color:#111;}
+
+#float_titles div.set {float:left;background-color:#444;padding:4px;margin:4px;}
+#float_titles span.title {float:left;color:#ACF;}
+#float_titles ul {float:left;padding:0;margin:0;}
+#float_titles ul li {float:left;list-style:none;margin:0 0 0 4px;}
+#float_titles li a{padding:1px 4px;background-color:#555;color:#FFF;}
+#float_titles li.selected a{background-color:#48B;}
+#float_titles li a:hover{background-color:#28D;}
+
+#float_titles, #tvtable {}
+#tvtable {line-height:1.2em;width:100%;position:relative;}
+#tvtimes,#tvtimes2 {position:absolute;	background-image: url(imgs/trancBG70.png);}
+#tvtimes,#tvtimes2, .tvtimeDM {width:40px;}
+#tv_chs {padding-left:40px;padding-right:40px;}
+.tvtime {
+	height:120px;
+	color:#EEE;
+	text-align:center;
+	font-weight:bold;
+	font-size:120%;
+	background-image: url(imgs/dot2.gif);
+	background-repeat: repeat-x;
+	background-position: left bottom;
+}
+#tvtable div.tvtimetop {padding:8px 0px;}
+#tvtable div.ch_set {width:150px;float:left;background-color:#BBB;}
+#tvtable div.ch_title, #tvtable div.prg {margin-right:2px;}
+#tvtable div.ch_title {padding:8px 0px;background-color:#333;color:#DDD;font-weight:bold;text-align:center}
+#tvtable div.prg {
+	overflow:hidden;
+	color:#444;
+	background-image: url(imgs/dot2.gif);
+	background-image: url(imgs/prg_bg2.png);
+	background-repeat: repeat-x;
+	background-position: left bottom;
+	-moz-border-radius: 0.6em 0.6em 0.3em 0.3em;
+	-webkit-border-radius: 0.6em;
+	-webkit-border-bottom-right-radius: 0.3em;
+	-webkit-border-bottom-left-radius: 0.3em;
+}
+#tvtable div.prg_none {background-color:#eee;}
+#tvtable div.prg_dummy {margin:3px 6px;}
+#tvtable div.prg_title {color:#111;font-weight:bold;}
+#tvtable div.prg_subtitle {font-size:80%;}
+#tvtable div.prg_desc {font-size:80%;}
+
+#tvtable div.prg_start,#tvtable div.prg_duration,#tvtable div.prg_channel ,#tvtable div.prg_id  {display: none;}
+
+#tvtable div.ctg_news, #category_select a.ctg_news {background-color: #FFFFD8;}
+#tvtable div.ctg_etc, #category_select a.ctg_etc {background-color: #FFFFFF;}
+#tvtable div.ctg_information, #category_select a.ctg_information {background-color: #F2D8FF;}
+#tvtable div.ctg_sports, #category_select a.ctg_sports {background-color: #D8FFFF;}
+#tvtable div.ctg_cinema, #category_select a.ctg_cinema {background-color: #FFD8D8;}
+#tvtable div.ctg_music, #category_select a.ctg_music {background-color: #D8D8FF;}
+#tvtable div.ctg_drama, #category_select a.ctg_drama {background-color: #D8FFD8;}
+#tvtable div.ctg_anime, #category_select a.ctg_anime {background-color: #FFE4C8;}
+#tvtable div.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
+#tvtable div.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
+#tvtable div.ctg-hide, #category_select a.ctg-hide {background-color: #F8F8F8;color:#888;}
+#tvtable div.ctg-hide .prg_title, #category_select a.ctg-hide .prg_title{color:#666;}
+#tvtable div.prg_rec  {background-color: #F55;color:#FEE}
+#tvtable div.prg_rec .prg_title,#tvtable div.prg_hover .prg_title {color:white;}
+#tvtable div.prg_hover  {background-color: #28D;color:#EFF}
+
+#float_titles { z-index:100}
+#float_titles div.ch_title {width:150px;float:left;color:#FFF;font-weight:bold;text-align:center}
+#float_titles div.ch_title div{padding:8px 0px;margin:0 6px 0 4px;background-image: url(imgs/trancBG50.png);}
+
+#float_follows {position:absolute;}
+#prg_info {
+	display:none;
+	position:absolute;
+	top:0;left:0;
+	width:100%;
+	background-color:#246;
+	color:#BDF;
+	height:80px;
+}
+#prg_info div.prg_dummy{margin:4px 20px;}
+#prg_info div.prg_title {font-weight:bold;font-size:120%;color:#FFF;}
+#prg_info span.prg_sub  {color:#FFF;}
+
+#tableNowBas {position:absolute;background:red;width:100%;top:190px;height:2px;overflow:hidden;}
+
+
+#floatBox4Dialog .prg_title{font-size:120%;font-weight:bold;padding:0.4em 0;text-align:center;}
+#floatBox4Dialog .prg_rec_cfg{background:#EEE;padding:1em 2em;margin:0.4em 0;}
+#floatBox4Dialog .labelLeft {width:8em;float:left;text-align:right;}
+#floatBox4Dialog .button {padding:0.4em 1em;}
+-->
+</style>
+
+
+{/literal}
+
+
+</head>
+
+<body>
+
+<h2>{$sitetitle}</h2>
+
+
+<div id="float_titles" style="width: {math equation="x + 80" x=$chs_width}px;height:120px;">
+<div id="float_follows">
+
+<div class="set ctg_sel" id="category_select">
+ <span class="title"><a href="javascript:CTG.toggle()">強調表示</a></span>
+
+ <ul>
+   {foreach from=$cats item=cat}
+   <li><a href="javascript:CTG.select('{$cat.name_en}');" class="ctg_{$cat.name_en}">{$cat.name_jp}</a></li>
+   {/foreach}
+  </ul>
+</div>
+
+<div id="time_selects">
+ <div class="set" id="jump-broadcast" >
+ <span class="title">放送波選択</span>
+  <ul>
+   {foreach from=$types item=type }
+     <li {$type.selected}><a  class="jump" href="{$type.link}">{$type.name}</a></li>
+   {/foreach}
+  </ul><br style="clear:left;" />
+ </div>
+
+ <div class="set"  id="jump-time">
+ <span class="title">時間</span>
+ <ul>
+    {foreach from=$toptimes item=top}
+     <li><a class="jump" href="{$top.link}">{$top.hour}～</a></li>
+    {/foreach}
+  </ul><br style="clear:left;" />
+ </div>
+ <br style="clear:left;" />
+
+ <div class="set">
+  <ul>
+    <li><a href="programTable.php">番組検索</a></li>
+    <li><a href="reservationTable.php">録画予約一覧</a></li>
+    <li><a href="recordedTable.php">録画済一覧</a></li>
+  </ul>
+ </div>
+
+ <div class="set" id="jump-day" >
+ <span class="title">日付</span>
+  <ul>
+    {foreach from=$days item=day}
+     <li {$day.selected}><a {if $day.d eq "現在" } class="jump-today" {else} class="jump" {/if} href="{$day.link}">{$day.d}{$day.ofweek}</a></li>
+    {/foreach}
+  </ul><br style="clear:left;" />
+ </div>
+
+
+</div>
+<br style="clear:left;" />
+<div id="prg_info"><div class="dummy">test</div></div>
+</div>
+
+<div style="position:absolute;bottom:0;">
+  <div class="tvtimeDM" style="float:left;">&nbsp;</div>
+  {foreach from=$programs item=program }
+  <div class="ch_title"><div>{$program.station_name}</div></div>
+  {/foreach}
+</div>
+<br style="clear:left;" />
+<div id="prg_info"><div class="dummy">&nbsp;</div></div>
+</div>
+
+<div id="float_titles_dummy" style="width:1410px;height:120px;">&nbsp;</div>
+
+
+<div id="tvtable">
+
+<div id="tvtimes">
+  {foreach from=$tvtimes item=time}
+  <div class="tvtime">{$time}</div>
+  {/foreach}
+</div>
+
+<div id="tv_chs" style="width: {$chs_width}px" >
+   {foreach from=$programs item=program }
+   <div class="ch_set" style="width: {$ch_set_width}px" >
+    <div class="ch_programs">
+    {foreach from=$program.list item=item }
+      <div {if $item.id}id="prgID_{$item.id}"{/if} class="prg {if ! $item.id}prg_none {/if} ctg_{$item.category_name}{if $item.rec gt 0 } prg_rec{/if}" style="height:{$item.height}px;">
+        <div class="prg_dummy">
+          <div class="prg_title">{$item.title|escape}</div>
+          <div class="prg_subtitle">{$item.starttime}</div>
+          <div class="prg_desc">{$item.description|escape}</div>
+          <div class="prg_channel">{$item.channel}</div>
+          <div class="prg_start">{$item.prg_start}</div>
+          <div class="prg_duration">{$item.duration}</div>
+          <div class="prg_id">{$item.id}</div>
+        </div>
+      </div>
+    {/foreach}
+    </div>
+   </div>
+   {/foreach}
+ </div>
+
+ <div id="tvtimes2" style="top : 0px; left: {math equation="x + 40" x=$chs_width}px" >
+  {foreach from=$tvtimes item=time}
+    <div class="tvtime">{$time}</div>
+  {/foreach}
+ </div>
+</div>
+
+
+
+<div id="floatBox4Dialog">jQuery UI Dialog</div>
+
+{literal}
+<script type="text/javascript">
+var INISet = {
+	prgRecordURL : 'simpleReservation.php',		// 簡易予約
+	prgRecordPlusURL : 'recordp.php',		// 詳細予約
+	prgCancelURL : 'cancelReservation.php',		// 予約キャンセル
+	dotMin : 2,
+	tableStartTime : {/literal}'{$top_time}',
+	tableEndTime : '{$last_time}'{literal}
+}
+</script>
+{/literal}
+</body>
+</html>

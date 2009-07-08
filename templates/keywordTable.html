@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{$sitetitle}</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+{literal}
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript">
+	var PRG = {
+		delkey:function(id){
+			$.get(INISet.prgDelKeyURL, { keyword_id: id } ,function(data){
+				if(data.match(/^error/i)){
+					alert(data);
+				}else{
+					$('#keyid_' + id).hide();
+				}
+			});
+		}
+	}
+</script>
+<style type="text/css">
+<!--
+body {padding:4px;margin:0;font-size:10pt;}
+a {text-decoration:none;}
+
+table#reservation_table {
+    width: 800px;
+    border: 1px #BBB solid;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table#reservation_table th {
+    padding: 5px;
+    border: #E3E3E3 solid;
+    border-width: 0 0 1px 1px;
+    background: #BBB;
+    font-weight: bold;
+    line-height: 120%;
+    text-align: center;
+}
+table#reservation_table td {
+    padding: 5px;
+    border: 1px #BBB solid;
+    border-width: 0 0 1px 1px;
+    text-align: center;
+}
+
+table#reservation_table tr.ctg_news, #category_select a.ctg_news {background-color: #FFFFD8;}
+table#reservation_table tr.ctg_etc, #category_select a.ctg_etc {background-color: #FFFFFF;}
+table#reservation_table tr.ctg_information, #category_select a.ctg_information {background-color: #F2D8FF;}
+table#reservation_table tr.ctg_sports, #category_select a.ctg_sports {background-color: #D8FFFF;}
+table#reservation_table tr.ctg_cinema, #category_select a.ctg_cinema {background-color: #FFD8D8;}
+table#reservation_table tr.ctg_music, #category_select a.ctg_music {background-color: #D8D8FF;}
+table#reservation_table tr.ctg_drama, #category_select a.ctg_drama {background-color: #D8FFD8;}
+table#reservation_table tr.ctg_anime, #category_select a.ctg_anime {background-color: #FFE4C8;}
+table#reservation_table tr.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
+table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
+table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
+
+
+-->
+</style>
+{/literal}
+
+</head>
+
+<body>
+
+<h2>{$sitetitle}</h2>
+
+
+<div><a href="programTable.php">番組検索へ</a>/<a href="reservationTable.php">予約一覧へ</a></div>
+
+
+{if count($keywords)}
+<table id="reservation_table">
+ <tr>
+  <th>id</th>
+  <th>検索語句</th>
+  <th>正規表現</th>
+  <th>種別</th>
+  <th>局</th>
+  <th>カテゴリ</th>
+  <th>削除</th>
+ </tr>
+
+{foreach from=$keywords item=keyword}
+ <tr id="keyid_{$keyword.id}">
+  <td>{$keyword.id}</td>
+  <td>{$keyword.keyword|escape}</td>
+  <td>{if $keyword.use_regexp}使う{else}使わない{/if}</td>
+  <td>{$keyword.type}</td>
+  <td>{$keyword.channel}</td>
+  <td>{$keyword.category}</td>
+  <td><input type="button" value="削除" onClick="javascript:PRG.delkey('{$keyword.id}')" /></td>
+ </tr>
+{/foreach}
+</table>
+{else}
+  キーワードはありません
+{/if}
+
+
+{literal}
+<script type="text/javascript">
+var INISet = {
+	prgDelKeyURL : 'deleteKeyword.php'		// キーワード削除
+}
+</script>
+{/literal}
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{$sitetitle}</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+{literal}
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript">
+	var PRG = {
+		rec:function(id){
+			$.get(INISet.prgRecordURL, { program_id: id } ,function(data){
+				if(data.match(/^error/i)){
+					alert(data);
+				}else{
+					$('#resid_' + id).addClass('prg_rec');
+				}
+			});
+		}
+	}
+</script>
+<style type="text/css">
+<!--
+body {padding:4px;margin:0;font-size:10pt;}
+a {text-decoration:none;}
+
+table#reservation_table {
+    width: 800px;
+    border: 1px #BBB solid;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table#reservation_table th {
+    padding: 5px;
+    border: #E3E3E3 solid;
+    border-width: 0 0 1px 1px;
+    background: #BBB;
+    font-weight: bold;
+    line-height: 120%;
+    text-align: center;
+}
+table#reservation_table td {
+    padding: 5px;
+    border: 1px #BBB solid;
+    border-width: 0 0 1px 1px;
+    text-align: center;
+}
+
+table#reservation_table tr.ctg_news, #category_select a.ctg_news {background-color: #FFFFD8;}
+table#reservation_table tr.ctg_etc, #category_select a.ctg_etc {background-color: #FFFFFF;}
+table#reservation_table tr.ctg_information, #category_select a.ctg_information {background-color: #F2D8FF;}
+table#reservation_table tr.ctg_sports, #category_select a.ctg_sports {background-color: #D8FFFF;}
+table#reservation_table tr.ctg_cinema, #category_select a.ctg_cinema {background-color: #FFD8D8;}
+table#reservation_table tr.ctg_music, #category_select a.ctg_music {background-color: #D8D8FF;}
+table#reservation_table tr.ctg_drama, #category_select a.ctg_drama {background-color: #D8FFD8;}
+table#reservation_table tr.ctg_anime, #category_select a.ctg_anime {background-color: #FFE4C8;}
+table#reservation_table tr.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
+table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
+table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
+
+
+-->
+</style>
+{/literal}
+
+</head>
+
+<body>
+
+<h2>{$sitetitle}</h2>
+
+
+
+<div><a href="index.php">番組表に戻る</a>/<a href="keywordTable.php">自動録画キーワード管理へ</a></div>
+
+<div>
+絞り込み：
+<form method="post" action="programTable.php">
+<input type="hidden" name="do_search" value="1" />
+検索語句<input type="text" size="20" name="search" value="{$search}" />
+正規表現使用<input type="checkbox" name="use_regexp" value="1" {if $use_regexp}checked{/if} />
+種別<select name="type">
+  {foreach from=$types item=type}
+  <option value="{$type.value}" {$type.selected}>{$type.name}</option>
+  {/foreach}
+</select>
+局<select name="station">
+  {foreach from=$stations item=st}
+    <option value="{$st.id}" {$st.selected}>{$st.name}</option>
+  {/foreach}
+  </select>
+カテゴリ<select name="category_id">
+  {foreach from=$cats item=cat}
+  <option value="{$cat.id}" {$cat.selected}>{$cat.name}</option>
+  {/foreach}
+</select>
+<input type="submit" value="絞り込む" />
+</form>
+</div>
+
+
+
+{if count($programs)}
+<table id="reservation_table">
+ <tr>
+  <th>種別</th>
+  <th>局名</th>
+  <th>番組開始</th>
+  <th>番組終了</th>
+  <th>タイトル</th>
+  <th>内容</th>
+  <th>簡易録画</th>
+  <th>詳細録画</th>
+ </tr>
+
+{foreach from=$programs item=program}
+ <tr id="resid_{$program.id}" class="ctg_{$program.cat}{if $program.rec > 0} prg_rec{/if}">
+  <td>{$program.type}</td>
+  <td>{$program.station_name}</td>
+  <td>{$program.starttime}</td>
+  <td>{$program.endtime}</td>
+  <td>{$program.title|escape}</td>
+  <td>{$program.description|escape}</td>
+  <td><input type="button" value="録画" onClick="javascript:PRG.rec('{$program.id}')" /></td>
+  <td><a href="reservation.php?program_id={$program.id}">詳細へ</a></td>
+ </tr>
+{/foreach}
+</table>
+{else}
+  該当する番組はありません
+{/if}
+<div>{$programs|@count}件ヒット</div>
+{if count($programs) >= 300}<div>表示最大300件まで</div>{/if}
+{if $do_keyword}
+{if (count($programs) < 300)}
+<div>
+<form method="post" action="keywordTable.php">
+  <b>語句:</b>{$search|escape}
+  <b>正規表現:</b>{if $use_regexp}使う{else}使わない{/if}
+  <b>種別:</b>{if $k_type == "*"}すべて{else}{$k_type}{/if}
+  <b>局:</b>{if $k_station == 0}すべて{else}{$k_station_name}{/if}
+  <b>カテゴリ:</b>{if $k_category == 0}すべて{else}{$k_category_name}{/if}
+  <b>件数:</b>{$programs|@count}
+  <input type="hidden" name="add_keyword" value="{$do_keyword}" />
+  <input type="hidden" name="k_use_regexp" value="{$use_regexp}" />
+  <input type="hidden" name="k_search" value="{$search}" />
+  <input type="hidden" name="k_type" value="{$k_type}" />
+  <input type="hidden" name="k_category" value="{$k_category}" />
+  <input type="hidden" name="k_station" value="{$k_station}" />
+  <input type="submit" value="この絞り込みを自動録画キーワードに登録" />
+  </form>
+</div>
+{/if}
+{/if}
+
+
+
+
+{literal}
+<script type="text/javascript">
+var INISet = {
+	prgRecordURL : 'simpleReservation.php',			// 簡易予約
+	prgRecordPlusURL : 'recordp.php',		// 詳細予約
+	prgCancelURL : 'cancelReservation.php'		// 予約キャンセル
+}
+</script>
+{/literal}
+</body>
+</html>
