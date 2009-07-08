@@ -10,12 +10,12 @@ RECORDER=/usr/local/bin/recfriio
 B25=/usr/local/bin/b25_bcas
 
 if [ ${MODE} == 0 ]; then
-   # MODE=0‚Å‚Í•K‚¸–³‰ÁH‚ÌTS‚ð“f‚«o‚·‚±‚Æ
+   # MODE=0ã§ã¯å¿…ãšç„¡åŠ å·¥ã®TSã‚’åãå‡ºã™ã“ã¨
    $RECORDER $CHANNEL $DURATION ${OUTPUT} --b25 --strip
 elif [ ${MODE} == 1 ]; then
-   # MODE=0ˆÈŠO‚Í‚Ç‚¤Žè‚ð‰Á‚¦‚Ä‚à\‚¢‚Ü‚¹‚ñ
-   $RECORDER $CHANNEL $DURATION --b25 --strip | ‰½‚©‰ÁH >${OUTPUT}
+   # MODE=0ä»¥å¤–ã¯ã©ã†æ‰‹ã‚’åŠ ãˆã¦ã‚‚æ§‹ã„ã¾ã›ã‚“
+   $RECORDER $CHANNEL $DURATION --b25 --strip | ä½•ã‹åŠ å·¥ >${OUTPUT}
 elif [ ${MODE} == 2 ]; then
    $RECORDER $CHANNEL $DURATION ${OUTPUT}.tmp.ts --b25 --strip
-   ffmpeg -i ${OUTPUT}.tmp.ts ... “K“–‚ÈƒIƒvƒVƒ‡ƒ“ ${OUTPUT}
+   ffmpeg -i ${OUTPUT}.tmp.ts ... é©å½“ãªã‚ªãƒ—ã‚·ãƒ§ãƒ³ ${OUTPUT}
 fi
