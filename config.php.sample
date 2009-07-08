@@ -58,7 +58,7 @@ $RECORD_MODE = array(
 
 define( "INSTALL_PATH", '/var/www/epgrec' );		// インストールパス
 define( "SPOOL", "/video" );						// 録画ビデオ格納ディレクトリ
-define( "THUMBS". "/thumbs" );						// サムネール保存先
+define( "THUMBS", "/thumbs" );						// サムネール保存先
 define( "INSTALL_URL", "http://localhost/epgrec" );	// インストール先URL
 
 define( "BS_TUNERS", 0 );							// BSデジタルチューナー数
