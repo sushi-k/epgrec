@@ -36,8 +36,8 @@ $GR_CHANNEL_MAP = array(
 $RECORD_MODE = array(
 	// ※ 0は必須で、変更不可です。
 	0 => array(
-		'name' => 'Full TS',
-		'suffix' => '.ts',
+		'name' => 'Full TS',	// モードの表示名
+		'suffix' => '.ts',	// ファイル名のサフィックス
 	),
 	
 	/* Examples is as follows.
