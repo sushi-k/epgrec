@@ -45,7 +45,7 @@ class Reservation {
 		
 		// 時間を計算
 		$start_time = toTimestamp( $starttime );
-		$end_time = toTimestamp( $endtime );
+		$end_time = toTimestamp( $endtime ) + EXTRA_TIME;
 		
 		if( $start_time < (time() + PADDING_TIME + 10) ) {	// 現在時刻より3分先より小さい＝すでに開始されている番組
 			$start_time = time() + PADDING_TIME + 10;		// 録画開始時間を3分10秒先に設定する
