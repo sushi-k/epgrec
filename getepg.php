@@ -91,9 +91,14 @@
 			$rec->channel_disc = $disc;
 			$rec->name = $ch->{'display-name'};
 		}
+		else {
+			// 存在した場合も、とりあえずチャンネル名は更新する
+			$rec = new DBRecord(TBL_PREFIX.CHANNEL_TBL, "channel_disc", $disc );
+			$rec->name = $ch->{'display-name'};
+		}
 	 }
 	 catch( Exception $e ) {
-		exit( "ChannelUpdater::". $e->getMessage() );
+		// 無視
 	 }
 	}
 	// channel 終了
