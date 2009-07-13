@@ -21,7 +21,7 @@ try{
 				mysql_query( $sqlstr );
 				$sqlstr = "update mt_cds_object set metadata='dc:description=".$rrec->description."' where dc_title='".$rrec->path."'";
 				mysql_query( $sqlstr );
-				$sqlstr = "update mt_cds_object set dc_title='".$rrec->title."' where dc_title='".$rrec->path."'";
+				$sqlstr = "update mt_cds_object set dc_title='".$rrec->title."(".date("Y/m/d").")' where dc_title='".$rrec->path."'";
 				mysql_query( $sqlstr );
 			}
 		}	
