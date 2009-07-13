@@ -8,6 +8,9 @@ $search = "";
 $category_id = 0;
 $station = 0;
 
+// mysql_real_escape_stringより先に接続しておく必要がある
+$dbh = @mysql_connect( DB_HOST, DB_USER, DB_PASS );
+
 #$options = "WHERE complete='1'";
 $options = "WHERE starttime < '". date("Y-m-d H:i:s")."'";	// ながら再生は無理っぽい？
 

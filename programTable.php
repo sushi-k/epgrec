@@ -11,7 +11,10 @@ $type = "*";
 $category_id = 0;
 $station = 0;
 
+// mysql_real_escape_stringより先に接続しておく必要がある
+$dbh = @mysql_connect(DB_HOST, DB_USER, DB_PASS );
 
+	// パラメータの処理
 if(isset( $_POST['do_search'] )) {
 	if( isset($_POST['search'])){
 		if( $_POST['search'] != "" ) {
@@ -44,14 +47,13 @@ if(isset( $_POST['do_search'] )) {
 		}
 	}
 }
-
 $options .= " ORDER BY starttime ASC LIMIT 300";
-
 $do_keyword = 0;
 if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) )
 	$do_keyword = 1;
-
+	
 try{
+	
 	$precs = DBRecord::createRecords(TBL_PREFIX.PROGRAM_TBL, $options );
 	
 	$programs = array();
