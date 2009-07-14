@@ -49,9 +49,10 @@ try{
 		$arr['station_name'] = $ch->name;
 		$arr['starttime'] = $r->starttime;
 		$arr['endtime'] = $r->endtime;
-		$arr['title'] = "<a href=\"".INSTALL_URL."/viewer.php?reserve_id=".$r->id."\">".htmlspecialchars($r->title,ENT_QUOTES)."</a>";
-		$arr['description'] = "<a href=\"".INSTALL_URL."/viewer.php?reserve_id=".$r->id."\">".htmlspecialchars($r->description,ENT_QUOTES)."</a>";
-		$arr['thumb'] = "<a href=\"".INSTALL_URL."/viewer.php?reserve_id=".$r->id."\"><img src=\"".INSTALL_URL.THUMBS."/".$r->path.".jpg\" /></a>";
+		$arr['asf'] = "".INSTALL_URL."/viewer.php?reserve_id=".$r->id;
+		$arr['title'] = htmlspecialchars($r->title,ENT_QUOTES);
+		$arr['description'] = htmlspecialchars($r->description,ENT_QUOTES);
+		$arr['thumb'] = "<img src=\"".INSTALL_URL.THUMBS."/".$r->path.".jpg\" />";
 		$arr['cat'] = $cat->name_en;
 		$arr['mode'] = $RECORD_MODE[$r->mode]['name'];
 		

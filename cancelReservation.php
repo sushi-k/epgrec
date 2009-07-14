@@ -15,11 +15,22 @@ else if(isset($_GET['reserve_id'])) {
 	try {
 		$rec = new DBRecord( TBL_PREFIX.RESERVE_TBL, "id" , $reserve_id );
 		$program_id = $rec->program_id;
+		
+		if( isset( $_GET['delete_file'] ) ) {
+			if( $_GET['delete_file'] == 1 ) {
+				// ファイルを削除
+				if( file_exists( INSTALL_PATH."/".SPOOL."/".$rec->path ) ) {
+					@unlink(INSTALL_PATH."/".SPOOL."/".$rec->path);
+				}
+			}
+		}
 	}
 	catch( Exception $e ) {
 		// 無視
 	}
 }
+
+
 
 // 手動取り消しのときには、その番組を自動録画対象から外す
 if( $program_id ) {
