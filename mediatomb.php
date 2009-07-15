@@ -18,8 +18,8 @@ try {
   mysql_query( $sqlstr );
 
   foreach( $recs as $rec ) {
-	  $title = $rec->title."(".date("Y/m/d", toTimestamp($rec->starttime)).")";
-      $sqlstr = "update mt_cds_object set metadata='dc:description=".$rec->description."' where dc_title='".$rec->path."'";
+	  $title = mysql_real_escape_string($rec->title)."(".date("Y/m/d", toTimestamp($rec->starttime)).")";
+      $sqlstr = "update mt_cds_object set metadata='dc:description=".mysql_real_escape_string($rec->description)."' where dc_title='".$rec->path."'";
       mysql_query( $sqlstr );
       $sqlstr = "update mt_cds_object set dc_title='".$title."' where dc_title='".$rec->path."'";
       mysql_query( $sqlstr );
