@@ -172,7 +172,69 @@ class Reservation {
 				throw new Exception( "終わりつつある/終わっている番組です" );
 			}
 			
-			$filename = "".$crec->type.$crec->channel."_".date("YmdHis", $start_time)."_".date("YmdHis", $end_time).$RECORD_MODE[$mode]['suffix'];
+			
+			// ここからファイル名生成
+/*
+			%TITLE%	番組タイトル
+			%ST%	開始日時（ex.200907201830)
+			%ET%	終了日時
+			%TYPE%	GR/BS
+			%CH%	チャンネル番号
+			%DOW%	曜日（Sun-Mon）
+			%DOWJ%	曜日（日-土）
+			%YEAR%	開始年
+			%MONTH%	開始月
+			%DAY%	開始日
+			%HOUR%	開始時
+			%MIN%	開始分
+			%SEC%	開始秒
+			%DURATION%	録画時間（秒）
+*/
+
+			$day_of_week = array( "日","月","火","水","木","金","土" );
+			$filename = "%TYPE%%CH%_%ST%_%ET%";
+			if( defined( "FILENAME_FORMAT" ) ) {
+				$filename = FILENAME_FORMAT;
+			}
+			// あると面倒くさそうな文字を全部_に
+			$fn_title = mb_ereg_replace("[ \./\*:<>\?\\|()\'\"&]","_", trim($title) );
+			
+			// %TITLE%
+			$filename = str_replace("%TITLE%", $fn_title, $filename);
+			// %ST%	開始日時
+			$filename = str_replace("%ST%",date("YmdHis", $start_time), $filename );
+			// %ET%	終了日時
+			$filename = str_replace("%ET%",date("YmdHis", $end_time), $filename );
+			// %TYPE%	GR/BS
+			$filename = str_replace("%TYPE%",$crec->type, $filename );
+			// %CH%	チャンネル番号
+			$filename = str_replace("%CH%","".$crec->channel, $filename );
+			// %DOW%	曜日（Sun-Mon）
+			$filename = str_replace("%DOW%",date("D", $start_time), $filename );
+			// %DOWJ%	曜日（日-土）
+			$filename = str_replace("%DOWJ%",$day_of_week[(int)date("w", $start_time)], $filename );
+			// %YEAR%	開始年
+			$filename = str_replace("%YEAR%",date("Y", $start_time), $filename );
+			// %MONTH%	開始月
+			$filename = str_replace("%MONTH%",date("m", $start_time), $filename );
+			// %DAY%	開始日
+			$filename = str_replace("%DAY%",date("d", $start_time), $filename );
+			// %HOUR%	開始時
+			$filename = str_replace("%HOUR%",date("H", $start_time), $filename );
+			// %MIN%	開始分
+			$filename = str_replace("%MIN%",date("i", $start_time), $filename );
+			// %SEC%	開始秒
+			$filename = str_replace("%SEC%",date("s", $start_time), $filename );
+			// %DURATION%	録画時間（秒）
+			$filename = str_replace("%DURATION%","".$duration, $filename );
+			
+			// 文字コード変換
+			if( defined("FIESYSTEM_ENCODING") ) {
+				$filename = mb_convert_encoding( $filename, FILESYSTEM_ENCODING, "UTF-8" );
+			}
+			$filename .= $RECORD_MODE[$mode]['suffix'];
+			
+			// ファイル名生成終了
 			
 			// 予約レコードを埋める
 			$rrec = new DBRecord( TBL_PREFIX.RESERVE_TBL );
