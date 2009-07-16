@@ -83,6 +83,7 @@
 			$.get(INISet.prgRecordURL, { program_id: id } ,function(data){
 				if(data.match(/^error/i)){
 					alert(data);
+					$('#floatBox4Dialog').dialog('close');
 				}else{
 					$('#prgID_' + id).addClass('prg_rec');
 					$('#floatBox4Dialog').dialog('close');
@@ -93,6 +94,7 @@
 			$.get(INISet.prgCancelURL, { program_id: id } ,function(data){
 				if(data.match(/^error/i)){
 					alert(data);
+					$('#floatBox4Dialog').dialog('close');
 				}else{
 					$('#prgID_' + id).removeClass('prg_rec');
 					$('#floatBox4Dialog').dialog('close');

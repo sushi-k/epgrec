@@ -36,22 +36,23 @@ $last_time = $top_time + 3600 * $program_length;
  if( $type == "BS" ) $channel_map = $BS_CHANNEL_MAP;
  else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
  $st = 0;
+ $prec = new DBRecord(TBL_PREFIX.PROGRAM_TBL);
  foreach( $channel_map as $channel_disc => $channel ) {
 	$prev_end = $top_time;
  	try {
 		$crec = new DBRecord( TBL_PREFIX . CHANNEL_TBL, "channel_disc", $channel_disc );
 		$programs[$st]["station_name"]  = $crec->name;
-		$prec = DBRecord::createRecords( TBL_PREFIX . PROGRAM_TBL, "".
-		                                  "WHERE channel_disc = '".$channel_disc."' ".
-		                                  "AND endtime > '".toDatetime($top_time)."' ".
+		
+		$reca = $prec->fetch_array( "channel_disc", $channel_disc,
+		                                  "endtime > '".toDatetime($top_time)."' ".
 		                                  "AND starttime < '". toDatetime($last_time)."' ".
 		                                  "ORDER BY starttime ASC "
 		                               );
 		$programs[$st]['list'] = array();
 		$num = 0;
-		foreach( $prec as $prg ) {
+		foreach( $reca as $prg ) {
 			// 前プログラムとの空きを調べる
-			$start = toTimestamp( $prg->starttime );
+			$start = toTimestamp( $prg['starttime'] );
 			if( $start - $prev_end ) {
 				$height = ($start-$prev_end) / 60;
 				if( $height > 0.5 ) {
@@ -64,30 +65,30 @@ $last_time = $top_time + 3600 * $program_length;
 					$num++;
 				}
 			}
-			$prev_end = toTimestamp( $prg->endtime );
+			$prev_end = toTimestamp( $prg['endtime'] );
 			
-			$height = (int)((toTimestamp($prg->endtime) - toTimestamp($prg->starttime)) / 30);
+			$height = (int)((toTimestamp($prg['endtime']) - toTimestamp($prg['starttime'])) / 30);
 			// $top_time より早く始まっている番組
-			if( toTimestamp($prg->starttime) <$top_time ) {
-				$height = (int)((toTimestamp($prg->endtime) - $top_time ) / 30);
+			if( toTimestamp($prg['starttime']) <$top_time ) {
+				$height = (int)((toTimestamp($prg['endtime']) - $top_time ) / 30);
 			}
 			// $last_time より遅く終わる番組
-			if( toTimestamp($prg->endtime) > $last_time ) {
-				$height = (int)(($last_time - toTimestamp($prg->starttime)) / 30);
+			if( toTimestamp($prg['endtime']) > $last_time ) {
+				$height = (int)(($last_time - toTimestamp($prg['starttime'])) / 30);
 			}
 			
 			// プログラムを埋める
-			$cat = new DBRecord( TBL_PREFIX . CATEGORY_TBL, "id", $prg->category_id );
+			$cat = new DBRecord( TBL_PREFIX . CATEGORY_TBL, "id", $prg['category_id'] );
 			$programs[$st]['list'][$num]['category_name'] = $cat->name_en;
 			$programs[$st]['list'][$num]['height'] = $height;
-			$programs[$st]['list'][$num]['title'] = $prg->title;
+			$programs[$st]['list'][$num]['title'] = $prg['title'];
 			$programs[$st]['list'][$num]['starttime'] = date("H:i", $start )."" ;
-			$programs[$st]['list'][$num]['description'] = $prg->description;
-			$programs[$st]['list'][$num]['prg_start'] = str_replace( "-", "/", $prg->starttime);
-			$programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($prg->endtime) - toTimestamp($prg->starttime));
-			$programs[$st]['list'][$num]['channel'] = ($prg->type == "GR" ? "地上D" : "BS" ) . ":". $prg->channel . "ch";
-			$programs[$st]['list'][$num]['id'] = "" . ($prg->id);
-			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg->id."'" );
+			$programs[$st]['list'][$num]['description'] = $prg['description'];
+			$programs[$st]['list'][$num]['prg_start'] = str_replace( "-", "/", $prg['starttime']);
+			$programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($prg['endtime']) - toTimestamp($prg['starttime']));
+			$programs[$st]['list'][$num]['channel'] = ($prg['type'] == "GR" ? "地上D" : "BS" ) . ":". $prg['channel'] . "ch";
+			$programs[$st]['list'][$num]['id'] = "" . ($prg['id']);
+			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg['id']."'" );
 			$num++;
 		}
 	}
@@ -109,6 +110,7 @@ $last_time = $top_time + 3600 * $program_length;
  	}
 	$st++;
  }
+ $prec = null;
  
  // 局の幅
  $ch_set_width = 150;
