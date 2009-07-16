@@ -58,17 +58,17 @@ class DBRecord {
 		
 		$sqlstr = "SELECT * FROM ".$this->table.
 		            " WHERE ".mysql_real_escape_string( $property ).
-		              " like '".mysql_real_escape_string( $value )."%'";
+		              "='".mysql_real_escape_string( $value )."'";
 		
 		if( $options != null ) {
-			$sqlstr .= " ".mysql_real_escape_string( $options );
+			$sqlstr .= "AND ".$options;
 		}
 		$res = $this->__query( $sqlstr );
 		while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
 			array_push( $retval, $row );
 		}
 		
-		return $res;
+		return $retval;
 	}
 	
 	function __set( $property, $value ) {
