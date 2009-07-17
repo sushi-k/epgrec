@@ -11,11 +11,11 @@ try{
 	if( file_exists( INSTALL_PATH . SPOOL . "/". $rrec->path ) ) {
 		// 予約完了
 		$rrec->complete = '1';
-		if( defined(MEDIATOMB_UPDATE) ) {
+		if( defined("MEDIATOMB_UPDATE") ) {
 			if( MEDIATOMB_UPDATE ) {
 				// ちょっと待った方が確実っぽい
 				@exec("sync");
-				sleep(60);
+				sleep(15);
 				$dbh = mysql_connect( DB_HOST, DB_USER, DB_PASS );
 				if( $dbh !== false ) {
 					$sqlstr = "use ".DB_NAME;
