@@ -22,6 +22,6 @@ catch( Exception $e ) {
 	exit("Error: ". $e->getMessage());
 }
 
-exit("complete");y
+exit("complete");
 
 ?>
