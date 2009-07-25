@@ -9,6 +9,8 @@
 
 {literal}
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<link rel="stylesheet" href="start/jquery-ui-1.7.2.custom.css" type="text/css">
 <script type="text/javascript">
 	var PRG = {
 		rec:function(id){
@@ -21,8 +23,45 @@
 					$('#resid_' + id ).hide();
 				}
 			});
+		},
+		editdialog:function(id) {
+			var str;
+			str  = '<div class="prg_title">予約ID:' + id + '</div>';
+			str += '<input type="hidden" name="reserve_id" id="id_reserve_id" value="' + id +  '" />';
+			str += '<div><span class="labelLeft">タイトル</span><input name="title" id="id_title" size="30"  value="'+ $('#tid_' + id ).html() + '" /></div>';
+			str += '<div><span class="labelLeft">概要</span><textarea name="description" id="id_description" cols="30" rows="5" >' + $('#did_' + id ).html() + '</textarea></div>';
+			str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.edit()" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">変更する</a></div>';
+			
+			$('#floatBox4Dialog').html(str);
+			$('#floatBox4Dialog').dialog('open','center');
+		},
+		edit:function() {
+			var id_reserve_id = $('#id_reserve_id').val();
+			var id_title = $('#id_title').val();
+			var id_description = $('#id_description').val();
+
+			$.post('changeReservation.php', { reserve_id: id_reserve_id,
+							  title: id_title,
+							  description: id_description }, function( data ) {
+				if(data.match(/^error/i)){
+					alert(data);
+					$('#floatBox4Dialog').dialog('close');
+
+				}
+				else {
+					$('#tid_' + id_reserve_id ).html( id_title );
+					$('#did_' + id_reserve_id ).html( id_description );
+					$('#floatBox4Dialog').dialog('close');
+				}
+			});
 		}
 	}
+	$(document).ready(function () {
+		var DG = $('#floatBox4Dialog');
+		DG.dialog({title:'予約編集',width:500});
+		DG.dialog('close');
+	});
+
 </script>
 <style type="text/css">
 <!--
@@ -63,6 +102,11 @@ table#reservation_table tr.ctg_anime, #category_select a.ctg_anime {background-c
 table#reservation_table tr.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
 table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
 
+#floatBox4Dialog .prg_title{font-size:120%;font-weight:bold;padding:0.4em 0;text-align:center;}
+#floatBox4Dialog .prg_rec_cfg{background:#EEE;padding:1em 2em;margin:0.4em 0;}
+#floatBox4Dialog .labelLeft {width:8em;float:left;text-align:right;}
+#floatBox4Dialog .button {padding:0.4em 1em;}
+
 
 -->
 </style>
@@ -95,12 +139,12 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
  <tr id="resid_{$reserve.id}" class="ctg_{$reserve.cat}">
   <td>{$reserve.id}</td>
   <td>{$reserve.type}</td>
-  <td>{$reserve.channel}</td>
-  <td>{$reserve.starttime}</td>
+  <td id="chid_{$reserve.id}">{$reserve.channel}</td>
+  <td id="stid_{$reserve.id}">{$reserve.starttime}</td>
   <td>{$reserve.endtime}</td>
   <td>{$reserve.mode}</td>
-  <td>{$reserve.title|escape}</td>
-  <td>{$reserve.description|escape}</td>
+  <td style="cursor: pointer" id="tid_{$reserve.id}" onClick="javascript:PRG.editdialog('{$reserve.id}')">{$reserve.title|escape}</td>
+  <td style="cursor: pointer" id="did_{$reserve.id}" onClick="javascript:PRG.editdialog('{$reserve.id}')">{$reserve.description|escape}</td>
   <td>{if $reserve.autorec}{$reserve.autorec}{/if}</td>
   <td><input type="button" value="削除" onClick="javascript:PRG.rec('{$reserve.id}')" /></td>
  </tr>
@@ -110,6 +154,7 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
   現在、予約はありません
 {/if}
 
+<div id="floatBox4Dialog">jQuery UI Dialog</div>
 
 
 {literal}
