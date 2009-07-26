@@ -19,7 +19,7 @@ try {
 
   foreach( $recs as $rec ) {
 	  $title = mysql_real_escape_string($rec->title)."(".date("Y/m/d", toTimestamp($rec->starttime)).")";
-      $sqlstr = "update mt_cds_object set metadata='dc:description=".mysql_real_escape_string($rec->description)."' where dc_title='".$rec->path."'";
+      $sqlstr = "update mt_cds_object set metadata='dc:description=".mysql_real_escape_string($rec->description)."&epgrec:id=".$rec->id."' where dc_title='".$rec->path."'";
       mysql_query( $sqlstr );
       $sqlstr = "update mt_cds_object set dc_title='".$title."' where dc_title='".$rec->path."'";
       mysql_query( $sqlstr );
