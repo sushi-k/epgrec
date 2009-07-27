@@ -11,7 +11,7 @@ if( ! file_exists( INSTALL_PATH."/settings/config.xml") ) {
     header( "Content-Type: text/html;charset=utf-8" );
     exit( "<script type=\"text/javascript\">\n" .
           "<!--\n".
-         "window.open(\"".$url."\",\"_self\");".
+         "window.open(\"install/step1.php\",\"_self\");".
          "// -->\n</script>" );
 }
 
