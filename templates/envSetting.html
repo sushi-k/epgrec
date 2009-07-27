@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>{$sitetitle}</title>
+
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/messages_ja.js"></script>
+
+<script type="text/javascript">
+<!--
+{literal}
+
+	var PRG = {
+		force_cont:function() {
+			if( $('#id_force_cont_rec' ).val() == 0 ) {
+				$('#id_rec_switch_time').attr('disabled','disabled');
+			}
+			else {
+				$('#id_rec_switch_time').attr('disabled',false);
+			}
+		}
+	}
+	$(document).ready(function(){
+		$("#env_setting").validate();
+		PRG.force_cont();
+	});
+
+{/literal}
+
+-->
+</script>
+
+
+<style type="text/css">
+<!--
+{literal}
+
+body {padding:4px;margin:0;font-size:10pt; width: 85%;}
+a {text-decoration:none;}
+
+.bold {font-weight:bold;}
+.small {font-size:75%;}
+
+div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
+
+{/literal}
+-->
+</style>
+</head>
+<body>
+
+
+
+<form id="env_setting" method="post" action="{$post_to}">
+
+<h2>デジタルチューナー設定</h2>
+
+
+<h3>地デジチューナーの台数</h3>
+<div class="setting">
+<div class="caption">サーバーに接続されている地デジチューナーの台数を設定してください。地デジチューナーを持っていない場合、0にします。</div>
+<input type="text" name="gr_tunerst" value="{$settings->gr_tuners}" size="3" class="required digits" />
+</div>
+
+<h3>BSチューナーの台数</h3>
+<div class="setting">
+<div class="caption">サーバーに接続されているBSチューナーの台数を設定してください。BSチューナーを持っていない場合、0にします。</div>
+<input type="text" name="bs_tuners" value="{$settings->bs_tuners}" size="3" class="required digits" />
+</div>
+
+<h2>録画関連設定</h2>
+
+
+<h3>録画開始の余裕時間（秒）</h3>
+<div class="setting">
+<div class="caption">epgrecは番組開始時間より早く録画を開始します。どのくらい録画開始を早めるかを秒で設定してください。早める時間を短くしすぎると、番組冒頭がとぎれる恐れがあります。設定できる時間は0秒以上180秒未満です。</div>
+<input type="text" name="former_time" value="{$settings->former_time}" size="4" class="required digits" min="0" max="179" />
+</div>
+
+<h3>録画時間を長めにする</h3>
+<div class="setting">
+<div class="caption">下の欄に0以上の秒数を設定すると、すべての番組に対して設定した秒数分だけ録画時間を延ばします。この設定は「連続した番組の予約」設定と相性が良くありません。0以外の秒を設定する場合、連続した番組の予約が行いづらくなることに注意してください。推奨値は0です。</div>
+<input type="text" name="extra_time" value="{$settings->extra_time}" size="4" class="required digits" />
+</div>
+
+<h3>連続した番組の予約</h3>
+<div class="setting">
+<div class="caption">この設定を「行う」にするとepgrecが自動的に直前の時間に予約されている番組の録画時間を短縮して時間が連続している番組の予約を可能にします。録画時間を短縮する時間は「録画開始の余裕時間」＋「録画コマンドの切り替え時間」です。この機能を使って連続した番組を予約する場合、前の時間の番組の最後がとぎれる可能性がありますが、チューナーが1台しか無くてもキーワード自動録画による連続した番組の予約が可能になります。メリットとデメリットをよく考えて設定してください。</div>
+<select name="force_cont_rec" id="id_force_cont_rec" onChange="javascript:PRG.force_cont()" >
+  <option value="0" {if $settings->force_cont_rec == 0} selected {/if}>行わない</option>
+  <option value="1" {if $settings->force_cont_rec == 1} selected {/if}>行う</option>
+</select>
+</div>
+
+
+<h3>録画コマンドの切り替え時間</h3>
+<div class="setting">
+<div class="caption">連続した番組を予約するとき、録画が終了して次の録画を開始するまでの余裕時間（秒）を設定します。0以上の秒数を設定してください。設定する秒数が短いほど録画時間を短縮する時間が短くなりますが、この時間を短くしすぎると連続した番組の予約に失敗する恐れがあります。失敗するかどうかは使用している録画コマンドやチューナーに依存します。</div>
+<input type="text" name="rec_switch_time" id="id_rec_switch_time" value="{$settings->rec_switch_time}" size="4" class="required digits" min="1" />
+</div>
+
+<h3>mediatomb連係機能</h3>
+<div class="setting">
+<div class="caption">この設定を「使う」にすると録画した番組のタイトルと概要をmediatombに反映させます。mediatombを使用していない方は「使わない」に設定してください。なお、この設定を利用するにはmediatomb側の設定も必要になります。詳しくはドキュメントを参照してください。
+</div>
+<select name="mediatomb_update" id="id_mediatomb_update" >
+  <option value="0" {if $settings->mediatomb_update == 0} selected {/if}>使わない</option>
+  <option value="1" {if $settings->mediatomb_update == 1} selected {/if}>使う</option>
+</select>
+</div>
+
+<h3>録画ファイル名の形式</h3>
+<div class="setting">
+<div class="caption">epgrecは録画ファイル名をカスタマイズすることができます。下の欄にファイル名のフォーマットを記入してください。フォーマットに使用できる特殊文字列は以下の通りです。
+
+<table cellspacing="1" border="1">
+<thead>
+<tr>
+  <th>特殊文字列</th><th>置換後の内容</th>
+</tr>
+</thead>
+<tbody>
+ <tr><td>%TITLE%</td><td>番組タイトル</td></tr>
+ <tr><td>%ST%</td><td>開始日時（ex.200907201830)</td></tr>
+ <tr><td>%ET%</td><td>終了日時（同上）</td></tr>
+ <tr><td>%TYPE%</td><td>GRまたはBS</td></tr>
+ <tr><td>%CH%</td><td>チャンネル番号</td></tr>
+ <tr><td>%DOW%</td><td>曜日（英3文字Sun-Mon）</td></tr>
+ <tr><td>%DOWJ%</td><td>曜日（漢字1字日-土）</td></tr>
+ <tr><td>%YEAR%</td><td>開始年</td></tr>
+ <tr><td>%MONTH%</td><td>開始月</td></tr>
+ <tr><td>%DAY%</td><td>開始日</td></tr>
+ <tr><td>%HOUR%</td><td>開始時</td></tr>
+ <tr><td>%MIN%</td><td>開始分</td></tr>
+ <tr><td>%SEC%</td><td>開始秒</td></tr>
+ <tr><td>%DURATION%</td><td>録画時間（秒）</td></tr>
+</tbody>
+</table>
+たとえば、<p>%YEAR%年%MONTH%月%DAY%日%HOUR%時%MIN%分%SEC%秒_%TYPE%%CH%_%TITLE%</p>と設定すると<p>2009年07月15日12時49分16秒_GR21_番組タイトル.ts</p>というような形式の録画ファイルが生成されます。%TYPE%や%CH%などを混ぜ、異なる番組に同じ録画ファイルが生成されないよう注意してください。なお、ファイルシステムがUTF-8以外の文字コードで、ファイル名に日本語を交ぜる場合、config.php内の定数FILESYSTEM_ENCODINGに文字コードを設定することができます。ただし、UTF-8以外の文字コードはテストを行っていないため推奨しません。</div>
+<input type="text" name="filename_format" value="{$settings->filename_format}" size="40" class="required" />
+</div>
+
+<h2>番組表表示設定</h2>
+
+以下の設定は実際に利用して様子を見ながら設定した方がいいでしょう。
+
+<h3>ページに表示する番組表の長さ（時間）</h3>
+<div class="setting">
+<div class="caption">1ページに表示する番組表の長さを時間で設定します。標準は8時間分です。</div>
+<input type="text" name="program_length" value="{$settings->program_length}" size="2" class="required digits" min="2" max="24" />
+</div>
+
+
+<h3>1局あたりの幅</h3>
+<div class="setting">
+<div class="caption">番組表の1局当たりの幅をピクセル数で設定します。標準は150ピクセルです。</div>
+<input type="text" id="ch_set_width" name="ch_set_width" value="{$settings->ch_set_width}" size="4" class="required digits" min="20" />
+</div>
+
+
+<h3>1時間あたりの長さ</h3>
+<div class="setting">
+<div class="caption">番組表の1時間あたりの長さをピクセル数で設定します。標準は120ピクセルです。</div>
+<input type="text" id="height_per_hour" name="height_per_hour" value="{$settings->height_per_hour}" size="4" class="required digits" min="30" />
+</div>
+
+
+<input type="submit" value="設定を保存する" id="env_setting-submit" />
+</form>
+</body>
+</html>

@@ -56,48 +56,14 @@ $RECORD_MODE = array(
 
 
 
-define( "INSTALL_PATH", '/var/www/epgrec' );		// インストールパス
-define( "SPOOL", "/video" );						// 録画ビデオ格納ディレクトリ
-define( "THUMBS", "/thumbs" );						// サムネール保存先
-define( "INSTALL_URL", "http://localhost/epgrec" );	// インストール先URL
-
-define( "BS_TUNERS", 0 );							// BSデジタルチューナー数
-define( "GR_TUNERS", 1 );							// 地上デジタルチューナー数
+define( "INSTALL_PATH", dirname(__FILE__) );		// インストールパス
 define( "USE_KUROBON", false );						// BSチューナーとしてFriio BS/CSを使うならtrue
-
-define( "FORMER_TIME", 20 );						// 予約実行を行う前に取る余裕時間（秒）
-define( "EXTRA_TIME", 0 );							// この秒数だけ録画時間を長めに取る
-
-define( "FORCE_CONT_REC", false );					// 終了時間を調節して連続する番組の予約を行う
-define( "REC_SWITCH_TIME", 5 );						// レコーダーの切り替え余裕時間
-
-define( "USE_THUMBS", true );						// サムネイルを生成するならtrue
-
-define( "MEDIATOMB_UPDATE", false );				// 録画終了時にmediatombのデータベースをアップデートする
-
-// データベース情報
-
-define( "DB_HOST", "localhost");					// DBホスト名
-define( "DB_NAME", "yourdbname" );					// DB名
-define( "DB_USER", "yourname" );					// DBユーザー名
-define( "DB_PASS", "yourpass");						// DBパスワード
-define( "TBL_PREFIX", "Recorder_" );				// テーブルの接頭辞
-
-// 使用コマンド
-
-define( "EPGDUMP", "/usr/local/bin/epgdump" );		// epgdumpのパス
-define( "AT" , "/usr/bin/at" );						// atのパス
-define( "ATRM", "/usr/bin/atrm" );					// atrmのパス
-define( "SLEEP", "/bin/sleep" );					// sleepのパス
-define( "FFMPEG", "/usr/bin/ffmpeg" );				// ffmpegのパス
 
 // 以降は必要に応じて変更する
 
 define( "PADDING_TIME", 180 );						// 詰め物時間
 define( "DO_RECORD", INSTALL_PATH . "/do-record.sh" );		// レコードスクリプト
 define( "COMPLETE_CMD", INSTALL_PATH . "/recomplete.php" );	// 録画終了コマンド
-define( "TEMP_DATA", "/tmp/__temp.ts" );			// テンポラリデータ
-define( "TEMP_XML",  "/tmp/__temp.xml" );			// テンポラリXML
 
 // 全国用BSデジタルチャンネルマップ
 $BS_CHANNEL_MAP = array(

@@ -27,7 +27,7 @@ class Settings extends SimpleXMLElement {
 			else $xml->install_url = "http://localhost/epgrec";
 			
 			if(defined("BS_TUNERS")) $xml->bs_tuners = BS_TUNERS;
-			else $xml->bs_tuenrs = 0;
+			else $xml->bs_tuners = 0;
 			
 			if(defined("GR_TUNERS")) $xml->gr_tuenrs = GR_TUNERS;
 			else $xml->gr_tuners = 1;
@@ -94,11 +94,11 @@ class Settings extends SimpleXMLElement {
 			
 			// index.phpで使う設定値
 			// 表示する番組表の長さ（時間）
-			$xml->top_program_length = 8;
+			$xml->program_length = 8;
 			// 1局の幅
-			$xml->top_ch_set_width = 150;
+			$xml->ch_set_width = 150;
 			// 1分あたりの高さ
-			$xml->top_height_per_min = 2;
+			$xml->height_per_hour = 120;
 			
 			$xml->save();
 			
@@ -113,7 +113,7 @@ class Settings extends SimpleXMLElement {
 	public function post() {
 		global $_POST;
 		
-		foreach( $POST as $key => $value ) {
+		foreach( $_POST as $key => $value ) {
 			
 			if( $this->exists($key) ) {
 				$this->{$key} = trim($value);
