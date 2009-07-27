@@ -326,7 +326,7 @@ h2 {padding: 4px}
 #tvtimes,#tvtimes2, .tvtimeDM {width:40px;}
 #tv_chs {padding-left:40px;padding-right:40px;}
 .tvtime {
-	height:120px;
+	height:{/literal}{$height_per_hour}{literal}px;
 	color:#EEE;
 	text-align:center;
 	font-weight:bold;
@@ -336,7 +336,10 @@ h2 {padding: 4px}
 	background-position: left bottom;
 }
 #tvtable div.tvtimetop {padding:8px 0px;}
-#tvtable div.ch_set {width:150px;float:left;background-color:#BBB;}
+
+#tvtable div.ch_set {width:{/literal}{$ch_set_width}{literal}px;float:left;background-color:#BBB;}
+
+
 #tvtable div.ch_title, #tvtable div.prg {margin-right:2px;}
 #tvtable div.ch_title {padding:8px 0px;background-color:#333;color:#DDD;font-weight:bold;text-align:center}
 #tvtable div.prg {
@@ -376,7 +379,7 @@ h2 {padding: 4px}
 #tvtable div.prg_hover  {background-color: #28D;color:#EFF}
 
 #float_titles { z-index:100}
-#float_titles div.ch_title {width:150px;float:left;color:#FFF;font-weight:bold;text-align:center}
+#float_titles div.ch_title {width:{/literal}{$ch_set_width}{literal}px;float:left;color:#FFF;font-weight:bold;text-align:center}
 #float_titles div.ch_title div{padding:8px 0px;margin:0 6px 0 4px;background-image: url(imgs/trancBG50.png);}
 
 #float_follows {position:absolute;}

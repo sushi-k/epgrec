@@ -4,12 +4,24 @@ include_once("config.php");
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
 include_once( INSTALL_PATH . "/Smarty/Smarty.class.php" );
 include_once( INSTALL_PATH . "/reclib.php" );
+include_once( INSTALL_PATH . "/Settings.class.php" );
+
+// 設定ファイルの有無を検査する
+if( ! file_exists( INSTALL_PATH."/settings/config.xml") ) {
+    header( "Content-Type: text/html;charset=utf-8" );
+    exit( "<script type=\"text/javascript\">\n" .
+          "<!--\n".
+         "window.open(\"".$url."\",\"_self\");".
+         "// -->\n</script>" );
+}
+
+$settings = Settings::factory();
 
 $DAY_OF_WEEK = array( "(日)","(月)","(火)","(水)","(木)","(金)","(土)" );
 
 // パラメータの処理
 // 表示する長さ（時間）
-$program_length = 8;
+$program_length = $settings->program_length;
 if( isset( $_GET['length']) ) $program_length = (int) $_GET['length'];
 // 地上=GR/BS=BS
 $type = "GR";
@@ -36,11 +48,11 @@ $last_time = $top_time + 3600 * $program_length;
  if( $type == "BS" ) $channel_map = $BS_CHANNEL_MAP;
  else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
  $st = 0;
- $prec = new DBRecord(TBL_PREFIX.PROGRAM_TBL);
+ $prec = new DBRecord($settings->tbl_prefix.PROGRAM_TBL);
  foreach( $channel_map as $channel_disc => $channel ) {
 	$prev_end = $top_time;
  	try {
-		$crec = new DBRecord( TBL_PREFIX . CHANNEL_TBL, "channel_disc", $channel_disc );
+		$crec = new DBRecord( $settings->tbl_prefix . CHANNEL_TBL, "channel_disc", $channel_disc );
 		$programs[$st]["station_name"]  = $crec->name;
 		
 		$reca = $prec->fetch_array( "channel_disc", $channel_disc,
@@ -54,9 +66,9 @@ $last_time = $top_time + 3600 * $program_length;
 			// 前プログラムとの空きを調べる
 			$start = toTimestamp( $prg['starttime'] );
 			if( $start - $prev_end ) {
-				$height = ($start-$prev_end) / 60;
+				$height = ($start-$prev_end) * $settings->height_per_hour / 3600;
 				if( $height > 0.5 ) {
-					$height = (int)($height * 2);
+					$height = (int)$height;
 					$programs[$st]['list'][$num]['category_none'] = "none";
 					$programs[$st]['list'][$num]['height'] = $height;
 					$programs[$st]['list'][$num]['title'] = "";
@@ -67,18 +79,18 @@ $last_time = $top_time + 3600 * $program_length;
 			}
 			$prev_end = toTimestamp( $prg['endtime'] );
 			
-			$height = (int)((toTimestamp($prg['endtime']) - toTimestamp($prg['starttime'])) / 30);
+			$height = (int)((toTimestamp($prg['endtime']) - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
 			// $top_time より早く始まっている番組
 			if( toTimestamp($prg['starttime']) <$top_time ) {
-				$height = (int)((toTimestamp($prg['endtime']) - $top_time ) / 30);
+				$height = (int)((toTimestamp($prg['endtime']) - $top_time ) * $settings->height_per_hour / 3600);
 			}
 			// $last_time より遅く終わる番組
 			if( toTimestamp($prg['endtime']) > $last_time ) {
-				$height = (int)(($last_time - toTimestamp($prg['starttime'])) / 30);
+				$height = (int)(($last_time - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
 			}
 			
 			// プログラムを埋める
-			$cat = new DBRecord( TBL_PREFIX . CATEGORY_TBL, "id", $prg['category_id'] );
+			$cat = new DBRecord( $settings->tbl_prefix . CATEGORY_TBL, "id", $prg['category_id'] );
 			$programs[$st]['list'][$num]['category_name'] = $cat->name_en;
 			$programs[$st]['list'][$num]['height'] = $height;
 			$programs[$st]['list'][$num]['title'] = $prg['title'];
@@ -88,7 +100,7 @@ $last_time = $top_time + 3600 * $program_length;
 			$programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($prg['endtime']) - toTimestamp($prg['starttime']));
 			$programs[$st]['list'][$num]['channel'] = ($prg['type'] == "GR" ? "地上D" : "BS" ) . ":". $prg['channel'] . "ch";
 			$programs[$st]['list'][$num]['id'] = "" . ($prg['id']);
-			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg['id']."'" );
+			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords( $settings->tbl_prefix.RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg['id']."'" );
 			$num++;
 		}
 	}
@@ -97,9 +109,9 @@ $last_time = $top_time + 3600 * $program_length;
  	}
  	// 空きを埋める
 	if( $last_time - $prev_end ) {
-		$height = ($last_time - $prev_end) / 60;
+		$height = ($last_time - $prev_end) * $settings->height_per_hour / 3600;
 		if( $height > 0.5 ) {
-			$height = (int)($height * 2);
+			$height = (int)$height;
 			$programs[$st]['list'][$num]['category_name'] = "none";
 			$programs[$st]['list'][$num]['height'] = $height;
 			$programs[$st]['list'][$num]['title'] = "";
@@ -113,7 +125,7 @@ $last_time = $top_time + 3600 * $program_length;
  $prec = null;
  
  // 局の幅
- $ch_set_width = 150;
+ $ch_set_width = $settings->ch_set_width;
  // 全体の幅
  $chs_width = $ch_set_width * count( $channel_map );
  
@@ -123,7 +135,7 @@ $last_time = $top_time + 3600 * $program_length;
  $smarty = new Smarty();
  
  // カテゴリ一覧
- $crec = DBRecord::createRecords( TBL_PREFIX . CATEGORY_TBL );
+ $crec = DBRecord::createRecords( $settings->tbl_prefix . CATEGORY_TBL );
  $cats = array();
  $num = 0;
  foreach( $crec as $val ) {
@@ -138,13 +150,13 @@ $last_time = $top_time + 3600 * $program_length;
  // タイプ選択
  $types = array();
  $i = 0;
- if( BS_TUNERS ) {
+ if( $settings->bs_tuners ) {
 	$types[$i]['selected'] = $type == "BS" ? 'class="selected"' : "";
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=BS&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "BS";
 	$i++;
  }
- if( GR_TUNERS ) {
+ if( $settings->gr_tuers ) {
 	$types[$i]['selected'] = $type == "GR" ? 'class="selected"' : "";
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=GR&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "地上デジタル";
@@ -187,8 +199,9 @@ $last_time = $top_time + 3600 * $program_length;
  
  $smarty->assign( "tvtimes", $tvtimes );
  $smarty->assign( "programs", $programs );
- $smarty->assign( "ch_set_width", $ch_set_width );
+ $smarty->assign( "ch_set_width", $settings->ch_set_width );
  $smarty->assign( "chs_width", $chs_width );
+ $smarty->assign( "height_per_hour", $settings->height_per_hour );
 
 // date("Y-m-d H:i:s", $timestamp);
  
