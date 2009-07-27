@@ -125,9 +125,4 @@ class Settings extends SimpleXMLElement {
 		$this->asXML(INSTALL_PATH . self::CONFIG_XML);
 	}
 }
-
-$settings = Settings::factory();
-
-print_r( get_object_vars( $settings ) );
-
 ?>
