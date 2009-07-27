@@ -11,7 +11,7 @@ class DBRecord {
     function __construct( $table, $property = null, $value = null ) {
 		$settings = Settings::factory();
 		
-		$this->table = $table;
+		$this->table = $settings->tbl_prefix.$table;
 		
 		$this->dbh = @mysql_connect( $settings->db_host , $settings->db_user, $settings->db_pass );
 		if( $this->dbh === FALSE ) throw new exception( "construct:データベースに接続できない" );

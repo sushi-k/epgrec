@@ -4,38 +4,41 @@
   include_once( INSTALL_PATH . '/DBRecord.class.php' );
   include_once( INSTALL_PATH . '/Reservation.class.php' );
   include_once( INSTALL_PATH . '/Keyword.class.php' );
+  include_once( INSTALL_PATH . '/Settings.class.php' );
   
-  if( file_exists( TEMP_DATA ) ) @unlink( TEMP_DATA );
-  if( file_exists( TEMP_XML ) ) @unlink( TEMP_XML );
+  $settings = Settings::factory();
+  
+  if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
+  if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
 
   // BSを処理する
-  if( BS_TUNERS ) {
+  if( $settings->bs_tuners ) {
 	// 録画重複チェック
-	$num = DBRecord::countRecords( TBL_PREFIX . RESERVE_TBL, "WHERE complete = '0' AND type = 'BS' AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
+	$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND type = 'BS' AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
 	if( $num == 0 ) {
-	 	$cmdline = "CHANNEL=211 DURATION=180 TYPE=BS TUNER=0 MODE=0 OUTPUT=".TEMP_DATA." ".DO_RECORD . " >/dev/null 2>&1";
+	 	$cmdline = "CHANNEL=211 DURATION=180 TYPE=BS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
   		exec( $cmdline );
-  		$cmdline = EPGDUMP." /BS ".TEMP_DATA." ".TEMP_XML;
+  		$cmdline = EPGDUMP." /BS ".$settings->temp_data." ".$settings->temp_xml;
   		exec( $cmdline );
-  		storeProgram( "BS", TEMP_XML );
-  		if( file_exists( TEMP_DATA ) ) @unlink( TEMP_DATA );
-  		if( file_exists( TEMP_XML ) ) @unlink( TEMP_XML );
+  		storeProgram( "BS", $settings->temp_xml );
+  		if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
+  		if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
   	}
   }
   
   // 地上波を処理する
-  if( GR_TUNERS ) {
+  if( $settings->gr_tuners ) {
 	foreach( $GR_CHANNEL_MAP as $key=>$value ){
 		// 録画重複チェック
-		$num = DBRecord::countRecords( TBL_PREFIX . RESERVE_TBL, "WHERE complete = '0' AND type = 'GR' AND endtime > now() AND starttime < addtime( now(), '00:01:10')" );
+		$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND type = 'GR' AND endtime > now() AND starttime < addtime( now(), '00:01:10')" );
 		if( $num == 0 ) {
-			$cmdline = "CHANNEL=".$value." DURATION=60 TYPE=GR TUNER=0 MODE=0 OUTPUT=".TEMP_DATA." ".DO_RECORD . " >/dev/null 2>&1";
+			$cmdline = "CHANNEL=".$value." DURATION=60 TYPE=GR TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
 			exec( $cmdline );
-			$cmdline = EPGDUMP." ".$key." ".TEMP_DATA." ".TEMP_XML;
+			$cmdline = EPGDUMP." ".$key." ".$settings->temp_data." ".$settings->temp_xml;
 			exec( $cmdline );
-			storeProgram( "GR", TEMP_XML );
- 			if( file_exists( TEMP_DATA ) ) @unlink( TEMP_DATA );
-  			if( file_exists( TEMP_XML ) ) @unlink( TEMP_XML );
+			storeProgram( "GR", $settings->temp_xml );
+ 			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
+  			if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
   		}
   	}
   }
@@ -43,12 +46,12 @@
   // 不要なプログラムの削除
   // 8日以上前のプログラムを消す
   $arr = array();
-  $arr = DBRecord::createRecords( TBL_PREFIX . PROGRAM_TBL, "WHERE endtime < subdate( now(), 8 )" );
+  $arr = DBRecord::createRecords(  PROGRAM_TBL, "WHERE endtime < subdate( now(), 8 )" );
   foreach( $arr as $val ) $val->delete();
 	
   // 8日以上先のデータがあれば消す
   $arr = array();
-  $arr = DBRecord::createRecords( TBL_PREFIX . PROGRAM_TBL, "WHERE starttime  > adddate( now(), 8 )" );
+  $arr = DBRecord::createRecords(  PROGRAM_TBL, "WHERE starttime  > adddate( now(), 8 )" );
   foreach( $arr as $val ) $val->delete();
   
   // キーワード自動録画予約
@@ -82,10 +85,10 @@
 		$disc = $ch['id'];
 	 try {
 		// チャンネルデータを探す
-		$num = DBRecord::countRecords( TBL_PREFIX . CHANNEL_TBL , "WHERE channel_disc = '" . $disc ."'" );
+		$num = DBRecord::countRecords( CHANNEL_TBL , "WHERE channel_disc = '" . $disc ."'" );
 		if( $num == 0 ) {
 			// チャンネルデータがないなら新規作成
-			$rec = new DBRecord( TBL_PREFIX . CHANNEL_TBL );
+			$rec = new DBRecord(  CHANNEL_TBL );
 			$rec->type = $type;
 			$rec->channel = $map["$disc"];
 			$rec->channel_disc = $disc;
@@ -93,7 +96,7 @@
 		}
 		else {
 			// 存在した場合も、とりあえずチャンネル名は更新する
-			$rec = new DBRecord(TBL_PREFIX.CHANNEL_TBL, "channel_disc", $disc );
+			$rec = new DBRecord(CHANNEL_TBL, "channel_disc", $disc );
 			$rec->name = $ch->{'display-name'};
 		}
 	 }
@@ -123,33 +126,33 @@
 		try {
 		 // カテゴリを処理する
 		 $category_disc = md5( $cat_ja . $cat_en );
-		 $num = DBRecord::countRecords( TBL_PREFIX . CATEGORY_TBL, "WHERE category_disc = '".$category_disc."'" );
+		 $num = DBRecord::countRecords(CATEGORY_TBL, "WHERE category_disc = '".$category_disc."'" );
 		 $cat_rec = null;
 		 if( $num == 0 ) {
 			// 新規カテゴリの追加
-			$cat_rec = new DBRecord( TBL_PREFIX . CATEGORY_TBL );
+			$cat_rec = new DBRecord( CATEGORY_TBL );
 			$cat_rec->name_jp = $cat_ja;
 			$cat_rec->name_en = $cat_en;
 		 	$cat_rec->category_disc = $category_disc;
 		 }
 		 else
-			$cat_rec = new DBRecord( TBL_PREFIX . CATEGORY_TBL, "category_disc" , $category_disc );
+			$cat_rec = new DBRecord(CATEGORY_TBL, "category_disc" , $category_disc );
 		  //
-		 $channel_rec = new DBRecord( TBL_PREFIX . CHANNEL_TBL, "channel_disc", $channel_disc );
-		 $num = DBRecord::countRecords( TBL_PREFIX . PROGRAM_TBL, "WHERE program_disc = '".$program_disc."'" );
+		 $channel_rec = new DBRecord(CHANNEL_TBL, "channel_disc", $channel_disc );
+		 $num = DBRecord::countRecords(PROGRAM_TBL, "WHERE program_disc = '".$program_disc."'" );
 		 if( $num == 0 ) {
 			// 新規番組
 			// 重複チェック 同時間帯にある番組
 			$options = "WHERE channel_disc = '".$channel_disc."' ".
 				"AND starttime < '". $endtime ."' AND endtime > '".$starttime."'";
-			$battings = DBRecord::countRecords( TBL_PREFIX.PROGRAM_TBL, $options );
+			$battings = DBRecord::countRecords(PROGRAM_TBL, $options );
 			if( $battings > 0 ) {
 				// 重複発生＝おそらく放映時間の変更
-				$records = DBRecord::createRecords( TBL_PREFIX.PROGRAM_TBL, $options );
+				$records = DBRecord::createRecords(PROGRAM_TBL, $options );
 				foreach( $records as $rec ) {
 					// 自動録画予約された番組は放映時間変更と同時にいったん削除する
 					try {
-						$reserve = new DBRecord(TBL_PREFIX.RESERVE_TBL, "program_id", $rec->id );
+						$reserve = new DBRecord(RESERVE_TBL, "program_id", $rec->id );
 						if( $reserve->autorec ) {
 							Reservation::cancel( $reserve->id );
 						}
@@ -162,7 +165,7 @@
 				}
 			}
 			// //
-			$rec = new DBRecord( TBL_PREFIX.PROGRAM_TBL );
+			$rec = new DBRecord( PROGRAM_TBL );
 			$rec->channel_disc = $channel_disc;
 			$rec->channel_id = $channel_rec->id;
 			$rec->type = $type;
@@ -176,7 +179,7 @@
 		 }
 		 else {
 			// 番組内容更新
-			$rec = new DBRecord( TBL_PREFIX . PROGRAM_TBL, "program_disc", $program_disc );
+			$rec = new DBRecord( PROGRAM_TBL, "program_disc", $program_disc );
 			$rec->title = $title;
 		 	$rec->description = $desc;
 			$rec->category_id = $cat_rec->id;

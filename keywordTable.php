@@ -30,7 +30,7 @@ if( isset($_POST["add_keyword"]) ) {
 
 $keywords = array();
 try {
-	$recs = Keyword::createRecords(TBL_PREFIX.KEYWORD_TBL);
+	$recs = Keyword::createRecords(KEYWORD_TBL);
 	foreach( $recs as $rec ) {
 		$arr = array();
 		$arr['id'] = $rec->id;
@@ -38,13 +38,13 @@ try {
 		$arr['type'] = $rec->type == "*" ? "すべて" : $rec->type;
 		
 		if( $rec->channel_id ) {
-			$crec = new DBRecord(TBL_PREFIX.CHANNEL_TBL, "id", $rec->channel_id );
+			$crec = new DBRecord(CHANNEL_TBL, "id", $rec->channel_id );
 			$arr['channel'] = $crec->name;
 		}
 		else $arr['channel'] = 'すべて';
 		
 		if( $rec->category_id ) {
-			$crec = new DBRecord(TBL_PREFIX.CATEGORY_TBL, "id", $rec->category_id );
+			$crec = new DBRecord(CATEGORY_TBL, "id", $rec->category_id );
 			$arr['category'] = $crec->name_jp;
 		}
 		else $arr['category'] = 'すべて';

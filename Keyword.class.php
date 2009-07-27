@@ -3,12 +3,17 @@ include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
 include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Reservation.class.php" );
+include_once( INSTALL_PATH . '/Settings.class.php' );
 
 class Keyword extends DBRecord {
 	
+	protected $settings;
+	
 	public function __construct($property = null, $value = null ) {
+		$this->settings = Settings::factory();
+		
 		try {
-			parent::__construct(TBL_PREFIX.KEYWORD_TBL, $property, $value );
+			parent::__construct(KEYWORD_TBL, $property, $value );
 		}
 		catch( Exception $e ) {
 			throw $e;
@@ -19,7 +24,7 @@ class Keyword extends DBRecord {
 		if( $this->id == 0 ) return false;
 		
 		// ちょっと先を検索する
-		$options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + PADDING_TIME + 120 )."'";
+		$options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + $this->settings->padding_time + 120 )."'";
 		
 		if( $this->keyword != "" ) {
 			if( $this->use_regexp ) {
@@ -46,7 +51,7 @@ class Keyword extends DBRecord {
 		
 		$recs = array();
 		try {
-			$recs = DBRecord::createRecords( TBL_PREFIX.PROGRAM_TBL, $options );
+			$recs = DBRecord::createRecords( PROGRAM_TBL, $options );
 		}
 		catch( Exception $e ) {
 			throw $e;
@@ -98,7 +103,7 @@ class Keyword extends DBRecord {
 		// 一気にキャンセル
 		foreach( $precs as $rec ) {
 			try {
-				$reserve = new DBRecord( TBL_PREFIX.RESERVE_TBL, "program_id", $rec->id );
+				$reserve = new DBRecord( RESERVE_TBL, "program_id", $rec->id );
 				// 自動予約されたもののみ削除
 				if( $reserve->autorec ) {
 					Reservation::cancel( $reserve->id );

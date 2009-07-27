@@ -2,6 +2,10 @@
 include_once('config.php');
 include_once( INSTALL_PATH . '/DBRecord.class.php' );
 include_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
+include_once( INSTALL_PATH . '/Settings.class.php' );
+
+$settings = Settings::factory();
+
 
 $options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + 300 )."'";
 
@@ -12,7 +16,7 @@ $category_id = 0;
 $station = 0;
 
 // mysql_real_escape_stringより先に接続しておく必要がある
-$dbh = @mysql_connect(DB_HOST, DB_USER, DB_PASS );
+$dbh = @mysql_connect($settings->db_host, $settings->db_user, $settings->db_pass );
 
 	// パラメータの処理
 if(isset( $_POST['do_search'] )) {
@@ -54,12 +58,12 @@ if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) 
 	
 try{
 	
-	$precs = DBRecord::createRecords(TBL_PREFIX.PROGRAM_TBL, $options );
+	$precs = DBRecord::createRecords(PROGRAM_TBL, $options );
 	
 	$programs = array();
 	foreach( $precs as $p ) {
-		$ch  = new DBRecord(TBL_PREFIX.CHANNEL_TBL, "id", $p->channel_id );
-		$cat = new DBRecord(TBL_PREFIX.CATEGORY_TBL, "id", $p->category_id );
+		$ch  = new DBRecord(CHANNEL_TBL, "id", $p->channel_id );
+		$cat = new DBRecord(CATEGORY_TBL, "id", $p->category_id );
 		$arr = array();
 		$arr['type'] = $p->type;
 		$arr['station_name'] = $ch->name;
@@ -69,13 +73,13 @@ try{
 		$arr['description'] = $p->description;
 		$arr['id'] = $p->id;
 		$arr['cat'] = $cat->name_en;
-		$arr['rec'] = DBRecord::countRecords(TBL_PREFIX.RESERVE_TBL, "WHERE program_id='".$p->id."'");
+		$arr['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE program_id='".$p->id."'");
 		
 		array_push( $programs, $arr );
 	}
 	
 	$k_category_name = "";
-	$crecs = DBRecord::createRecords(TBL_PREFIX.CATEGORY_TBL );
+	$crecs = DBRecord::createRecords(CATEGORY_TBL );
 	$cats = array();
 	$cats[0]['id'] = 0;
 	$cats[0]['name'] = "すべて";
@@ -109,7 +113,7 @@ try{
 	}
 	
 	$k_station_name = "";
-	$crecs = DBRecord::createRecords(TBL_PREFIX.CHANNEL_TBL );
+	$crecs = DBRecord::createRecords(CHANNEL_TBL);
 	$stations = array();
 	$stations[0]['id'] = 0;
 	$stations[0]['name'] = "すべて";

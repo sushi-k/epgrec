@@ -48,11 +48,11 @@ $last_time = $top_time + 3600 * $program_length;
  if( $type == "BS" ) $channel_map = $BS_CHANNEL_MAP;
  else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
  $st = 0;
- $prec = new DBRecord($settings->tbl_prefix.PROGRAM_TBL);
+ $prec = new DBRecord(PROGRAM_TBL);
  foreach( $channel_map as $channel_disc => $channel ) {
 	$prev_end = $top_time;
  	try {
-		$crec = new DBRecord( $settings->tbl_prefix . CHANNEL_TBL, "channel_disc", $channel_disc );
+		$crec = new DBRecord( CHANNEL_TBL, "channel_disc", $channel_disc );
 		$programs[$st]["station_name"]  = $crec->name;
 		
 		$reca = $prec->fetch_array( "channel_disc", $channel_disc,
@@ -90,7 +90,7 @@ $last_time = $top_time + 3600 * $program_length;
 			}
 			
 			// プログラムを埋める
-			$cat = new DBRecord( $settings->tbl_prefix . CATEGORY_TBL, "id", $prg['category_id'] );
+			$cat = new DBRecord( CATEGORY_TBL, "id", $prg['category_id'] );
 			$programs[$st]['list'][$num]['category_name'] = $cat->name_en;
 			$programs[$st]['list'][$num]['height'] = $height;
 			$programs[$st]['list'][$num]['title'] = $prg['title'];
@@ -100,7 +100,7 @@ $last_time = $top_time + 3600 * $program_length;
 			$programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($prg['endtime']) - toTimestamp($prg['starttime']));
 			$programs[$st]['list'][$num]['channel'] = ($prg['type'] == "GR" ? "地上D" : "BS" ) . ":". $prg['channel'] . "ch";
 			$programs[$st]['list'][$num]['id'] = "" . ($prg['id']);
-			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords( $settings->tbl_prefix.RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg['id']."'" );
+			$programs[$st]['list'][$num]['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$prg['id']."'" );
 			$num++;
 		}
 	}
@@ -135,7 +135,7 @@ $last_time = $top_time + 3600 * $program_length;
  $smarty = new Smarty();
  
  // カテゴリ一覧
- $crec = DBRecord::createRecords( $settings->tbl_prefix . CATEGORY_TBL );
+ $crec = DBRecord::createRecords( CATEGORY_TBL );
  $cats = array();
  $num = 0;
  foreach( $crec as $val ) {

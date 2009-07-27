@@ -3,6 +3,10 @@ include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
 include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Reservation.class.php" );
+include_once( INSTALL_PATH . "/Settings.class.php" );
+
+$settings = Settings::factory();
+
 
 $program_id = 0;
 if( isset( $_POST['program_id'] ) ) $program_id = $_POST['program_id'];
