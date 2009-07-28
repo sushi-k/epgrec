@@ -166,7 +166,7 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 
 <h3>1時間あたりの長さ</h3>
 <div class="setting">
-<div class="caption">番組表の1時間あたりの長さをピクセル数で設定します。標準は120ピクセルです。</div>
+<div class="caption">番組表の1時間あたりの長さをピクセル数で設定します。標準は120ピクセルです。なお、60で割り切れないピクセル数を指定するとFirefoxを除くブラウザでは番組の高さが揃わなくなり見た目が悪くなるかもしれません。これはFirefox以外のブラウザでは実数のピクセルを正しくレンダリングしないためです。</div>
 <input type="text" id="height_per_hour" name="height_per_hour" value="{$settings->height_per_hour}" size="4" class="required digits" min="30" />
 </div>
 
