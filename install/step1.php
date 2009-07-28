@@ -38,12 +38,16 @@ $rw_dirs = array(
 	INSTALL_PATH."/cache",
 );
 
+$gen_thumbnail = INSTALL_PATH."/gen-thumbnail.sh";
+if( defined("GEN_THUMBNAIL") )
+	$gen_thumbnail = GEN_THUMBNAIL;
+
 
 $exec_files = array(
 	DO_RECORD,
 	COMPLETE_CMD,
 	INSTALL_PATH."/getepg.php",
-	GEN_THUMBNAIL,
+	$gen_thumbnail,
 );
 
 echo "<p><b>ディレクトリのパーミッションチェック（777）</b></p>";

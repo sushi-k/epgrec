@@ -237,6 +237,11 @@ class Reservation {
 			$filename .= $RECORD_MODE[$mode]['suffix'];
 			$thumbname = $filename.".jpg";
 			
+			// サムネール
+			$gen_thumbnail = INSTALL_PATH."/gen-thumbnail.sh";
+			if( defined("GEN_THUMBNAIL") ) 
+				$gen_thumbnail = GEN_THUMBNAIL;
+			
 			// ファイル名生成終了
 			
 			// 予約レコードを埋める
@@ -280,7 +285,7 @@ class Reservation {
 				fwrite($pipes[0], DO_RECORD . "\n" );
 				fwrite($pipes[0], COMPLETE_CMD." ".$rrec->id."\n" );
 				if( $settings->use_thumbs == 1 ) {
-					fwrite($pipes[0], GEN_THUMBNAIL."\n" );
+					fwrite($pipes[0], $gen_thumbnail."\n" );
 				}
 				fclose($pipes[0]);
 				// 標準エラーを取る
