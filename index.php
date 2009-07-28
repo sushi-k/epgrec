@@ -67,26 +67,24 @@ $last_time = $top_time + 3600 * $program_length;
 			$start = toTimestamp( $prg['starttime'] );
 			if( $start - $prev_end ) {
 				$height = ($start-$prev_end) * $settings->height_per_hour / 3600;
-				if( $height > 0.5 ) {
-					$height = (int)$height;
-					$programs[$st]['list'][$num]['category_none'] = "none";
-					$programs[$st]['list'][$num]['height'] = $height;
-					$programs[$st]['list'][$num]['title'] = "";
-					$programs[$st]['list'][$num]['starttime'] = "";
-					$programs[$st]['list'][$num]['description'] = "";
-					$num++;
-				}
+				$height = $height;
+				$programs[$st]['list'][$num]['category_none'] = "none";
+				$programs[$st]['list'][$num]['height'] = $height;
+				$programs[$st]['list'][$num]['title'] = "";
+				$programs[$st]['list'][$num]['starttime'] = "";
+				$programs[$st]['list'][$num]['description'] = "";
+				$num++;
 			}
 			$prev_end = toTimestamp( $prg['endtime'] );
 			
-			$height = (int)((toTimestamp($prg['endtime']) - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
+			$height = ((toTimestamp($prg['endtime']) - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
 			// $top_time より早く始まっている番組
 			if( toTimestamp($prg['starttime']) <$top_time ) {
-				$height = (int)((toTimestamp($prg['endtime']) - $top_time ) * $settings->height_per_hour / 3600);
+				$height = ((toTimestamp($prg['endtime']) - $top_time ) * $settings->height_per_hour / 3600);
 			}
 			// $last_time より遅く終わる番組
 			if( toTimestamp($prg['endtime']) > $last_time ) {
-				$height = (int)(($last_time - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
+				$height = (($last_time - toTimestamp($prg['starttime'])) * $settings->height_per_hour / 3600);
 			}
 			
 			// プログラムを埋める
@@ -110,15 +108,13 @@ $last_time = $top_time + 3600 * $program_length;
  	// 空きを埋める
 	if( $last_time - $prev_end ) {
 		$height = ($last_time - $prev_end) * $settings->height_per_hour / 3600;
-		if( $height > 0.5 ) {
-			$height = (int)$height;
-			$programs[$st]['list'][$num]['category_name'] = "none";
-			$programs[$st]['list'][$num]['height'] = $height;
-			$programs[$st]['list'][$num]['title'] = "";
-			$programs[$st]['list'][$num]['starttime'] = "";
-			$programs[$st]['list'][$num]['description'] = "";
-			$num++;
-		}
+		$height = $height;
+		$programs[$st]['list'][$num]['category_name'] = "none";
+		$programs[$st]['list'][$num]['height'] = $height;
+		$programs[$st]['list'][$num]['title'] = "";
+		$programs[$st]['list'][$num]['starttime'] = "";
+		$programs[$st]['list'][$num]['description'] = "";
+		$num++;
  	}
 	$st++;
  }
