@@ -55,6 +55,7 @@ $smarty->assign( "settings", $settings );
 $smarty->assign( "install_path", INSTALL_PATH );
 $smarty->assign( "post_to", "step4.php" );
 $smarty->assign( "sitetitle", "インストールステップ3" );
+$smarty->assign( "message" , "環境設定を行います。これらの設定はデフォルトのままでも制限付きながら動作します。" );
 
 $smarty->display("envSetting.html");
 ?>

@@ -86,7 +86,7 @@ class Reservation {
 			
 			if( $battings >= $tuners ) {
 				// 重複を発見した
-				if( FORCE_CONT_REC ) {
+				if( $settings->force_cont_rec == 1 ) {
 					// 解消可能な重複かどうかを調べる
 					// 前後の予約数
 					$nexts = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
