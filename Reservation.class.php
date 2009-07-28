@@ -235,6 +235,7 @@ class Reservation {
 				$filename = mb_convert_encoding( $filename, FILESYSTEM_ENCODING, "UTF-8" );
 			}
 			$filename .= $RECORD_MODE[$mode]['suffix'];
+			$thumbname = $filename.".jpg";
 			
 			// ファイル名生成終了
 			
@@ -267,6 +268,9 @@ class Reservation {
 				          "TYPE"     => $crec->type,
 			              "TUNER"    => $tuner,
 			              "MODE"     => $mode,
+			              "THUMB"    => INSTALL_PATH.$settings->thumbs."/".$thumbname,
+			              "FORMER"   => "".$settings->former_time,
+			              "FFMPEG"   => "".$settings->ffmpeg,
 			);
 			
 			// ATで予約する
@@ -276,9 +280,7 @@ class Reservation {
 				fwrite($pipes[0], DO_RECORD . "\n" );
 				fwrite($pipes[0], COMPLETE_CMD." ".$rrec->id."\n" );
 				if( $settings->use_thumbs ) {
-					// サムネール生成
-					$ffmpeg_cmd = $settings->ffmpeg." -i \${OUTPUT} -r 1 -s 160x90 -ss ".($settings->former_time + 2)." -vframes 1 -f image2 ".INSTALL_PATH.$settings->thumbs."/".$filename.".jpg\n";
-					fwrite($pipes[0], $ffmpeg_cmd );
+					fwrite($pipes[0], GEN_THUMBNAIL."\n" );
 				}
 				fclose($pipes[0]);
 				// 標準エラーを取る

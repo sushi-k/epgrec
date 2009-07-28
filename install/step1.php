@@ -43,6 +43,7 @@ $exec_files = array(
 	DO_RECORD,
 	COMPLETE_CMD,
 	INSTALL_PATH."/getepg.php",
+	GEN_THUMBNAIL,
 );
 
 echo "<p><b>ディレクトリのパーミッションチェック（777）</b></p>";

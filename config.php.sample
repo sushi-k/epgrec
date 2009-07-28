@@ -64,6 +64,7 @@ define( "USE_KUROBON", false );						// BSチューナーとしてFriio BS/CSを
 define( "PADDING_TIME", 180 );						// 詰め物時間
 define( "DO_RECORD", INSTALL_PATH . "/do-record.sh" );		// レコードスクリプト
 define( "COMPLETE_CMD", INSTALL_PATH . "/recomplete.php" );	// 録画終了コマンド
+define( "GEN_THUMBNAIL", INSTALL_PATH . "/gen-thumbnail.sh" );	// サムネール生成スクリプト
 
 // 全国用BSデジタルチャンネルマップ
 $BS_CHANNEL_MAP = array(
