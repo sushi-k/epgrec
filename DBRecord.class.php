@@ -4,19 +4,20 @@ include_once( 'Settings.class.php' );
 
 class DBRecord {
 	protected $table;
+	protected $settings;
 	
 	protected $dbh;
 	public $id;
 	
     function __construct( $table, $property = null, $value = null ) {
-		$settings = Settings::factory();
+		$this->settings = Settings::factory();
 		
-		$this->table = $settings->tbl_prefix.$table;
+		$this->table = $this->settings->tbl_prefix.$table;
 		
-		$this->dbh = @mysql_connect( $settings->db_host , $settings->db_user, $settings->db_pass );
+		$this->dbh = @mysql_connect( $this->settings->db_host , $this->settings->db_user, $this->settings->db_pass );
 		if( $this->dbh === FALSE ) throw new exception( "construct:データベースに接続できない" );
 		
-		$sqlstr = "use ".$settings->db_name;
+		$sqlstr = "use ".$this->settings->db_name;
 		$res = $this->__query($sqlstr);
 		if( $res === false ) throw new exception("construct: " . $sqlstr );
 		$sqlstr = "set NAMES utf8";
@@ -42,9 +43,7 @@ class DBRecord {
 	}
 	
 	function createTable( $tblstring ) {
-		$settings = Settings::factory();
-		
-		$sqlstr = "use ".$settings->db_name;
+		$sqlstr = "use ".$this->settings->db_name;
 		$res = $this->__query($sqlstr);
 		if( $res === false ) throw new exception("createTable: " . $sqlstr );
 		$sqlstr = "CREATE TABLE IF NOT EXISTS ".$this->table." (" .$tblstring.") DEFAULT CHARACTER SET 'utf8'";

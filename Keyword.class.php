@@ -7,11 +7,7 @@ include_once( INSTALL_PATH . '/Settings.class.php' );
 
 class Keyword extends DBRecord {
 	
-	protected $settings;
-	
 	public function __construct($property = null, $value = null ) {
-		$this->settings = Settings::factory();
-		
 		try {
 			parent::__construct(KEYWORD_TBL, $property, $value );
 		}

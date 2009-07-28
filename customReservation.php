@@ -7,7 +7,6 @@ include_once( INSTALL_PATH . "/Settings.class.php" );
 
 $settings = Settings::factory();
 
-
 $program_id = 0;
 if( isset( $_POST['program_id'] ) ) $program_id = $_POST['program_id'];
 

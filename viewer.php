@@ -9,16 +9,19 @@ header("Pragma: no-cache");
 include_once("config.php");
 include_once(INSTALL_PATH . "/DBRecord.class.php" );
 include_once(INSTALL_PATH . "/reclib.php" );
+include_once(INSTALL_PATH . "/Settings.class.php" );
+
+$settings = Settings::factory();
 
 if( ! isset( $_GET['reserve_id'] )) jdialog("予約番号が指定されていません", "recordedTable.php");
 $reserve_id = $_GET['reserve_id'];
 
 try{
-	$rrec = new DBRecord( TBL_PREFIX.RESERVE_TBL, "id", $reserve_id );
+	$rrec = new DBRecord( RESERVE_TBL, "id", $reserve_id );
 
 	$start_time = toTimestamp($rrec->starttime);
 	$end_time = toTimestamp($rrec->endtime );
-	$duration = $end_time - $start_time + FORMER_TIME;
+	$duration = $end_time - $start_time + $settings->former_time;
 
 	$dh = $duration / 3600;
 	$duration = $duration % 3600;
@@ -34,8 +37,8 @@ try{
 	echo "<ASX version = \"3.0\">";
 	echo "<PARAM NAME = \"Encoding\" VALUE = \"UTF-8\" />";
 	echo "<ENTRY>";
-	echo "<REF HREF=\"".INSTALL_URL."/sendstream.php?reserve_id=".$rrec->id ."\" />";
-	echo "<REF HREF=\"".INSTALL_URL.SPOOL."/".$rrec->path ."\" />";
+	echo "<REF HREF=\"".$settings->install_url."/sendstream.php?reserve_id=".$rrec->id ."\" />";
+	echo "<REF HREF=\"".$settings->install_url.SPOOL."/".$rrec->path ."\" />";
 	echo "<TITLE>".$title."</TITLE>";
 	echo "<ABSTRACT>".$abstract."</ABSTRACT>";
 	echo "<DURATION VALUE=";

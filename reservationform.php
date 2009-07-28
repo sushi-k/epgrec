@@ -8,12 +8,12 @@ if( ! isset( $_GET['program_id'] ) ) exit("Error: 番組IDが指定されてい�
 $program_id = $_GET['program_id'];
 
 try {
-  $prec = new DBRecord( TBL_PREFIX.PROGRAM_TBL, "id", $program_id );
+  $prec = new DBRecord( PROGRAM_TBL, "id", $program_id );
   
   sscanf( $prec->starttime, "%4d-%2d-%2d %2d:%2d:%2d", $syear, $smonth, $sday, $shour, $smin, $ssec );
   sscanf( $prec->endtime, "%4d-%2d-%2d %2d:%2d:%2d", $eyear, $emonth, $eday, $ehour, $emin, $esec );
   
-  $crecs = DBRecord::createRecords( TBL_PREFIX.CATEGORY_TBL );
+  $crecs = DBRecord::createRecords( CATEGORY_TBL );
   $cats = array();
   foreach( $crecs as $crec ) {
 	$cat = array();

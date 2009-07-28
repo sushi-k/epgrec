@@ -97,14 +97,14 @@ try{
 	$types[0]['name'] = "すべて";
 	$types[0]['value'] = "*";
 	$types[0]['selected'] = $type == "*" ? "selected" : "";
-	if( GR_TUNERS ) {
+	if( $settings->gr_tuners ) {
 		$arr = array();
 		$arr['name'] = "GR";
 		$arr['value'] = "GR";
 		$arr['selected'] = $type == "GR" ? "selected" : "";
 		array_push( $types, $arr );
 	}
-	if( BS_TUNERS ) {
+	if( $settings->bs_tuners ) {
 		$arr = array();
 		$arr['name'] = "BS";
 		$arr['value'] = "BS";

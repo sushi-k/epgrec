@@ -88,7 +88,7 @@
 		$num = DBRecord::countRecords( CHANNEL_TBL , "WHERE channel_disc = '" . $disc ."'" );
 		if( $num == 0 ) {
 			// チャンネルデータがないなら新規作成
-			$rec = new DBRecord(  CHANNEL_TBL );
+			$rec = new DBRecord( CHANNEL_TBL );
 			$rec->type = $type;
 			$rec->channel = $map["$disc"];
 			$rec->channel_disc = $disc;

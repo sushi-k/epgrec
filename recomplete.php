@@ -6,7 +6,6 @@ include_once( INSTALL_PATH . "/Settings.class.php" );
 
 $settings = Settings::factory();
 
-
 $reserve_id = $argv[1];
 
 try{

@@ -4,11 +4,11 @@ include_once( INSTALL_PATH . '/DBRecord.class.php' );
 include_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
 
 try{
-	$rvs = DBRecord::createRecords(TBL_PREFIX.RESERVE_TBL, "WHERE complete='0' ORDER BY starttime ASC" );
+	$rvs = DBRecord::createRecords(RESERVE_TBL, "WHERE complete='0' ORDER BY starttime ASC" );
 	
 	$reservations = array();
 	foreach( $rvs as $r ) {
-		$cat = new DBRecord(TBL_PREFIX.CATEGORY_TBL, "id", $r->category_id );
+		$cat = new DBRecord(CATEGORY_TBL, "id", $r->category_id );
 		$arr = array();
 		$arr['id'] = $r->id;
 		$arr['type'] = $r->type;

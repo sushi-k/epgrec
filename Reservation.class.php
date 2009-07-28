@@ -2,15 +2,18 @@
 include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
 include_once( INSTALL_PATH . "/reclib.php" );
+include_once( INSTALL_PATH . "/Settings.class.php" );
+
 
 // 予約クラス
 
 class Reservation {
 	
 	public static function simple( $program_id , $autorec = 0, $mode = 0) {
+		$settings = Settings::factory();
 		$rval = 0;
 		try {
-			$prec = new DBRecord( TBL_PREFIX.PROGRAM_TBL, "id", $program_id );
+			$prec = new DBRecord( PROGRAM_TBL, "id", $program_id );
 			
 			$rval = self::custom(
 				$prec->starttime,
@@ -42,21 +45,22 @@ class Reservation {
 		$mode = 0				// 録画モード
 	) {
 		global $RECORD_MODE;
-		
+		$settings = Settings::factory();
+
 		// 時間を計算
 		$start_time = toTimestamp( $starttime );
-		$end_time = toTimestamp( $endtime ) + EXTRA_TIME;
+		$end_time = toTimestamp( $endtime ) + $settings->extra_time;
 		
 		if( $start_time < (time() + PADDING_TIME + 10) ) {	// 現在時刻より3分先より小さい＝すでに開始されている番組
 			$start_time = time() + PADDING_TIME + 10;		// 録画開始時間を3分10秒先に設定する
 		}
 		$at_start = $start_time - PADDING_TIME;
-		$sleep_time = PADDING_TIME - FORMER_TIME;
-		$rec_start = $start_time - FORMER_TIME;
+		$sleep_time = PADDING_TIME - $settings->former_time;
+		$rec_start = $start_time - $settings->former_time;
 		
 		// durationを計算しておく
 		$duration = $end_time - $rec_start;
-		if( $duration < (FORMER_TIME + 60) ) {	// 60秒以下の番組は弾く
+		if( $duration < ($settings->former_time + 60) ) {	// 60秒以下の番組は弾く
 			throw new Exception( "終わりつつある/終わっている番組です" );
 		}
 		
@@ -64,20 +68,20 @@ class Reservation {
 		try {
 			// 同一番組予約チェック
 			if( $program_id ) {
-				$num = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE program_id = '".$program_id."'" );
+				$num = DBRecord::countRecords( RESERVE_TBL, "WHERE program_id = '".$program_id."'" );
 				if( $num ) {
 					throw new Exception("同一の番組が録画予約されています");
 				}
 			}
 			
-			$crec = new DBRecord( TBL_PREFIX.CHANNEL_TBL, "id", $channel_id );
+			$crec = new DBRecord( CHANNEL_TBL, "id", $channel_id );
 			
 			// 既存予約数 = TUNER番号
-			$tuners = ($crec->type == "GR") ? GR_TUNERS : BS_TUNERS;
-			$battings = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' ".
-																	  "AND type = '".$crec->type."' ".
-																	  "AND starttime < '".toDatetime($end_time) ."' ".
-																	  "AND endtime > '".toDatetime($rec_start)."'"
+			$tuners = ($crec->type == "GR") ? $settings->gr_tuners : $settings->bs_tuners;
+			$battings = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
+															  "AND type = '".$crec->type."' ".
+															  "AND starttime < '".toDatetime($end_time) ."' ".
+															  "AND endtime > '".toDatetime($rec_start)."'"
 			);
 			
 			if( $battings >= $tuners ) {
@@ -85,13 +89,13 @@ class Reservation {
 				if( FORCE_CONT_REC ) {
 					// 解消可能な重複かどうかを調べる
 					// 前後の予約数
-					$nexts = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' ".
-																		"AND type = '".$crec->type."' ".
-																		"AND starttime = '".toDatetime($end_time - FORMER_TIME)."'");
+					$nexts = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
+																	"AND type = '".$crec->type."' ".
+																	"AND starttime = '".toDatetime($end_time - $settings->former_time)."'");
 					
-					$prevs = DBRecord::countRecords( TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' ".
-																		"AND type = '".$crec->type."' ".
-																		"AND endtime = '".$starttime."'"  );
+					$prevs = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
+																"AND type = '".$crec->type."' ".
+																"AND endtime = '".$starttime."'"  );
 					
 					// 前後を引いてもチューナー数と同数以上なら重複の解消は無理
 					if( ($battings - $nexts - $prevs) >= $tuners )
@@ -100,15 +104,15 @@ class Reservation {
 					// 直後の番組はあるか?
 					if( $nexts ) {
 						// この番組の終わりをちょっとだけ早める
-						$end_time = $end_time - FORMER_TIME - REC_SWITCH_TIME;
+						$end_time = $end_time - $settings->former_time - $settings->rec_switch_time;
 						$duration = $end_time - $rec_start;		// durationを計算しなおす
 					}
 					$battings -= $nexts;
 					
 					// 直前の録画予約を見付ける
-					$trecs = DBRecord::createRecords(TBL_PREFIX.RESERVE_TBL, "WHERE complete = '0' ".
-																			 "AND type = '".$crec->type."' ".
-																			 "AND endtime = '".$starttime."'" );
+					$trecs = DBRecord::createRecords(RESERVE_TBL, "WHERE complete = '0' ".
+																		 "AND type = '".$crec->type."' ".
+																		 "AND endtime = '".$starttime."'" );
 					// 直前の番組をずらす
 					for( $i = 0; $i < count($trecs) ; $i++ ) {
 						if( $battings < $tuners ) break;	// 解消終了のハズ?
@@ -126,11 +130,11 @@ class Reservation {
 						
 						$prev_start_time = toTimestamp($prev_starttime);
 						// 始まっていない予約？
-						if( $prev_start_time > (time() + PADDING_TIME + FORMER_TIME) ) {
+						if( $prev_start_time > (time() + PADDING_TIME + $settings->former_time) ) {
 							// 開始時刻を元に戻す
-							$prev_starttime = toDatetime( $prev_start_time + FORMER_TIME );
+							$prev_starttime = toDatetime( $prev_start_time + $settings->former_time );
 							// 終わりをちょっとだけずらす
-							$prev_endtime   = toDatetime( toTimestamp($prev_endtime) - FORMER_TIME - REC_SWITCH_TIME );
+							$prev_endtime   = toDatetime( toTimestamp($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
 							
 							// tryのネスト
 							try {
@@ -168,7 +172,7 @@ class Reservation {
 			$tuner = $battings;
 			
 			// 改めてdurationをチェックしなおす
-			if( $duration < (FORMER_TIME + 60) ) {	// 60秒以下の番組は弾く
+			if( $duration < ($settings->former_time + 60) ) {	// 60秒以下の番組は弾く
 				throw new Exception( "終わりつつある/終わっている番組です" );
 			}
 			
@@ -192,10 +196,8 @@ class Reservation {
 */
 
 			$day_of_week = array( "日","月","火","水","木","金","土" );
-			$filename = "%TYPE%%CH%_%ST%_%ET%";
-			if( defined( "FILENAME_FORMAT" ) ) {
-				$filename = FILENAME_FORMAT;
-			}
+			$filename = $settings->filename_format;
+			
 			// あると面倒くさそうな文字を全部_に
 			$fn_title = mb_ereg_replace("[ \./\*:<>\?\\|()\'\"&]","_", trim($title) );
 			
@@ -237,7 +239,7 @@ class Reservation {
 			// ファイル名生成終了
 			
 			// 予約レコードを埋める
-			$rrec = new DBRecord( TBL_PREFIX.RESERVE_TBL );
+			$rrec = new DBRecord( RESERVE_TBL );
 			$rrec->channel_disc = $crec->channel_disc;
 			$rrec->channel_id = $crec->id;
 			$rrec->program_id = $program_id;
@@ -254,28 +256,28 @@ class Reservation {
 			$rrec->reserve_disc = md5( $crec->channel_disc . toDatetime( $start_time ). toDatetime( $end_time ) );
 			
 			// 予約実行
-			$cmdline = AT." ".date("H:i m/d/Y", $at_start);
+			$cmdline = $settings->at." ".date("H:i m/d/Y", $at_start);
 			$descriptor = array( 0 => array( "pipe", "r" ),
 			                     1 => array( "pipe", "w" ),
 			                     2 => array( "pipe", "w" ),
 			);
 			$env = array( "CHANNEL"  => $crec->channel,
 				          "DURATION" => $duration,
-				          "OUTPUT"   => INSTALL_PATH.SPOOL."/".$filename,
+				          "OUTPUT"   => INSTALL_PATH.$settings->spool."/".$filename,
 				          "TYPE"     => $crec->type,
 			              "TUNER"    => $tuner,
 			              "MODE"     => $mode,
 			);
 			
 			// ATで予約する
-			$process = proc_open( $cmdline , $descriptor, $pipes, SPOOL, $env );
+			$process = proc_open( $cmdline , $descriptor, $pipes, INSTALL_PATH.$settings->spool, $env );
 			if( is_resource( $process ) ) {
-				fwrite($pipes[0], SLEEP." ".$sleep_time."\n" );
+				fwrite($pipes[0], $settings->sleep." ".$sleep_time."\n" );
 				fwrite($pipes[0], DO_RECORD . "\n" );
 				fwrite($pipes[0], COMPLETE_CMD." ".$rrec->id."\n" );
-				if( USE_THUMBS ) {
+				if( $settings->use_thumbs ) {
 					// サムネール生成
-					$ffmpeg_cmd = FFMPEG." -i \${OUTPUT} -r 1 -s 160x90 -ss ".(FORMER_TIME+2)." -vframes 1 -f image2 ".INSTALL_PATH.THUMBS."/".$filename.".jpg\n";
+					$ffmpeg_cmd = $settings->ffmpeg." -i \${OUTPUT} -r 1 -s 160x90 -ss ".($settings->former_time + 2)." -vframes 1 -f image2 ".INSTALL_PATH.$settings->thumbs."/".$filename.".jpg\n";
 					fwrite($pipes[0], $ffmpeg_cmd );
 				}
 				fclose($pipes[0]);
@@ -321,23 +323,24 @@ class Reservation {
 	
 	// 取り消し
 	public static function cancel( $reserve_id = 0, $program_id = 0 ) {
+		$settings = Settings::factory();
 		$rec = null;
 		
 		try {
 			if( $reserve_id ) {
-				$rec = new DBRecord( TBL_PREFIX.RESERVE_TBL, "id" , $reserve_id );
+				$rec = new DBRecord( RESERVE_TBL, "id" , $reserve_id );
 			}
 			else if( $program_id ) {
-				$rec = new DBRecord( TBL_PREFIX.RESERVE_TBL, "program_id" , $program_id );
+				$rec = new DBRecord( RESERVE_TBL, "program_id" , $program_id );
 			}
 			if( $rec == null ) {
 				throw new Exception("IDの指定が無効です");
 			}
 			if( ! $rec->complete ) {
 				// 未実行の予約である
-				if( toTimestamp($rec->starttime) < (time() + PADDING_TIME + FORMER_TIME) )
+				if( toTimestamp($rec->starttime) < (time() + PADDING_TIME + $settings->former_time) )
 					throw new Exception("過去の録画予約です");
-				exec( ATRM . " " . $rec->job );
+				exec( $settings->atrm . " " . $rec->job );
 			}
 			$rec->delete();
 		}

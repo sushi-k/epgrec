@@ -2,6 +2,10 @@
 include_once('config.php');
 include_once( INSTALL_PATH . '/DBRecord.class.php' );
 include_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
+include_once( INSTALL_PATH . '/Settings.class.php' );
+
+$settings = Settings::factory();
+
 
 $order = "";
 $search = "";
@@ -9,7 +13,7 @@ $category_id = 0;
 $station = 0;
 
 // mysql_real_escape_stringより先に接続しておく必要がある
-$dbh = @mysql_connect( DB_HOST, DB_USER, DB_PASS );
+$dbh = @mysql_connect( $settings->db_host, $settings->db_user, $settings->db_pass );
 
 #$options = "WHERE complete='1'";
 $options = "WHERE starttime < '". date("Y-m-d H:i:s")."'";	// ながら再生は無理っぽい？
@@ -39,27 +43,27 @@ if(isset( $_POST['do_search'] )) {
 $options .= " ORDER BY starttime DESC";
 
 try{
-	$rvs = DBRecord::createRecords(TBL_PREFIX.RESERVE_TBL, $options );
+	$rvs = DBRecord::createRecords(RESERVE_TBL, $options );
 	$records = array();
 	foreach( $rvs as $r ) {
-		$cat = new DBRecord(TBL_PREFIX.CATEGORY_TBL, "id", $r->category_id );
-		$ch  = new DBRecord(TBL_PREFIX.CHANNEL_TBL,  "id", $r->channel_id );
+		$cat = new DBRecord(CATEGORY_TBL, "id", $r->category_id );
+		$ch  = new DBRecord(CHANNEL_TBL,  "id", $r->channel_id );
 		$arr = array();
 		$arr['id'] = $r->id;
 		$arr['station_name'] = $ch->name;
 		$arr['starttime'] = $r->starttime;
 		$arr['endtime'] = $r->endtime;
-		$arr['asf'] = "".INSTALL_URL."/viewer.php?reserve_id=".$r->id;
+		$arr['asf'] = "".$settings->install_url."/viewer.php?reserve_id=".$r->id;
 		$arr['title'] = htmlspecialchars($r->title,ENT_QUOTES);
 		$arr['description'] = htmlspecialchars($r->description,ENT_QUOTES);
-		$arr['thumb'] = "<img src=\"".INSTALL_URL.THUMBS."/".$r->path.".jpg\" />";
+		$arr['thumb'] = "<img src=\"".$settings->install_url.$settings->thumbs."/".$r->path.".jpg\" />";
 		$arr['cat'] = $cat->name_en;
 		$arr['mode'] = $RECORD_MODE[$r->mode]['name'];
 		
 		array_push( $records, $arr );
 	}
 	
-	$crecs = DBRecord::createRecords(TBL_PREFIX.CATEGORY_TBL );
+	$crecs = DBRecord::createRecords(CATEGORY_TBL );
 	$cats = array();
 	$cats[0]['id'] = 0;
 	$cats[0]['name'] = "すべて";
@@ -72,7 +76,7 @@ try{
 		array_push( $cats, $arr );
 	}
 	
-	$crecs = DBRecord::createRecords(TBL_PREFIX.CHANNEL_TBL );
+	$crecs = DBRecord::createRecords(CHANNEL_TBL );
 	$stations = array();
 	$stations[0]['id'] = 0;
 	$stations[0]['name'] = "すべて";
@@ -92,7 +96,7 @@ try{
 	$smarty->assign( "search", $search );
 	$smarty->assign( "stations", $stations );
 	$smarty->assign( "cats", $cats );
-	$smarty->assign( "use_thumbs", USE_THUMBS );
+	$smarty->assign( "use_thumbs", $settings->use_thumbs );
 	
 	$smarty->display("recordedTable.html");
 	
