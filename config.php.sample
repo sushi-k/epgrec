@@ -54,7 +54,7 @@ $RECORD_MODE = array(
 	*/
 );
 
-
+// USE_KUROBON以外の定数は設定不要になりました
 
 define( "INSTALL_PATH", dirname(__FILE__) );		// インストールパス
 define( "USE_KUROBON", false );						// BSチューナーとしてFriio BS/CSを使うならtrue
