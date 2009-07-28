@@ -18,7 +18,7 @@
 	if( $num == 0 ) {
 	 	$cmdline = "CHANNEL=211 DURATION=180 TYPE=BS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
   		exec( $cmdline );
-  		$cmdline = EPGDUMP." /BS ".$settings->temp_data." ".$settings->temp_xml;
+  		$cmdline = $settings->epgdump." /BS ".$settings->temp_data." ".$settings->temp_xml;
   		exec( $cmdline );
   		storeProgram( "BS", $settings->temp_xml );
   		if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
@@ -34,7 +34,7 @@
 		if( $num == 0 ) {
 			$cmdline = "CHANNEL=".$value." DURATION=60 TYPE=GR TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
 			exec( $cmdline );
-			$cmdline = EPGDUMP." ".$key." ".$settings->temp_data." ".$settings->temp_xml;
+			$cmdline = $settings->epgdump." ".$key." ".$settings->temp_data." ".$settings->temp_xml;
 			exec( $cmdline );
 			storeProgram( "GR", $settings->temp_xml );
  			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
