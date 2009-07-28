@@ -65,7 +65,7 @@ $last_time = $top_time + 3600 * $program_length;
 		foreach( $reca as $prg ) {
 			// 前プログラムとの空きを調べる
 			$start = toTimestamp( $prg['starttime'] );
-			if( $start - $prev_end ) {
+			if( ($start - $prev_end) > 0 ) {
 				$height = ($start-$prev_end) * $settings->height_per_hour / 3600;
 				$height = $height;
 				$programs[$st]['list'][$num]['category_none'] = "none";
@@ -106,7 +106,7 @@ $last_time = $top_time + 3600 * $program_length;
 		exit( $e->getMessage() );
  	}
  	// 空きを埋める
-	if( $last_time - $prev_end ) {
+	if( ($last_time - $prev_end) > 0 ) {
 		$height = ($last_time - $prev_end) * $settings->height_per_hour / 3600;
 		$height = $height;
 		$programs[$st]['list'][$num]['category_name'] = "none";
