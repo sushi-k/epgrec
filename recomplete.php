@@ -14,7 +14,7 @@ try{
 	if( file_exists( INSTALL_PATH .$settings->spool . "/". $rrec->path ) ) {
 		// 予約完了
 		$rrec->complete = '1';
-		if( $settings->mediatomb_update ) {
+		if( $settings->mediatomb_update == 1 ) {
 			// ちょっと待った方が確実っぽい
 			@exec("sync");
 			sleep(15);

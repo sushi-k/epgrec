@@ -12,7 +12,7 @@ if( !isset( $_POST['reserve_id'] ) ) {
 $reserve_id = $_POST['reserve_id'];
 
 $dbh = false;
-if( $settings->mediatomb_update ) {
+if( $settings->mediatomb_update == 1 ) {
 	$dbh = @mysql_connect( $settings->db_host, $settings->db_user, $settings->db_pass );
 	if( $dbh !== false ) {
 		$sqlstr = "use ".$settings->db_name;
