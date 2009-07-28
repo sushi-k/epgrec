@@ -170,7 +170,7 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
   <th>録画日時</th>
   <th>ch</th>
   <th>モード</th>
-  {if $use_thumbs}<th>サムネール</th>{/if}
+  {if $use_thumbs == 1}<th>サムネール</th>{/if}
   <th>タイトル</th>
   <th>内容</th>
   <th>変更</th>
@@ -182,7 +182,7 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
   <td>{$rec.starttime}</td>
   <td>{$rec.station_name}</td>
   <td>{$rec.mode}</td>
-  {if $use_thumbs}<td><a href="{$rec.asf}">{$rec.thumb}</a></td>{/if}
+  {if $use_thumbs == 1}<td><a href="{$rec.asf}">{$rec.thumb}</a></td>{/if}
   <td><a href="{$rec.asf}" id="tid_{$rec.id}">{$rec.title}</a></td>
   <td><a href="{$rec.asf}" id="did_{$rec.id}">{$rec.description}</a></td>
   <td><input type="button" value="変更" onClick="javascript:PRG.editdialog('{$rec.id}')" /></td>
