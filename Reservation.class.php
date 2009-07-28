@@ -279,7 +279,7 @@ class Reservation {
 				fwrite($pipes[0], $settings->sleep." ".$sleep_time."\n" );
 				fwrite($pipes[0], DO_RECORD . "\n" );
 				fwrite($pipes[0], COMPLETE_CMD." ".$rrec->id."\n" );
-				if( $settings->use_thumbs ) {
+				if( $settings->use_thumbs == 1 ) {
 					fwrite($pipes[0], GEN_THUMBNAIL."\n" );
 				}
 				fclose($pipes[0]);
