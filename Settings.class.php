@@ -29,7 +29,7 @@ class Settings extends SimpleXMLElement {
 			if(defined("BS_TUNERS")) $xml->bs_tuners = BS_TUNERS;
 			else $xml->bs_tuners = 0;
 			
-			if(defined("GR_TUNERS")) $xml->gr_tuenrs = GR_TUNERS;
+			if(defined("GR_TUNERS")) $xml->gr_tuners = GR_TUNERS;
 			else $xml->gr_tuners = 1;
 			
 			if(defined("USE_KUROBON")) $xml->use_kurobon = USE_KUROBON ? 1 : 0;
