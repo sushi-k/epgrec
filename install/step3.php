@@ -26,19 +26,19 @@ if( $res == false ) {
 // DBテーブルの作成
 
 try {
-    $rec = new DBRecord( $settings->tbl_prefix . RESERVE_TBL );
+    $rec = new DBRecord( RESERVE_TBL );
     $rec->createTable( RESERVE_STRUCT );
 
-    $rec = new DBRecord( $settings->tbl_prefix . PROGRAM_TBL );
+    $rec = new DBRecord( PROGRAM_TBL );
     $rec->createTable( PROGRAM_STRUCT );
 
-    $rec = new DBRecord( $settings->tbl_prefix . CHANNEL_TBL );
+    $rec = new DBRecord( CHANNEL_TBL );
     $rec->createTable( CHANNEL_STRUCT );
 
-    $rec = new DBRecord( $settings->tbl_prefix . CATEGORY_TBL );
+    $rec = new DBRecord( CATEGORY_TBL );
     $rec->createTable( CATEGORY_STRUCT );
     
-    $rec = new DBRecord( $settings->tbl_prefix . KEYWORD_TBL );
+    $rec = new DBRecord( KEYWORD_TBL );
     $rec->createTable( KEYWORD_STRUCT );
 }
 catch( Exception $e ) {
