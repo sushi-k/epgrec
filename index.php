@@ -156,7 +156,7 @@ $last_time = $top_time + 3600 * $program_length;
 	$types[$i]['name'] = "BS";
 	$i++;
  }
- if( $settings->gr_tuers ) {
+ if( $settings->gr_tuners ) {
 	$types[$i]['selected'] = $type == "GR" ? 'class="selected"' : "";
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=GR&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "地上デジタル";
