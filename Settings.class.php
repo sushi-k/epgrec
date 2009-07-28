@@ -32,7 +32,7 @@ class Settings extends SimpleXMLElement {
 			if(defined("GR_TUNERS")) $xml->gr_tuenrs = GR_TUNERS;
 			else $xml->gr_tuners = 1;
 			
-			if(defined("USE_KUROBON")) $xml->use_kurobon = USE_KUROBON;
+			if(defined("USE_KUROBON")) $xml->use_kurobon = USE_KUROBON ? 1 : 0;
 			else $xml->use_kurobon = 0;
 			
 			if(defined("FORMER_TIME")) $xml->former_time = FORMER_TIME;
@@ -41,16 +41,16 @@ class Settings extends SimpleXMLElement {
 			if(defined("EXTRA_TIME")) $xml->extra_time = EXTRA_TIME;
 			else $xml->extra_time = 0;
 			
-			if(defined("FORCE_CONT_REC")) $xml->force_cont_rec = FORCE_CONT_REC;
+			if(defined("FORCE_CONT_REC")) $xml->force_cont_rec = FORCE_CONT_REC ? 1 : 0;
 			else $xml->force_cont_rec = 0;
 			
 			if(defined("REC_SWITCH_TIME")) $xml->rec_switch_time = REC_SWITCH_TIME;
 			else $xml->rec_switch_time = 5;
 			
-			if(defined("USE_THUMBS")) $xml->use_thumbs = USE_THUMBS;
+			if(defined("USE_THUMBS")) $xml->use_thumbs = USE_THUMBS ? 1 : 0;
 			else $xml->use_thumbs = 0;
 			
-			if(defined("MEDIATOMB_UPDATE")) $xml->mediatomb_update = MEDIATOMB_UPDATE;
+			if(defined("MEDIATOMB_UPDATE")) $xml->mediatomb_update = MEDIATOMB_UPDATE ? 1 : 0;
 			else $xml->mediatomb_update = 0;
 			
 			if(defined("FILENAME_FORMAT")) $xml->filename_format = FILENAME_FORMAT;
