@@ -198,6 +198,7 @@ $last_time = $top_time + 3600 * $program_length;
  $smarty->assign( "ch_set_width", $settings->ch_set_width );
  $smarty->assign( "chs_width", $chs_width );
  $smarty->assign( "height_per_hour", $settings->height_per_hour );
+ $smarty->assign( "height_per_min", $settings->height_per_hour / 60 );
 
 // date("Y-m-d H:i:s", $timestamp);
  

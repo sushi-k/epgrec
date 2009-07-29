@@ -539,7 +539,7 @@ var INISet = {
 	prgRecordURL : 'simpleReservation.php',		// 簡易予約
 	prgRecordPlusURL : 'recordp.php',		// 詳細予約
 	prgCancelURL : 'cancelReservation.php',		// 予約キャンセル
-	dotMin : 2,
+	dotMin : {/literal}{$height_per_min}{literal},
 	tableStartTime : {/literal}'{$top_time}',
 	tableEndTime : '{$last_time}'{literal}
 }
