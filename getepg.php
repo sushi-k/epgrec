@@ -12,7 +12,7 @@
   if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
 
   // BSを処理する
-  if( $settings->bs_tuners ) {
+  if( $settings->bs_tuners != 0 ) {
 	// 録画重複チェック
 	$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND type = 'BS' AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
 	if( $num == 0 ) {
@@ -27,7 +27,7 @@
   }
   
   // 地上波を処理する
-  if( $settings->gr_tuners ) {
+  if( $settings->gr_tuners != 0 ) {
 	foreach( $GR_CHANNEL_MAP as $key=>$value ){
 		// 録画重複チェック
 		$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND type = 'GR' AND endtime > now() AND starttime < addtime( now(), '00:01:10')" );

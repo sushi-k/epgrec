@@ -146,13 +146,13 @@ $last_time = $top_time + 3600 * $program_length;
  // タイプ選択
  $types = array();
  $i = 0;
- if( $settings->bs_tuners ) {
+ if( $settings->bs_tuners != 0 ) {
 	$types[$i]['selected'] = $type == "BS" ? 'class="selected"' : "";
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=BS&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "BS";
 	$i++;
  }
- if( $settings->gr_tuners ) {
+ if( $settings->gr_tuners != 0 ) {
 	$types[$i]['selected'] = $type == "GR" ? 'class="selected"' : "";
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=GR&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "地上デジタル";
