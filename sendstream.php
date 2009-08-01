@@ -38,12 +38,10 @@ try{
 		do {
 			$start = microtime(true);
 			if( feof( $fp ) ) break;
-			
 			echo fread( $fp, 6292 );
-			
-			usleep( 2000 - (int)((microtime(true) - $start) * 1000)  );
+			@usleep( 2000 - (int)((microtime(true) - $start) * 1000 * 1000));
 		}
-		while( ! connection_aborted() );
+		while( connection_aborted() == 0 );
 	}
 	fclose($fp);
 }
