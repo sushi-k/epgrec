@@ -37,7 +37,7 @@ try{
 	echo "<ASX version = \"3.0\">";
 	echo "<PARAM NAME = \"Encoding\" VALUE = \"UTF-8\" />";
 	echo "<ENTRY>";
-	echo "<REF HREF=\"".$settings->install_url."/sendstream.php?reserve_id=".$rrec->id ."\" />";
+	if( ! $rrec->complete ) echo "<REF HREF=\"".$settings->install_url."/sendstream.php?reserve_id=".$rrec->id ."\" />";
 	echo "<REF HREF=\"".$settings->install_url.$settings->spool."/".$rrec->path ."\" />";
 	echo "<TITLE>".$title."</TITLE>";
 	echo "<ABSTRACT>".$abstract."</ABSTRACT>";

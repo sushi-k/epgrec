@@ -35,15 +35,15 @@ try{
 	
 	$fp = @fopen( INSTALL_PATH.$settings->spool."/".$rrec->path, "r" );
 	if( $fp !== false ) {
-		ob_start(null,4096);
-		$status = array();
 		do {
-			echo fread( $fp, 4096 );
+			$start = microtime(true);
 			if( feof( $fp ) ) break;
 			
-			$status = ob_get_status();
+			echo fread( $fp, 6292 );
+			
+			usleep( 2000 - (int)((microtime(true) - $start) * 1000)  );
 		}
-		while( $status['status'] != PHP_OUTPUT_HANDLER_END );
+		while( ! connection_aborted() );
 	}
 	fclose($fp);
 }
