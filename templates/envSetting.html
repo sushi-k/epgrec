@@ -101,7 +101,7 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 
 <h3>録画コマンドの切り替え時間</h3>
 <div class="setting">
-<div class="caption">連続した番組を予約するとき、録画が終了して次の録画を開始するまでの余裕時間（秒）を設定します。0以上の秒数を設定してください。設定する秒数が短いほど録画時間を短縮する時間が短くなりますが、この時間を短くしすぎると連続した番組の予約に失敗する恐れがあります。失敗するかどうかは使用している録画コマンドやチューナーに依存します。</div>
+<div class="caption">連続した番組を予約するとき、録画が終了して次の録画を開始するまでの余裕時間（秒）を設定します。1以上の秒数を設定してください。設定する秒数が短いほど録画時間を短縮する時間が短くなりますが、この時間を短くしすぎると連続した番組の予約に失敗する恐れがあります。失敗するかどうかは使用している録画コマンドやチューナーに依存します。</div>
 <input type="text" name="rec_switch_time" id="id_rec_switch_time" value="{$settings->rec_switch_time}" size="4" class="required digits" min="1" />
 </div>
 
@@ -164,9 +164,9 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 </div>
 
 
-<h3>1時間あたりの長さ</h3>
+<h3>1時間あたりの高さ</h3>
 <div class="setting">
-<div class="caption">番組表の1時間あたりの長さをピクセル数で設定します。標準は120ピクセルです。なお、60で割り切れないピクセル数を指定するとFirefoxを除くブラウザでは番組の高さが揃わなくなり見た目が悪くなるかもしれません。これはFirefox以外のブラウザでは実数のピクセルを正しくレンダリングしないためです。</div>
+<div class="caption">番組表の1時間あたりの高さをピクセル数で設定します。標準は120ピクセルです。なお、60で割り切れないピクセル数を指定するとFirefoxを除くブラウザでは番組の高さが揃わなくなり見た目が悪くなるかもしれません。これはFirefox以外のブラウザでは実数のピクセルを正しくレンダリングしないためです。</div>
 <input type="text" id="height_per_hour" name="height_per_hour" value="{$settings->height_per_hour}" size="4" class="required digits" min="30" />
 </div>
 

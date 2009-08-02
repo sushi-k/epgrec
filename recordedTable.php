@@ -15,8 +15,12 @@ $station = 0;
 // mysql_real_escape_stringより先に接続しておく必要がある
 $dbh = @mysql_connect( $settings->db_host, $settings->db_user, $settings->db_pass );
 
-#$options = "WHERE complete='1'";
+// $options = "WHERE complete='1'";
 $options = "WHERE starttime < '". date("Y-m-d H:i:s")."'";	// ながら再生は無理っぽい？
+
+if(isset( $_GET['key']) ) {
+	$options .= " AND autorec ='".mysql_real_escape_string(trim($_GET['key']))."'";
+}
 
 if(isset( $_POST['do_search'] )) {
 	if( isset($_POST['search'])){

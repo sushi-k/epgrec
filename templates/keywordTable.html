@@ -92,7 +92,7 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
 {foreach from=$keywords item=keyword}
  <tr id="keyid_{$keyword.id}">
   <td>{$keyword.id}</td>
-  <td>{$keyword.keyword|escape}</td>
+  <td><a href="recordedTable.php?key={$keyword.id}">{$keyword.keyword|escape}</a></td>
   <td>{if $keyword.use_regexp}使う{else}使わない{/if}</td>
   <td>{$keyword.type}</td>
   <td>{$keyword.channel}</td>
