@@ -111,8 +111,8 @@
 	foreach( $xml->programme as $program ) {
 		$channel_disc = $program['channel']; 
 		$channel = $map["$channel_disc"];
-		$starttime = ereg_replace(" \+0900", '', $program['start'] );
-		$endtime = ereg_replace( " \+0900", '', $program['stop'] );
+		$starttime = preg_replace(" \+0900", '', $program['start'] );
+		$endtime = preg_replace( " \+0900", '', $program['stop'] );
 		$title = $program->title;
 		$desc = $program->desc;
 		$cat_ja = "";
