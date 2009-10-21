@@ -101,6 +101,91 @@ if( USE_KUROBON ) {
 	);
 }
 
+// 全国用CSデジタルチャンネルマップ
+$CS_CHANNEL_MAP = array(
+	"1002.ontvjapan.com"		=>	"CS2", // 237,	//	"スターｃｈプラス"
+	"1086.ontvjapan.com"		=>	"CS2", // 239,	// "日本映画専門ｃｈＨＤ"
+	"306ch.epgdata.ontvjapan"	=>	"CS2", // 306,	// "フジテレビＣＳＨＤ"
+
+	"100ch.epgdata.ontvjapan"	=>	"CS4", // 100,	// "ｅ２プロモ"
+	"1025.ontvjapan.com"		=>	"CS4", // 256,	// "Ｊスポーツ　ＥＳＰＮ"
+	"1016.ontvjapan.com"		=>	"CS4", // 312,	// "ＦＯＸ"
+	"1018.ontvjapan.com"		=>	"CS4", // 322,	// "スペースシャワーＴＶ"
+	"1046.ontvjapan.com"		=>	"CS4", // 331,	// "カートゥーン　ネット"
+	"194ch.epgdata.ontvjapan"	=>	"CS4", // 194,	// "インターローカルＴＶ"
+	"1213.ontvjapan.com"		=>	"CS4", // 334,	// "トゥーン・ディズニー"
+
+	"1010.ontvjapan.com"		=>	"CS6", // 221,	// "東映チャンネル"
+	"1005.ontvjapan.com"		=>	"CS6", // 222,	// "衛星劇場"
+	"1008.ontvjapan.com"		=>	"CS6", // 223,	// "チャンネルＮＥＣＯ"
+	"1009.ontvjapan.com"		=>	"CS6", // 224,	// "洋画★シネフィル"
+	"1133.ontvjapan.com"		=>	"CS6", // 292,	// "時代劇専門チャンネル"
+	"1003.ontvjapan.com"		=>	"CS6", // 238,	// "スター・クラシック"
+	"1006.ontvjapan.com"		=>	"CS6", // 310,	// "スーパードラマ"
+	"1014.ontvjapan.com"		=>	"CS6", // 311,	// "ＡＸＮ"
+	"1204.ontvjapan.com"		=>	"CS6", // 343,	// "ナショジオチャンネル"
+
+	"1059.ontvjapan.com"		=>	"CS8", // 55,	//  "ショップチャンネル"
+
+	"1217.ontvjapan.com"		=>	"CS10", // 228,	// "ザ・シネマ"
+	"800ch.epgdata.ontvjapan"	=>	"CS10", // 800,	// "スカチャンＨＤ８００"
+	"801ch.epgdata.ontvjapan"	=>	"CS10", // 801,	// "スカチャン８０１"
+	"802ch.epgdata.ontvjapan"	=>	"CS10", // 802,	// "スカチャン８０２"
+
+	"1028.ontvjapan.com"		=>	"CS12", // 260,	// "ゴルフチャンネル"
+	"1092.ontvjapan.com"		=>	"CS12", // 303,	// "テレ朝チャンネル"
+	"1019.ontvjapan.com"		=>	"CS12", // 323,	// "ＭＴＶ"
+	"1024.ontvjapan.com"		=>	"CS12", // 324,	// "ミュージック・エア"
+	"1067.ontvjapan.com"		=>	"CS12", // 352,	// "朝日ニュースター"
+	"1070.ontvjapan.com"		=>	"CS12", // 353,	// "ＢＢＣワールド"
+	"1069.ontvjapan.com"		=>	"CS12", // 354,	// "ＣＮＮｊ"
+	"361ch.epgdata.ontvjapan"	=>	"CS12", // 361,	// "ジャスト・アイ"
+
+	"1041.ontvjapan.com"		=>	"CS14", // 251,	// "Ｊスポーツ　１"
+	"1042.ontvjapan.com"		=>	"CS14", // 252,	// "Ｊスポーツ　２"
+	"1043.ontvjapan.com"		=>	"CS14", // 253,	// "ＪスポーツＰｌｕｓＨ"
+	"1026.ontvjapan.com"		=>	"CS14", // 254,	// "ＧＡＯＲＡ"
+	"1040.ontvjapan.com"		=>	"CS14", // 255,	// "ｓｋｙ・Ａスポーツ＋"
+
+	"305ch.epgdata.ontvjapan"	=>	"CS16", // 305,	// "チャンネル銀河"
+	"1201.ontvjapan.com"		=>	"CS16", // 333,	// "ＡＴ-Ｘ"
+	"1050.ontvjapan.com"		=>	"CS16", // 342,	// "ヒストリーチャンネル"
+	"803ch.epgdata.ontvjapan"	=>	"CS16", // 803,	// "スカチャン８０３"
+	"804ch.epgdata.ontvjapan"	=>	"CS16", // 804,	// "スカチャン８０４"
+	"1207.ontvjapan.com"		=>	"CS16", // 290,	// "ＳＫＹ・ＳＴＡＧＥ"
+
+	"1007.ontvjapan.com"		=>	"CS18", // 240,	// "ムービープラスＨＤ"
+	"1027.ontvjapan.com"		=>	"CS18", // 262,	// "ゴルフネットワーク"
+	"1074.ontvjapan.com"		=>	"CS18", // 314,	// "ＬａＬａ　ＨＤ"
+
+	"1073.ontvjapan.com"		=>	"CS20", // 258,	// "フジテレビ７３９"
+	"1072.ontvjapan.com"		=>	"CS20", // 302,	// "フジテレビ７２１"
+	"1047.ontvjapan.com"		=>	"CS20", // 332,	// "アニマックス"
+	"1062.ontvjapan.com"		=>	"CS20", // 340,	// "ディスカバリー"
+	"1193.ontvjapan.com"		=>	"CS20", // 341,	// "アニマルプラネット"
+
+	"160ch.epgdata.ontvjapan"	=>	"CS22", // 160,	// "Ｃ-ＴＢＳウエルカム"
+	//"1120.ontvjapan.com"		=>	"CS22", // 161,	// "ＱＶＣ"
+	"185ch.epgdata.ontvjapan"	=>	"CS22", // 185,	// "プライム３６５．ＴＶ"
+	"1015.ontvjapan.com"		=>	"CS22", // 293,	// "ファミリー劇場"
+	"3201.ontvjapan.com"		=>	"CS22", // 301,	// "ＴＢＳチャンネル"
+	"1090.ontvjapan.com"		=>	"CS22", // 304,	// "ディズニーチャンネル"
+	"1022.ontvjapan.com"		=>	"CS22", // 325,	// "MUSIC ON! TV"
+	"1045.ontvjapan.com"		=>	"CS22", // 330,	// "キッズステーション"
+	"1076.ontvjapan.com"		=>	"CS22", // 351,	// "ＴＢＳニュースバード"
+
+	"1068.ontvjapan.com"		=>	"CS24", // 257,	// "日テレＧ＋"
+	"5004.ontvjapan.com"		=>	"CS24", // 291,	// "fashion TV"
+	"300ch.epgdata.ontvjapan"	=>	"CS24", // 300,	// "日テレプラス"
+	"1023.ontvjapan.com"		=>	"CS24", // 320,	// "エコミュージックＴＶ"
+	"1208.ontvjapan.com"		=>	"CS24", // 321,	// "Music Japan TV"
+	"2002.ontvjapan.com"		=>	"CS24", // 350,	// "日テレＮＥＷＳ２４"
+	/*
+	"110ch.epgdata.ontvjapan"	=>	"CS22", 110,	// "ワンテンポータル"
+	"101ch.epgdata.ontvjapan"	=>	"CS22", 101,	// "宝塚プロモチャンネル"
+	"147ch.epgdata.ontvjapan"	=>	"CS22", 147,	// "ＣＳ日本番組ガイド"
+	*/
+);
 
 // DBテーブル情報　以下は変更しないでください
 
