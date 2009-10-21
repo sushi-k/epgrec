@@ -74,6 +74,15 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 <input type="text" name="bs_tuners" value="{$settings->bs_tuners}" size="3" class="required digits" />
 </div>
 
+<h3>CS録画の有無</h3>
+<div class="setting">
+<div class="caption">この設定を「行う」にするとCS放送を加味した動作となります。CS放送を使用しない方は「使わない」に設定してください。</div>
+<select name="cs_rec_flg" id="id_cs_rec_flg" >
+  <option value="0" {if $settings->cs_rec_flg == 0} selected {/if}>行わない</option>
+  <option value="1" {if $settings->cs_rec_flg == 1} selected {/if}>行う</option>
+</select>
+</div>
+
 <h2>録画関連設定</h2>
 
 

@@ -110,6 +110,15 @@ try{
 		$arr['value'] = "BS";
 		$arr['selected'] = $type == "BS" ? "selected" : "";
 		array_push( $types, $arr );
+
+		// CS
+		if ($settings->cs_rec_flg != 0) {
+			$arr = array();
+			$arr['name'] = "CS";
+			$arr['value'] = "CS";
+			$arr['selected'] = $type == "CS" ? "selected" : "";
+			array_push( $types, $arr );
+		}
 	}
 	
 	$k_station_name = "";

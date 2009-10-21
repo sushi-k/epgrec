@@ -47,6 +47,7 @@ $last_time = $top_time + 3600 * $program_length;
  $programs = array();
  if( $type == "BS" ) $channel_map = $BS_CHANNEL_MAP;
  else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
+ else if( $type == "CS" ) $channel_map = $CS_CHANNEL_MAP;
  $st = 0;
  $prec = new DBRecord(PROGRAM_TBL);
  foreach( $channel_map as $channel_disc => $channel ) {
@@ -151,6 +152,14 @@ $last_time = $top_time + 3600 * $program_length;
 	$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=BS&length=".$program_length."&time=".date( "YmdH", $top_time);
 	$types[$i]['name'] = "BS";
 	$i++;
+
+	// CS
+	if ($settings->cs_rec_flg != 0) {
+		$types[$i]['selected'] = $type == "CS" ? 'class="selected"' : "";
+		$types[$i]['link'] = $_SERVER['SCRIPT_NAME'] . "?type=CS&length=".$program_length."&time=".date( "YmdH", $top_time);
+		$types[$i]['name'] = "CS";
+		$i++;
+	}
  }
  if( $settings->gr_tuners != 0 ) {
 	$types[$i]['selected'] = $type == "GR" ? 'class="selected"' : "";

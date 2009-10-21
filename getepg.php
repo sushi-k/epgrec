@@ -23,6 +23,25 @@
   		storeProgram( "BS", $settings->temp_xml );
   		if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
   		if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
+
+		// CS
+		if ($settings->cs_rec_flg != 0) {
+			$cmdline = "CHANNEL=CS8 DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
+			exec( $cmdline );
+			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$settings->temp_xml;
+			exec( $cmdline );
+			storeProgram( "CS", $settings->temp_xml );
+			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
+			if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
+
+			$cmdline = "CHANNEL=CS24 DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
+			exec( $cmdline );
+			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$settings->temp_xml;
+			exec( $cmdline );
+			storeProgram( "CS", $settings->temp_xml );
+			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
+			if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
+	  	}
   	}
   }
   
@@ -69,11 +88,12 @@
   exit();
   
   function storeProgram( $type, $xmlfile ) {
-	global $BS_CHANNEL_MAP, $GR_CHANNEL_MAP;
+	global $BS_CHANNEL_MAP, $GR_CHANNEL_MAP, $CS_CHANNEL_MAP;
 	// チャンネルマップファイルの準備
 	$map = array();
 	if( $type == "BS" ) $map = $BS_CHANNEL_MAP;
 	else if( $type == "GR") $map = $GR_CHANNEL_MAP;
+	else if( $type == "CS") $map = $CS_CHANNEL_MAP;
 	
 	// XML parse
   	$xml = @simplexml_load_file( $xmlfile );

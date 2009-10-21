@@ -31,6 +31,9 @@ class Settings extends SimpleXMLElement {
 			
 			if(defined("GR_TUNERS")) $xml->gr_tuners = GR_TUNERS;
 			else $xml->gr_tuners = 1;
+
+			if(defined("CS_REC_FLG")) $xml->cs_rec_flg = CS_REC_FLG;
+			else $xml->cs_rec_flg = 0;
 			
 			if(defined("USE_KUROBON")) $xml->use_kurobon = USE_KUROBON ? 1 : 0;
 			else $xml->use_kurobon = 0;
