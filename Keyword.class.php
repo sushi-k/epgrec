@@ -72,7 +72,7 @@ class Keyword extends DBRecord {
 			foreach( $precs as $rec ) {
 				try {
 					if( $rec->autorec ) {
-						Reservation::simple( $rec->id, $this->id );
+						Reservation::simple( $rec->id, $this->id, $this->settings->autorec_mode );
 						usleep( 100 );		// あんまり時間を空けないのもどう?
 					}
 				}

@@ -114,6 +114,20 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 <input type="text" name="rec_switch_time" id="id_rec_switch_time" value="{$settings->rec_switch_time}" size="4" class="required digits" min="1" />
 </div>
 
+
+<h3>キーワード自動録画の録画モード</h3>
+<div class="setting">
+<div class="caption">キーワード自動録画を行う番組の録画モードを設定します。config.phpの$RECORD_MODEに複数の録画モードを登録しているのであれば、この設定でキーワード自動録画の録画モードを変更できます。デフォルトはモード0です。
+</div>
+<select name="autorec_mode" id="id_autorec_mode" >
+{foreach from=$record_mode item=mode name=recmode}
+  <option value="{$smarty.foreach.recmode.index}" {if $settings->autorec_mode == $smarty.foreach.recmode.index} selected {/if}>{$mode.name}</option>
+{/foreach}
+</select>
+</div>
+
+
+
 <h3>mediatomb連係機能</h3>
 <div class="setting">
 <div class="caption">この設定を「使う」にすると録画した番組のタイトルと概要をmediatombに反映させます。mediatombを使用していない方は「使わない」に設定してください。なお、この設定を利用するにはmediatomb側の設定も必要になります。詳しくはドキュメントを参照してください。
