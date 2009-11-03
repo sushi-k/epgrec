@@ -7,6 +7,7 @@ $settings = Settings::factory();
 $smarty = new Smarty();
 
 $smarty->assign( "settings", $settings );
+$smarty->assign( "record_mode", $RECORD_MODE );
 $smarty->assign( "install_path", INSTALL_PATH );
 $smarty->assign( "post_to", "postsettings.php" );
 $smarty->assign( "sitetitle", "環境設定設定" );

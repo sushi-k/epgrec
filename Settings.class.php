@@ -9,7 +9,17 @@ class Settings extends SimpleXMLElement {
 		
 		if( file_exists( INSTALL_PATH . self::CONFIG_XML ) ) {
 			$xmlfile = file_get_contents(INSTALL_PATH . self::CONFIG_XML);
-			return new self($xmlfile);
+			$obj = new self($xmlfile);
+			
+			// 8月14日以降に追加した設定項目の自動生成
+			
+			// キーワード自動録画の録画モード
+			if( $obj->exists("autorec_mode") == 0 ) {
+				$obj->autorec_mode = 0;
+				$obj->save();
+			}
+			
+			return $obj;
 		}
 		else {
 			// 初回起動
@@ -99,6 +109,11 @@ class Settings extends SimpleXMLElement {
 			$xml->ch_set_width = 150;
 			// 1分あたりの高さ
 			$xml->height_per_hour = 120;
+			
+			// 8月14日版以降に追加した設定項目
+			
+			// キーワード自動録画の録画モード
+			$xml->autorec_mode = 0;
 			
 			$xml->save();
 			
