@@ -51,6 +51,7 @@ $smarty->template_dir = "../templates/";
 $smarty->compile_dir = "../templates_c/";
 $smarty->cache_dir = "../cache/";
 
+$smarty->assign( "record_mode", $RECORD_MODE );
 $smarty->assign( "settings", $settings );
 $smarty->assign( "install_path", INSTALL_PATH );
 $smarty->assign( "post_to", "step4.php" );

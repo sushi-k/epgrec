@@ -231,10 +231,10 @@ class Reservation {
 			$filename = str_replace("%DURATION%","".$duration, $filename );
 			
 			// 文字コード変換
-			if( defined("FIESYSTEM_ENCODING") ) {
+			if( defined("FILESYSTEM_ENCODING") ) {
 				$filename = mb_convert_encoding( $filename, FILESYSTEM_ENCODING, "UTF-8" );
 			}
-			$filename .= $RECORD_MODE[$mode]['suffix'];
+			$filename .= $RECORD_MODE["$mode"]['suffix'];
 			$thumbname = $filename.".jpg";
 			
 			// サムネール

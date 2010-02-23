@@ -77,6 +77,10 @@ foreach($exec_files as $value ) {
 }
 echo "</div>";
 
+if( !file_exists( "/usr/local/bin/grscan" ) ) {
+
+include_once( INSTALL_PATH."/settings/gr_channel.php" );
+
 echo "<p><b>地上デジタルチャンネルの設定確認</b></p>";
 
 echo "<div>現在、config.phpでは以下のチャンネルの受信が設定されています。受信不可能なチャンネルが混ざっていると番組表が表示できません。</div>";
@@ -87,7 +91,18 @@ foreach( $GR_CHANNEL_MAP as $key => $value ) {
 }
 echo "</ul>";
 
-
 echo '<p><a href="step2.php">以上を確認し次の設定に進む</a></p>';
 
+}
+else {
+
+echo'<p><b>地上デジタルチャンネルの設定</b><p>';
+echo '
+<form method="post" action="grscan.php" >
+<div>地上デジタルチャンネルスキャンを開始します。スキャンにはおよそ10～20分程度はかかります。ケーブルテレビをお使いの方は下のチェックボックスをオンにしてください</div>
+  <div>ケーブルテレビを使用:<input type="checkbox" name="catv" value="1" /></div>
+
+  <input type="submit" value="スキャンを開始する" />
+</form>';
+}
 ?>

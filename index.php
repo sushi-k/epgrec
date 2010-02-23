@@ -49,7 +49,13 @@ $last_time = $top_time + 3600 * $program_length;
  else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
  else if( $type == "CS" ) $channel_map = $CS_CHANNEL_MAP;
  $st = 0;
- $prec = new DBRecord(PROGRAM_TBL);
+ $prec = null;
+ try {
+ 	$prec = new DBRecord(PROGRAM_TBL);
+ }
+ catch( Exception $e ) {
+	exit('プログラムテーブルが存在しないようです。インストールをやり直してください.');
+ }
  foreach( $channel_map as $channel_disc => $channel ) {
 	$prev_end = $top_time;
  	try {
@@ -104,7 +110,8 @@ $last_time = $top_time + 3600 * $program_length;
 		}
 	}
 	 catch( exception $e ) {
-		exit( $e->getMessage() );
+//		exit( $e->getMessage() );
+//		何もしない
  	}
  	// 空きを埋める
 	if( ($last_time - $prev_end) > 0 ) {
