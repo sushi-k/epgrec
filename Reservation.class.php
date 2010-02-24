@@ -276,6 +276,7 @@ class Reservation {
 			              "THUMB"    => INSTALL_PATH.$settings->thumbs."/".$thumbname,
 			              "FORMER"   => "".$settings->former_time,
 			              "FFMPEG"   => "".$settings->ffmpeg,
+			              "SID"      => $crec->sid,
 			);
 			
 			// ATで予約する
