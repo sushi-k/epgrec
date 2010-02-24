@@ -79,8 +79,6 @@ echo "</div>";
 
 if( !file_exists( "/usr/local/bin/grscan" ) ) {
 
-include_once( INSTALL_PATH."/settings/gr_channel.php" );
-
 echo "<p><b>地上デジタルチャンネルの設定確認</b></p>";
 
 echo "<div>現在、config.phpでは以下のチャンネルの受信が設定されています。受信不可能なチャンネルが混ざっていると番組表が表示できません。</div>";

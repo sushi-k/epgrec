@@ -176,6 +176,11 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
   {foreach from=$cats item=cat}
   <option value="{$cat.id}" {$cat.selected}>{$cat.name}</option>
   {/foreach}
+  </select>
+曜日<select name='weekofday'>
+  {foreach from=$weekofdays item=day}
+  <option value="{$day.id}" {$day.selected}>{$day.name}</option>
+  {/foreach}
 </select>
 <input type="submit" value="絞り込む" />
 </form>
@@ -223,6 +228,7 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
   <b>種別:</b>{if $k_type == "*"}すべて{else}{$k_type}{/if}
   <b>局:</b>{if $k_station == 0}すべて{else}{$k_station_name}{/if}
   <b>カテゴリ:</b>{if $k_category == 0}すべて{else}{$k_category_name}{/if}
+  <b>曜日:</b>{if $weekofday == 7}なし{else}{$k_weekofday}{/if}曜
   <b>件数:</b>{$programs|@count}
   <input type="hidden" name="add_keyword" value="{$do_keyword}" />
   <input type="hidden" name="k_use_regexp" value="{$use_regexp}" />
@@ -230,7 +236,13 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
   <input type="hidden" name="k_type" value="{$k_type}" />
   <input type="hidden" name="k_category" value="{$k_category}" />
   <input type="hidden" name="k_station" value="{$k_station}" />
-  <input type="submit" value="この絞り込みを自動録画キーワードに登録" />
+  <input type="hidden" name="k_weekofday" value={$weekofday} />
+  <b>録画モード:</b><select name="autorec_mode" >
+  {foreach from=$autorec_modes item=mode name=recmode }
+     <option value="{$smarty.foreach.recmode.index}" {$mode.selected} >{$mode.name}</option>
+  {/foreach}
+   </select>
+  <br><input type="submit" value="この絞り込みを自動録画キーワードに登録" />
   </form>
 </div>
 {/if}

@@ -7,7 +7,11 @@ include_once( INSTALL_PATH . "/Reservation.class.php" );
 include_once( INSTALL_PATH . "/Keyword.class.php" );
 // include_once( INSTALL_PATH . "/Settings.class.php" );
 
+
+$weekofdays = array( "月", "火", "水", "木", "金", "土", "日", "なし" );
+
 // 新規キーワードがポストされた
+
 
 if( isset($_POST["add_keyword"]) ) {
 	if( $_POST["add_keyword"] == 1 ) {
@@ -18,6 +22,8 @@ if( isset($_POST["add_keyword"]) ) {
 			$rec->category_id = $_POST['k_category'];
 			$rec->channel_id = $_POST['k_station'];
 			$rec->use_regexp = $_POST['k_use_regexp'];
+			$rec->weekofday = $_POST['k_weekofday'];
+			$rec->autorec_mode = $_POST['autorec_mode'];
 			
 			// 録画予約実行
 			$rec->reservation();
@@ -51,6 +57,10 @@ try {
 		else $arr['category'] = 'すべて';
 		
 		$arr['use_regexp'] = $rec->use_regexp;
+		
+		$arr['weekofday'] = $weekofdays["$rec->weekofday"];
+		
+		$arr['autorec_mode'] = $RECORD_MODE[(int)$rec->autorec_mode]['name'];
 		
 		array_push( $keywords, $arr );
 	}

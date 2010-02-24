@@ -6,9 +6,24 @@ include_once( INSTALL_PATH . '/Settings.class.php' );
 
 $settings = Settings::factory();
 
-
 $options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + 300 )."'";
 
+// 曜日
+$weekofdays = array(
+					array( "name" => "月", "id" => 0, "selected" => "" ),
+					array( "name" => "火", "id" => 1, "selected" => "" ),
+					array( "name" => "水", "id" => 2, "selected" => "" ),
+					array( "name" => "木", "id" => 3, "selected" => "" ),
+					array( "name" => "金", "id" => 4, "selected" => "" ),
+					array( "name" => "土", "id" => 5, "selected" => "" ),
+					array( "name" => "日", "id" => 6, "selected" => "" ),
+					array( "name" => "なし", "id" => 7, "selected" => "" ),
+);
+
+$autorec_modes = $RECORD_MODE;
+$autorec_modes[(int)($settings->autorec_mode)]['selected'] = "selected";
+
+$weekofday = 7;
 $search = "";
 $use_regexp = 0;
 $type = "*";
@@ -50,6 +65,12 @@ if(isset( $_POST['do_search'] )) {
 			$options .= " AND channel_id = '".$_POST['station']."'";
 		}
 	}
+	if( isset($_POST['weekofday']) ) {
+		$weekofday = $_POST['weekofday'];
+		if( $weekofday != 7 ) {
+			$options .= " AND WEEKDAY(starttime) = '".$weekofday."'";
+		}
+	}
 }
 $options .= " ORDER BY starttime ASC LIMIT 300";
 $do_keyword = 0;
@@ -79,7 +100,7 @@ try{
 	}
 	
 	$k_category_name = "";
-	$crecs = DBRecord::createRecords(CATEGORY_TBL );
+	$crecs = DBRecord::createRecords(CATEGORY_TBL);
 	$cats = array();
 	$cats[0]['id'] = 0;
 	$cats[0]['name'] = "すべて";
@@ -135,6 +156,7 @@ try{
 		if( $station == $c->id ) $k_station_name = $c->name;
 		array_push( $stations, $arr );
 	}
+	$weekofdays["$weekofday"]["selected"] = "selected" ;
 
 	$smarty = new Smarty();
 	$smarty->assign("sitetitle","番組検索");
@@ -150,6 +172,11 @@ try{
 	$smarty->assign( "stations", $stations );
 	$smarty->assign( "k_station", $station );
 	$smarty->assign( "k_station_name", $k_station_name );
+	$smarty->assign( "weekofday", $weekofday );
+	$smarty->assign( "k_weekofday", $weekofdays["$weekofday"]["name"] );
+	$smarty->assign( "weekofday", $weekofday );
+	$smarty->assign( "weekofdays", $weekofdays );
+	$smarty->assign( "autorec_modes", $autorec_modes );
 	$smarty->display("programTable.html");
 }
 catch( exception $e ) {

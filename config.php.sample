@@ -225,7 +225,8 @@ define( "RESERVE_STRUCT",
 	"complete boolean not null default '0',".				// 完了フラグ
 	"reserve_disc varchar(128) not null default 'none',".	// 識別用hash
 	"autorec integer not null default '0',".				// キーワードID
-	"mode integer not null default '0'"						//録画モード
+	"mode integer not null default '0',".						//録画モード
+	"index reserve_idx (channel_disc, starttime)"			// インデックス
 );
 
 
@@ -242,7 +243,9 @@ define( "PROGRAM_STRUCT",
 	"starttime datetime not null default '1970-01-01 00:00:00',".	// 開始時刻
 	"endtime datetime not null default '1970-01-01 00:00:00',".		// 終了時刻
 	"program_disc varchar(128) not null default 'none',".	 		// 識別用hash
-	"autorec boolean not null default '1'"					// 自動録画有効無効
+	"autorec boolean not null default '1',".					// 自動録画有効無効
+	"index program_idx (channel_disc, starttime)"			// インデックス
+
 );
 
 
@@ -270,6 +273,7 @@ define( "KEYWORD_STRUCT",
 	"channel_id integer not null default '0',".				// channel ID
 	"category_id integer not null default '0',".			// カテゴリID
 	"use_regexp boolean not null default '0',".				// 正規表現を使用するなら1
-	"autorec_mode integer not null defult '0'"						// 自動録画のモード02/23/2010追加
+	"autorec_mode integer not null default '0',".						// 自動録画のモード02/23/2010追加
+	"weekofday enum ('0','1','2','3','4','5','6','7' ) default '7'"		// 曜日
 );
 ?>

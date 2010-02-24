@@ -61,6 +61,7 @@ $last_time = $top_time + 3600 * $program_length;
  	try {
 		$crec = new DBRecord( CHANNEL_TBL, "channel_disc", $channel_disc );
 		$programs[$st]["station_name"]  = $crec->name;
+		$programs[$st]["channel_disc"]  = $crec->channel_disc;
 		
 		$reca = $prec->fetch_array( "channel_disc", $channel_disc,
 		                                  "endtime > '".toDatetime($top_time)."' ".
