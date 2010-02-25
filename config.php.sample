@@ -43,13 +43,12 @@ $RECORD_MODE = array(
 		'suffix' => '.ts',	// ファイル名のサフィックス
 	),
 	
-	/* Examples is as follows.
-	
 	1 => array(
-		'name' => 'Min PID',
-		'suffix' => '_tss.ts',
+		'name' => 'Minimum TS',	// 最小のTS
+		'suffix' => '_tss.ts',	// do-record.shのカスタマイズが必要
 	),
 	
+	/* Example is as follows.
 	2 => array(
 		'name' => '12Mbps MPEG4',
 		'suffix' => '.avi',
@@ -216,7 +215,7 @@ define( "RESERVE_STRUCT",
 	"type varchar(8) not null default 'GR',".				// 種別（GR/BS/CS）
 	"channel varchar(10) not null default '0',".			// チャンネル
 	"title varchar(512) not null default 'none',".			// タイトル
-	"description varchar(512) not null default ' ',".		// 説明 text->varchar
+	"description varchar(512) not null default 'none',".	// 説明 text->varchar
 	"category_id integer not null default '0',".			// カテゴリID
 	"starttime datetime not null default '1970-01-01 00:00:00',".	// 開始時刻
 	"endtime datetime not null default '1970-01-01 00:00:00',".		// 終了時刻
@@ -226,7 +225,9 @@ define( "RESERVE_STRUCT",
 	"reserve_disc varchar(128) not null default 'none',".	// 識別用hash
 	"autorec integer not null default '0',".				// キーワードID
 	"mode integer not null default '0',".						//録画モード
-	"index reserve_idx (channel_disc, starttime)"			// インデックス
+	"index reserve_ch_idx (channel_disc),".			// インデックス
+	"index reserve_st_idx (starttime)".
+	""
 );
 
 
@@ -244,8 +245,9 @@ define( "PROGRAM_STRUCT",
 	"endtime datetime not null default '1970-01-01 00:00:00',".		// 終了時刻
 	"program_disc varchar(128) not null default 'none',".	 		// 識別用hash
 	"autorec boolean not null default '1',".					// 自動録画有効無効
-	"index program_idx (channel_disc, starttime)"			// インデックス
-
+	"index program_ch_idx (channel_disc),".			// インデックス
+	"index program_st_idx (starttime)".
+	""
 );
 
 
@@ -274,6 +276,6 @@ define( "KEYWORD_STRUCT",
 	"category_id integer not null default '0',".			// カテゴリID
 	"use_regexp boolean not null default '0',".				// 正規表現を使用するなら1
 	"autorec_mode integer not null default '0',".						// 自動録画のモード02/23/2010追加
-	"weekofday enum ('0','1','2','3','4','5','6','7' ) default '7'"		// 曜日
+	"weekofday enum ('0','1','2','3','4','5','6','7' ) default '7'"		// 曜日、同追加
 );
 ?>

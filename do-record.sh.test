@@ -5,9 +5,10 @@ echo "OUTPUT  : $OUTPUT"
 echo "TUNER : $TUNER"
 echo "TYPE : $TYPE"
 echo "MODE : $MODE"
+echo "SID  : $SID"
 
 RECORDER=/usr/local/bin/recpt1
 B25=/usr/local/bin/b25_bcas
 
 /bin/date >${OUTPUT}
-#$RECORDER $CHANNEL $DURATION ${OUTPUT} --b25 --strip >/dev/null
+printenv >>${OUTPUT}

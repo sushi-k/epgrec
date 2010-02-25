@@ -18,7 +18,11 @@ class Settings extends SimpleXMLElement {
 				$obj->autorec_mode = 0;
 				$obj->save();
 			}
-			
+			// CSの録画
+			if( $obj->exists("cs_rec_flg") == 0 ) {
+				$obj->cs_rec_flg = 0;
+				$obj->save();
+			}
 			return $obj;
 		}
 		else {

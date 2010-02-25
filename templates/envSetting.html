@@ -115,9 +115,9 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 </div>
 
 
-<h3>キーワード自動録画の録画モード</h3>
+<h3>優先する録画モード</h3>
 <div class="setting">
-<div class="caption">キーワード自動録画を行う番組の録画モードを設定します。config.phpの$RECORD_MODEに複数の録画モードを登録しているのであれば、この設定でキーワード自動録画の録画モードを変更できます。デフォルトはモード0です。
+<div class="caption">キーワード自動録画や簡易録画を行う番組の録画モードを設定します。config.phpの$RECORD_MODEに複数の録画モードを登録し、do-record.shをカスタマイズているのであれば、その録画モードを優先して利用できます。キーワード自動録画はキーワード登録時に録画モードを設定することもできます。デフォルトはモード0です。
 </div>
 <select name="autorec_mode" id="id_autorec_mode" >
 {foreach from=$record_mode item=mode name=recmode}
