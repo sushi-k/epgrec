@@ -23,9 +23,12 @@
   		storeProgram( "BS", $settings->temp_xml );
   		if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
   		if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
+	}
 
-		// CS
-		if ($settings->cs_rec_flg != 0) {
+	// CS
+	if ($settings->cs_rec_flg != 0) {
+		$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
+		if( $num == 0 ) {
 			$cmdline = "CHANNEL=CS8 DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
 			exec( $cmdline );
 			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$settings->temp_xml;
@@ -33,7 +36,9 @@
 			storeProgram( "CS", $settings->temp_xml );
 			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
 			if( file_exists( $settings->temp_xml ) ) @unlink( $settings->temp_xml );
-
+		}
+		$num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
+		if( $num == 0 ) {
 			$cmdline = "CHANNEL=CS24 DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
 			exec( $cmdline );
 			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$settings->temp_xml;
