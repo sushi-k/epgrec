@@ -43,7 +43,7 @@
   		exec( $cmdline );
   		$cmdline = $settings->epgdump." /BS ".$settings->temp_data." ".$temp_xml_bs;
   		exec( $cmdline );
-		$cmdline = INSTALL_PATH."/storeProgram.php BS ".$temp_xml_bs;
+		$cmdline = INSTALL_PATH."/storeProgram.php BS ".$temp_xml_bs." >/dev/null 2>&1 &";
 		exec( $cmdline );
   		if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
 	}
@@ -56,7 +56,7 @@
 			exec( $cmdline );
 			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$temp_xml_cs1;
 			exec( $cmdline );
-			$cmdline = INSTALL_PATH."/storeProgram.php CS ".$temp_xml_cs1;
+			$cmdline = INSTALL_PATH."/storeProgram.php CS ".$temp_xml_cs1." >/dev/null 2>&1 &";
 			exec( $cmdline );
 			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
 		}
@@ -66,7 +66,7 @@
 			exec( $cmdline );
 			$cmdline = $settings->epgdump." /CS ".$settings->temp_data." ".$temp_xml_cs2;
 			exec( $cmdline );
-			$cmdline = INSTALL_PATH."/storeProgram.php CS ".$temp_xml_cs2;
+			$cmdline = INSTALL_PATH."/storeProgram.php CS ".$temp_xml_cs2." >/dev/null 2>&1 &";
 			exec( $cmdline );
 			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
 	  	}
@@ -83,7 +83,7 @@
 			exec( $cmdline );
 			$cmdline = $settings->epgdump." ".$key." ".$settings->temp_data." ".$temp_xml_gr.$value."";
 			exec( $cmdline );
-			$cmdline = INSTALL_PATH."/storeProgram.php GR ".$temp_xml_gr.$value."";
+			$cmdline = INSTALL_PATH."/storeProgram.php GR ".$temp_xml_gr.$value." >/dev/null 2>&1 &";
 			exec( $cmdline );
 			if( file_exists( $settings->temp_data ) ) @unlink( $settings->temp_data );
   		}
