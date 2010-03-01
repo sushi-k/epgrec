@@ -56,10 +56,18 @@ $RECORD_MODE = array(
 	*/
 );
 
-// 以下、USE_KUROBON以外の定数は設定不要になりました
+
+// BSチューナーとして黒Friioを用いているのなら下のfalseをtrueに変えてください。
+
+define( "USE_KUROBON", false );
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// 以降の変数・定数はほとんどの場合、変更する必要はありません
+
 
 define( "INSTALL_PATH", dirname(__FILE__) );		// インストールパス
-define( "USE_KUROBON", false );						// BSチューナーとしてFriio BS/CSを使うならtrue
 
 // 以降は必要に応じて変更する
 
@@ -67,6 +75,15 @@ define( "PADDING_TIME", 180 );						// 詰め物時間
 define( "DO_RECORD", INSTALL_PATH . "/do-record.sh" );		// レコードスクリプト
 define( "COMPLETE_CMD", INSTALL_PATH . "/recomplete.php" );	// 録画終了コマンド
 define( "GEN_THUMBNAIL", INSTALL_PATH . "/gen-thumbnail.sh" );	// サムネール生成スクリプト
+
+// BS/CSでEPGを取得するチャンネル
+// 通常は変える必要はありません
+// BSでepgdumpが頻繁に落ちる場合は、受信状態のいいチャンネルに変えることで
+// 改善するかもしれません
+
+define( "BS_EPG_CHANNEL",  "211"  );	// BS
+define( "CS1_EPG_CHANNEL", "CS8"  );	// CS1
+define( "CS2_EPG_CHANNEL", "CS24" );	// CS2
 
 
 // 地上デジタルチャンネルテーブルsettings/gr_channel.phpが存在するならそれを
