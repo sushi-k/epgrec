@@ -51,6 +51,8 @@ $exec_files = array(
 	$gen_thumbnail,
 );
 
+$is_writable = true;
+$error_messages = array();
 echo "<p><b>ディレクトリのパーミッションチェック（777）</b></p>";
 echo "<div>";
 foreach($rw_dirs as $value ) {
@@ -58,12 +60,21 @@ foreach($rw_dirs as $value ) {
 	
 	$perm = getPerm( $value );
 	if( $perm != "777" ) {
-		exit('<font color="red">...'.$perm.'... missing</font><br>このディレクトリを書き込み許可にしてください（ex. chmod 777 '.$value.'）</div>' );
+		$error_messages[] = '<font color="red">...'.$perm.'... missing</font><br>このディレクトリを書き込み許可にしてください（ex. chmod 777 '.$value.'）</div>';
+		$is_writable = false;
+		echo "...".$perm."...ng<br>";
+	} else {
+		echo "...".$perm."...ok<br>";
 	}
-	echo "...".$perm."...ok<br>";
 }
-echo "</div>";
 
+if ($is_writable !== true) {
+	echo implode('<br>', $error_messages);
+	echo "</div>";
+	exit;
+} else {
+	echo "</div>";
+}
 
 echo "<p><b>ファイルのパーミッションチェック（755）</b></p>";
 echo "<div>";
