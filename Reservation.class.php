@@ -316,8 +316,7 @@ class Reservation {
 			// エラー
 			$rrec->delete();
 			throw new Exception( "job番号の取得に失敗" );
-		}
-		catch( Exception $e ) {
+		} catch( Exception $e ) {
 			if( $rrec != null ) {
 				if( $rrec->id ) {
 					// 予約を取り消す
