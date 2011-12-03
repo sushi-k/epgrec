@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+/**
+ * 番組表を取得する。crontabに登録しておく。
+ */
 require_once 'config.php';
 require_once INSTALL_PATH . '/DBRecord.class.php';
 require_once INSTALL_PATH . '/Reservation.class.php';
@@ -31,6 +34,19 @@ function is_dumped($xml_file) {
     return true;
 }
 
+function do_record($options = array())
+{
+    $command = '';
+    foreach ($options as $key => $value) {
+        if (!is_numeric($value)) {
+            $value = '"' . $value . '"';
+        }
+        $command .= strtoupper($key) . "={$value} ";
+    }
+    $command .= INSTALL_PATH . "/do-record.sh >/dev/null 2>&1";
+    return exec($command);
+}
+
 $settings = Settings::factory();
 
 $temp_xml_bs  = $settings->temp_xml."_bs";
@@ -45,7 +61,7 @@ if (file_exists($settings->temp_data)) {
 // BSを処理する
 if( $settings->bs_tuners != 0 ) {
     // 録画重複チェック
-    $num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
+    $num = DBRecord::countRecords(RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
     if($num == 0) {
         if (!is_dumped($temp_xml_bs)) {
             $cmdline = "CHANNEL=".BS_EPG_CHANNEL." DURATION=180 TYPE=BS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
@@ -101,14 +117,22 @@ if ($settings->gr_tuners != 0) {
 
             // 直近1時間のtsない時だけ作る
             if (!is_dumped($temp_filename)) {
-                $cmdline  = "CHANNEL={$channel_no} DURATION=60 TYPE=GR TUNER=0 MODE=0 OUTPUT={$temp_filename}";
-                $cmdline .= " " .DO_RECORD . " >/dev/null 2>&1";
-                exec($cmdline);
+                $options = array(
+                    'CHANNEL' => $channel_no,
+                    'DURATION' => 60,
+                    'TYPE' => 'GR',
+                    'TUNER' => 0,
+                    'MODE' => 0,
+                    'OUTPUT' => $temp_filename,
+                );
+                do_record($options);
             }
 
+            // dump
             $cmdline = "{$settings->epgdump} {$key} {$temp_filename} {$temp_xml_gr}{$channel_no}";
             exec($cmdline);
 
+            // parse
             $cmdline = INSTALL_PATH."/storeProgram.php GR ".$temp_xml_gr.$channel_no." >/dev/null 2>&1 &";
             exec($cmdline);
         }
