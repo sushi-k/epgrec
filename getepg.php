@@ -106,12 +106,9 @@ if( $settings->bs_tuners != 0 ) {
 if ($settings->gr_tuners != 0) {
     foreach (ChannelMaster::$GR as $key => $channel_no) {
         // 録画重複チェック
-        $num = DBRecord::countRecords(
-            RESERVE_TBL,
-            "WHERE complete = '0' AND type = 'GR' AND endtime > now() AND starttime < addtime( now(), '00:01:10')"
-        );
-
-        if ($num == 0) {
+        $db = DB::conn();
+        $row = $db->row("SELECT COUNT(*) FROM Recorder_reserveTbl WHERE complete = '0' AND type = 'GR' AND endtime > NOW() AND starttime < addtime( NOW(), '00:01:10')");
+        if (is_array($row) && current($row) == 0) {
             $temp_filename = str_replace('.ts', "_GR{$channel_no}.ts", $settings->temp_data);
 
             // 直近1時間のtsない時だけ作る
@@ -133,8 +130,14 @@ if ($settings->gr_tuners != 0) {
             exec($cmdline);
 
             // parse
-            $cmdline = INSTALL_PATH."/storeProgram.php GR {$xml} >/dev/null 2>&1 &";
-            exec($cmdline);
+            //$cmdline = INSTALL_PATH."/storeProgram.php GR {$xml} >/dev/null 2>&1 &";
+            //exec($cmdline);
+            
+            if (file_exists($xml)) {
+                RegisterService::storeProgram('GR', $xml);
+                RegisterService::cleanup();
+                // unlink($xml);
+            }
         }
     }
 }
