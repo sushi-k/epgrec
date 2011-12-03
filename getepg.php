@@ -21,14 +21,14 @@ function is_dumped($xml_file) {
 
     // 1時間以上前のファイルなら削除してやり直す
     if( (time() - filemtime( $xml_file )) > 3600 ) {
-        unlink( $xml_file );
+        unlink($xml_file);
         return false;
     }
 
-    // ファイルサイズ0でもダメ
+    // ファイルサイズ0の場合friioに問題がある可能性
     if (filesize($xml_file) <= 0) {
-        unlink( $xml_file );
-        return false;
+        unlink($xml_file);
+        throw new RuntimeException("invalid dump log: {$xml_file} is empty.");
     }
 
     return true;
@@ -52,7 +52,6 @@ $settings = Settings::factory();
 $temp_xml_bs  = $settings->temp_xml."_bs";
 $temp_xml_cs1 = $settings->temp_xml."_cs1";
 $temp_xml_cs2 = $settings->temp_xml."_cs2";
-$temp_xml_gr  = $settings->temp_xml."_gr";
 
 if (file_exists($settings->temp_data)) {
     unlink($settings->temp_data);
@@ -129,11 +128,12 @@ if ($settings->gr_tuners != 0) {
             }
 
             // dump
-            $cmdline = "{$settings->epgdump} {$key} {$temp_filename} {$temp_xml_gr}{$channel_no}";
+            $xml = str_replace('.xml', "_GR{$channel_no}.xml", $settings->temp_xml);
+            $cmdline = "{$settings->epgdump} {$key} {$temp_filename} {$xml}";
             exec($cmdline);
 
             // parse
-            $cmdline = INSTALL_PATH."/storeProgram.php GR ".$temp_xml_gr.$channel_no." >/dev/null 2>&1 &";
+            $cmdline = INSTALL_PATH."/storeProgram.php GR {$xml} >/dev/null 2>&1 &";
             exec($cmdline);
         }
     }
