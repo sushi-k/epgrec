@@ -1,16 +1,32 @@
 
 CREATE TABLE IF NOT EXISTS Recorder_channelTbl (
 	channel_disc VARCHAR(128) NOT NULL,
-	type varchar(8) NOT NULL,
+	type VARCHAR(8) NOT NULL,
 	channel SMALLINT UNSIGNED NOT NULL,
 	name TEXT NOT NULL,
-	sid varchar(64) not null default 'hd',
+	sid VARCHAR(64) NOT NULL DEFAULT 'hd',
 	PRIMARY KEY(channel_disc)
 )ENGINE=InnoDB;
 
 -- DROP TABLE Recorder_categoryTbl;
-CREATE TABLE Recorder_categoryTbl(
-	category_disc varchar(128) NOT NULL PRIMARY KEY,
-	name_jp varchar(128) NOT NULL,
-	name_en varchar(128) NOT NULL
+CREATE TABLE IF NOT EXISTS Recorder_categoryTbl(
+	category_disc VARCHAR(128) NOT NULL PRIMARY KEY,
+	name_jp VARCHAR(128) NOT NULL,
+	name_en VARCHAR(128) NOT NULL
 )ENGINE=InnoDB;
+
+-- DROP TABLE Recorder_programTbl;
+CREATE TABLE IF NOT EXISTS Recorder_programTbl (
+	program_disc VARCHAR(128) NOT NULL,				-- 識別用hash
+	channel_disc VARCHAR(32) NOT NULL,				-- channel disc
+	type VARCHAR(8) NOT NULL DEFAULT 'GR',				-- 種別（GR/BS/CS）
+	channel VARCHAR(10) NOT NULL DEFAULT '0',			-- チャンネル
+	title VARCHAR(512) NOT NULL DEFAULT 'none',			-- タイトル
+	description VARCHAR(512) NOT NULL DEFAULT 'none',		-- 説明 text->VARCHAR
+	category_disc VARCHAR(128) NOT NULL DEFAULT 'none',		-- カテゴリID
+	starttime datetime NOT NULL DEFAULT '1970-01-01 00:00:00',	-- 開始時刻
+	endtime datetime NOT NULL DEFAULT '1970-01-01 00:00:00',	-- 終了時刻
+	autorec boolean NOT NULL DEFAULT '1',				-- 自動録画有効無効
+	PRIMARY KEY(program_disc)
+)ENGINE=InnoDB;
+
