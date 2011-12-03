@@ -25,7 +25,7 @@ echo "<div>現在、config.phpでは以下のチャンネルの受信が設定�
 ンネルが混ざっていると番組表が表示できません。</div>";
 
 echo "<ul>";
-foreach( $GR_CHANNEL_MAP as $key => $value ) {
+foreach( ChannelMaster::$GR as $key => $value ) {
         echo "<li>物理チャンネル".$value."</li>";
 }
 echo "</ul>";

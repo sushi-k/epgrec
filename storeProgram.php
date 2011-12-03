@@ -1,7 +1,6 @@
 #!/usr/bin/php
 <?php
 // xmlファイルをパースして番組情報を更新する
-
 require_once('config.php');
 require_once( INSTALL_PATH . '/DBRecord.class.php' );
 require_once( INSTALL_PATH . '/Reservation.class.php' );
@@ -11,13 +10,15 @@ require_once( INSTALL_PATH . '/Settings.class.php' );
 $settings = Settings::factory();
   
 function updateProgram($type, $xmlfile) {
-    global $BS_CHANNEL_MAP, $GR_CHANNEL_MAP, $CS_CHANNEL_MAP;
+    global $BS_CHANNEL_MAP;
+    global $CS_CHANNEL_MAP;
+
     // チャンネルマップファイルの準備
     $map = array();
     if ($type === "BS") {
        $map = $BS_CHANNEL_MAP;
     } else if ($type === "GR") {
-       $map = $GR_CHANNEL_MAP;
+       $map = ChannelMaster::$GR;
     } else if ($type === "CS") {
        $map = $CS_CHANNEL_MAP;
     }

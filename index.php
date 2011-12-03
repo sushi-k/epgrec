@@ -1,5 +1,4 @@
 <?php
-
 include_once("config.php");
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
 include_once( INSTALL_PATH . "/Smarty/Smarty.class.php" );
@@ -46,7 +45,7 @@ $last_time = $top_time + 3600 * $program_length;
  // 番組表
  $programs = array();
  if( $type == "BS" ) $channel_map = $BS_CHANNEL_MAP;
- else if( $type == "GR" ) $channel_map = $GR_CHANNEL_MAP;
+ else if( $type == "GR" ) $channel_map = ChannelMaster::$GR;
  else if( $type == "CS" ) $channel_map = $CS_CHANNEL_MAP;
  $st = 0;
  $prec = null;

@@ -104,7 +104,7 @@ if( $settings->bs_tuners != 0 ) {
 
 // 地上波を処理する
 if ($settings->gr_tuners != 0) {
-    foreach ($GR_CHANNEL_MAP as $key => $channel_no) {
+    foreach (ChannelMaster::$GR as $key => $channel_no) {
         // 録画重複チェック
         $num = DBRecord::countRecords(
             RESERVE_TBL,
