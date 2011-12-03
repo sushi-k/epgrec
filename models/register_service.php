@@ -78,14 +78,15 @@ class RegisterService
                     }
                 }
                 $row = array(
+                    'program_disc' => $program_disc,
                     'channel_disc' => $channel_disc,
+                    'category_disc' => $category_disc,
                     'type' => $type,
                     'channel' => $channel['channel'],
                     'title' => (string)$program->title,
                     'description' => $desc,
                     'starttime' => $starttime,
                     'endtime' => $endtime,
-                    'program_disc' => $program_disc,
                 );
                 $db->replace('Recorder_programTbl', $row);
                 $db->commit();
@@ -117,31 +118,20 @@ class RegisterService
         }
 
         // channel抽出
-        updateChannel($type, $xml);
+        RegisterService::updateChannel($type, $xml);
 
         // programme 取得
-        updateProgram($type, $xml);
+        RegisterService::updateProgram($type, $xml);
     }
 
     public static function cleanup()
     {
         // 不要なプログラムの削除
         // 8日以上前のプログラムを消す
-        $arr = DBRecord::createRecords(PROGRAM_TBL, "WHERE endtime < subdate( now(), 8 )");
-        foreach( $arr as $val ) $val->delete();
+        $db = DB::conn();
+        $db->query("DELETE FROM Recorder_programTbl WHERE endtime < SUBDATE(NOW(), 8)");
 
         // 8日以上先のデータがあれば消す
-        $arr = DBRecord::createRecords(PROGRAM_TBL, "WHERE starttime  > adddate( now(), 8 )");
-        foreach( $arr as $val ) $val->delete();
-
-        // キーワード自動録画予約
-        $arr = Keyword::createKeywords();
-        foreach($arr as $val) {
-            try {
-                $val->reservation();
-            } catch(Exception $e) {
-                // 無視
-            }
-        }
+        $db->query("DELETE FROM Recorder_programTbl WHERE endtime > adddate(NOW(), 8)");
     }
 }
