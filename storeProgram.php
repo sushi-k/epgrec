@@ -1,10 +1,8 @@
 #!/usr/bin/php
 <?php
 // xmlファイルをパースして番組情報を更新する
-require_once('config.php');
-require_once( INSTALL_PATH . '/DBRecord.class.php' );
-require_once( INSTALL_PATH . '/Reservation.class.php' );
-require_once( INSTALL_PATH . '/Keyword.class.php' );
+// キーワードを指定して自動録画する機能は未実装
+require_once 'config.php';
   
 $type = $argv[1];	// BS CS GR
 $xml = $argv[2];	// XMLファイル
