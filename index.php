@@ -89,7 +89,12 @@ foreach ($channel_map as $channel_disc => $channel) {
             // プログラムを埋める
             $category = $db->row('SELECT * FROM Recorder_categoryTbl WHERE category_disc = ?', array($program['category_disc']));
             //$cat = new DBRecord(CATEGORY_TBL, "category_disc", $program['category_disc'] );
-            $programs[$st]['list'][$num]['category_name'] = $category['name_en'];
+            if ($category === false) {
+                $category_name = 'none';
+            } else {
+                $category_name = $category['name_en'];
+            }
+            $programs[$st]['list'][$num]['category_name'] = $category_name;
             $programs[$st]['list'][$num]['height'] = $height;
             $programs[$st]['list'][$num]['title'] = $program['title'];
             $programs[$st]['list'][$num]['starttime'] = date("H:i", $start )."" ;
