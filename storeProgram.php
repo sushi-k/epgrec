@@ -23,38 +23,35 @@ function updateProgram($type, $xmlfile) {
     }
 
     // XML parse
-    $xml = @simplexml_load_file( $xmlfile );
-    if( $xml === false ) {
-        return;	// XMLが読み取れないなら何もしない
+    $xml = simplexml_load_file($xmlfile);
+    if ($xml === false) {
+        throw new RuntimeException('simplexml parse error');
     }
+
     // channel抽出
-    foreach( $xml->channel as $ch ) {
+    foreach ($xml->channel as $ch) {
         $disc = $ch['id'];
         try {
             // チャンネルデータを探す
             $num = DBRecord::countRecords( CHANNEL_TBL , "WHERE channel_disc = '" . $disc ."'" );
-            if( $num == 0 ) {
+            if ($num == 0) {
                 // チャンネルデータがないなら新規作成
-                $rec = new DBRecord( CHANNEL_TBL );
+                $rec = new DBRecord(CHANNEL_TBL);
                 $rec->type = $type;
                 $rec->channel = $map["$disc"];
                 $rec->channel_disc = $disc;
                 $rec->name = $ch->{'display-name'};
-            }
-            else {
+            } else {
                 // 存在した場合も、とりあえずチャンネル名は更新する
                 $rec = new DBRecord(CHANNEL_TBL, "channel_disc", $disc );
                 $rec->name = $ch->{'display-name'};
             }
-        }
-        catch( Exception $e ) {
-            // 無視
+        } catch(Exception $e) {
+            throw $e;
         }
     }
-    // channel 終了
 
     // programme 取得
-
     foreach( $xml->programme as $program ) {
         $channel_disc = $program['channel']; 
         $channel = $map["$channel_disc"];
@@ -161,11 +158,11 @@ function cleanup()
 }
 
 $type = $argv[1];	// BS CS GR
-$file = $argv[2];	// XMLファイル
+$xml = $argv[2];	// XMLファイル
   
-if (file_exists($file)) {
-    updateProgram($type, $file);
-    unlink($file);
+if (file_exists($xml)) {
+    updateProgram($type, $xml);
+    unlink($xml);
 }
 
 cleanup();
