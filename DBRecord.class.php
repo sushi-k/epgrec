@@ -90,7 +90,7 @@ class DBRecord {
 		if( $res == FALSE )  throw new exception("set:セット失敗" );
 	}
 	
-	function __get( $property ) {
+	function __get($property) {
 		if( $this->id == 0 ) throw new exception( "get:無効なid" );
 		if( $property == "id" ) return $this->id;
 		
