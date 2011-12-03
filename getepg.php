@@ -6,11 +6,6 @@ require_once INSTALL_PATH . '/Reservation.class.php';
 require_once INSTALL_PATH . '/Keyword.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
 
-// 後方互換性
-if( ! defined( "BS_EPG_CHANNEL" )  ) define( "BS_EPG_CHANNEL",  "211"  );
-if( ! defined( "CS1_EPG_CHANNEL" ) ) define( "CS1_EPG_CHANNEL", "CS8"  );
-if( ! defined( "CS2_EPG_CHANNEL" ) ) define( "CS2_EPG_CHANNEL", "CS24" );
-
 /**
  * is_dumped
  *
