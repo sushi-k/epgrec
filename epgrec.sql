@@ -30,3 +30,12 @@ CREATE TABLE IF NOT EXISTS Recorder_programTbl (
 	PRIMARY KEY(program_disc)
 )ENGINE=InnoDB;
 
+-- DROP TABLE IF EXISTS Recorder_reserveTbl;
+CREATE TABLE IF NOT EXISTS Recorder_reserveTbl (
+	program_disc VARCHAR(128) NOT NULL,		-- Program ID
+	job INT UNSIGNED NOT NULL DEFAULT '0',		-- job番号
+	complete boolean NOT NULL DEFAULT '0',		-- 完了フラグ
+	autorec INT UNSIGNED NOT NULL DEFAULT '0',	-- キーワードID
+	mode INT UNSIGNED NOT NULL DEFAULT '0',		-- 録画モード
+	PRIMARY KEY(program_disc)
+)ENGINE=InnoDB;
