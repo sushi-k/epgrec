@@ -1,19 +1,26 @@
 <?php
-include_once('config.php');
-include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/Reservation.class.php" );
-include_once( INSTALL_PATH . "/reclib.php" );
-include_once( INSTALL_PATH . "/Settings.class.php" );
+// 簡易予約
+require_once 'config.php';
 
-if( ! isset( $_GET['program_id'] ) ) exit("Error: 番組が指定されていません" );
+if (!isset($_GET['program_id'])) {
+    exit("Error: 番組が指定されていません");
+}
+
 $program_id = $_GET['program_id'];
-
-$settings = Settings::factory();
-
 try {
-	Reservation::simple( $program_id , 0, $settings->autorec_mode);
+    // 同一番組をすでに予約している場合警告
+    // 同時間帯に別のチャンネルを予約している場合に警告
+    $db = DB::conn();
+    $program = $db->row('SELECT * FROM Recorder_programTbl WHERE program_disc = ?', array($program_id));
+    $row = array(
+        'program_disc' => $program['program_disc'],
+        'autorec' => 0,
+        'mode' => 0,
+        'job' => 0,
+    );
+    $db->insert('Recorder_reserveTbl', $row);
+} catch( Exception $e ) {
+    throw $e;
 }
-catch( Exception $e ) {
-	exit( "Error:". $e->getMessage() );
-}
+
 ?>

@@ -88,13 +88,13 @@ foreach ($channel_map as $channel_disc => $channel) {
 
             // プログラムを埋める
             $category = $db->row('SELECT * FROM Recorder_categoryTbl WHERE category_disc = ?', array($program['category_disc']));
-            //$cat = new DBRecord(CATEGORY_TBL, "category_disc", $program['category_disc'] );
             if ($category === false) {
                 $category_name = 'none';
             } else {
                 $category_name = $category['name_en'];
             }
             $programs[$st]['list'][$num]['category_name'] = $category_name;
+            $programs[$st]['list'][$num]['program_disc'] = $program['program_disc'];
             $programs[$st]['list'][$num]['height'] = $height;
             $programs[$st]['list'][$num]['title'] = $program['title'];
             $programs[$st]['list'][$num]['starttime'] = date("H:i", $start )."" ;
@@ -102,8 +102,11 @@ foreach ($channel_map as $channel_disc => $channel) {
             $programs[$st]['list'][$num]['prg_start'] = str_replace( "-", "/", $program['starttime']);
             $programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($program['endtime']) - toTimestamp($program['starttime']));
             $programs[$st]['list'][$num]['channel'] = ($program['type'] == "GR" ? "地上D" : "BS" ) . ":". $program['channel'] . "ch";
-            $programs[$st]['list'][$num]['id'] = "" . ($program['id']);
-            $programs[$st]['list'][$num]['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE complete = '0' AND program_id = '".$program['id']."'" );
+            if (Reserve::isReserved($program['program_disc'])) {
+                $programs[$st]['list'][$num]['rec'] = 1;
+            } else {
+                $programs[$st]['list'][$num]['rec'] = 0;
+            }
             $num++;
         }
     } catch( exception $e ) {
