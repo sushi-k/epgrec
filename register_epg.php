@@ -3,11 +3,8 @@
  * register_epg.php
  *
  */
-
 mb_language("ja");
-
 require_once dirname(__FILE__) . '/config.php';
-require_once dirname(__FILE__) . '/DBRecord.class.php';
 
 function cleanTmp()
 {
@@ -43,23 +40,11 @@ function debug($msg)
     echo $msg . PHP_EOL;
 }
 
-$pdo = new PDO(
-    'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME,
-    DB_USER,
-    DB_PASS,
-    array(
-        'PDO::MYSQL_ATTR_INIT_COMMAND' => 'SET NAMES utf8',
-    )
-);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$now = $pdo->quote(date('Y-m-d H:i:s'));
-$sql = <<<EOD
-SELECT * FROM epgrec_reserveTbl WHERE complete = 0 AND starttime > {$now}
-EOD;
+$db = DB::conn();
+$rows = $db->rows('SELECT * FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_programTbl.program_disc = Recorder_reserveTbl.program_disc WHERE complete = 0 AND starttime > NOW()');
 
 $list = array();
-foreach ($pdo->query($sql) as $row) {
+foreach ($rows as $row) {
     $list[] = convert_cron($row);
 }
 
