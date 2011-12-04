@@ -4,8 +4,6 @@
  * 番組表を取得する。crontabに登録しておく。
  */
 require_once 'config.php';
-require_once INSTALL_PATH . '/DBRecord.class.php';
-require_once INSTALL_PATH . '/Reservation.class.php';
 require_once INSTALL_PATH . '/Keyword.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
 
@@ -130,9 +128,6 @@ if ($settings->gr_tuners != 0) {
             exec($cmdline);
 
             // parse
-            //$cmdline = INSTALL_PATH."/storeProgram.php GR {$xml} >/dev/null 2>&1 &";
-            //exec($cmdline);
-            
             if (file_exists($xml)) {
                 RegisterService::storeProgram('GR', $xml);
                 RegisterService::cleanup();
@@ -141,4 +136,3 @@ if ($settings->gr_tuners != 0) {
         }
     }
 }
-?>
