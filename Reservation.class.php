@@ -48,8 +48,8 @@ class Reservation {
 		$settings = Settings::factory();
 
 		// 時間を計算
-		$start_time = toTimestamp( $starttime );
-		$end_time = toTimestamp( $endtime ) + $settings->extra_time;
+		$start_time = strtotime( $starttime );
+		$end_time = strtotime( $endtime ) + $settings->extra_time;
 		
 		if( $start_time < (time() + PADDING_TIME + 10) ) {	// 現在時刻より3分先より小さい＝すでに開始されている番組
 			$start_time = time() + PADDING_TIME + 10;		// 録画開始時間を3分10秒先に設定する
@@ -128,13 +128,13 @@ class Reservation {
 						$prev_autorec      = $trecs[$i]->autorec;
 						$prev_mode         = $trecs[$i]->mode;
 						
-						$prev_start_time = toTimestamp($prev_starttime);
+						$prev_start_time = strtotime($prev_starttime);
 						// 始まっていない予約？
 						if( $prev_start_time > (time() + PADDING_TIME + $settings->former_time) ) {
 							// 開始時刻を元に戻す
 							$prev_starttime = toDatetime( $prev_start_time + $settings->former_time );
 							// 終わりをちょっとだけずらす
-							$prev_endtime   = toDatetime( toTimestamp($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
+							$prev_endtime   = toDatetime( strtotime($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
 							
 							// tryのネスト
 							try {
@@ -345,7 +345,7 @@ class Reservation {
 			}
 			if( ! $rec->complete ) {
 				// 未実行の予約である
-				if( toTimestamp($rec->starttime) < (time() + PADDING_TIME + $settings->former_time) )
+				if( strtotime($rec->starttime) < (time() + PADDING_TIME + $settings->former_time) )
 					throw new Exception("過去の録画予約です");
 				exec( $settings->atrm . " " . $rec->job );
 			}

@@ -29,7 +29,7 @@ try {
 		$rec->title = trim( $_POST['title'] );
 		if( ($dbh !== false) && ($rec->complete == 1) ) {
 			$title = trim( mysql_real_escape_string($_POST['title']));
-			$title .= "(".date("Y/m/d", toTimestamp($rec->starttime)).")";
+			$title .= "(".date("Y/m/d", strtotime($rec->starttime)).")";
 			$sqlstr = "update mt_cds_object set dc_title='".$title."' where metadata regexp 'epgrec:id=".$reserve_id."$'";
 			@mysql_query( $sqlstr );
 		}

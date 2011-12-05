@@ -1,6 +1,5 @@
 <?php
 require_once "config.php";
-require_once  INSTALL_PATH . "/DBRecord.class.php";
 require_once  INSTALL_PATH . "/Smarty/Smarty.class.php";
 require_once  INSTALL_PATH . "/reclib.php";
 require_once  INSTALL_PATH . "/Settings.class.php";
@@ -64,7 +63,7 @@ foreach ($channel_map as $channel_disc => $channel) {
         $num = 0;
         foreach ($items as $program) {
             // 前プログラムとの空きを調べる
-            $start = toTimestamp( $program['starttime'] );
+            $start = strtotime($program['starttime']);
             if (($start - $prev_end) > 0) {
                 $height = ($start-$prev_end) * $settings->height_per_hour / 3600;
                 $programs[$st]['list'][$num]['category_none'] = "none";
@@ -74,16 +73,16 @@ foreach ($channel_map as $channel_disc => $channel) {
                 $programs[$st]['list'][$num]['description'] = "";
                 $num++;
             }
-            $prev_end = toTimestamp( $program['endtime'] );
+            $prev_end = strtotime( $program['endtime'] );
 
-            $height = ((toTimestamp($program['endtime']) - toTimestamp($program['starttime'])) * $settings->height_per_hour / 3600);
+            $height = ((strtotime($program['endtime']) - strtotime($program['starttime'])) * $settings->height_per_hour / 3600);
             // $top_time より早く始まっている番組
-            if (toTimestamp($program['starttime']) < $top_time) {
-                $height = ((toTimestamp($program['endtime']) - $top_time ) * $settings->height_per_hour / 3600);
+            if (strtotime($program['starttime']) < $top_time) {
+                $height = ((strtotime($program['endtime']) - $top_time ) * $settings->height_per_hour / 3600);
             }
             // $last_time より遅く終わる番組
-            if (toTimestamp($program['endtime']) > $last_time) {
-                $height = (($last_time - toTimestamp($program['starttime'])) * $settings->height_per_hour / 3600);
+            if (strtotime($program['endtime']) > $last_time) {
+                $height = (($last_time - strtotime($program['starttime'])) * $settings->height_per_hour / 3600);
             }
 
             // プログラムを埋める
@@ -100,7 +99,7 @@ foreach ($channel_map as $channel_disc => $channel) {
             $programs[$st]['list'][$num]['starttime'] = date("H:i", $start )."" ;
             $programs[$st]['list'][$num]['description'] = $program['description'];
             $programs[$st]['list'][$num]['prg_start'] = str_replace( "-", "/", $program['starttime']);
-            $programs[$st]['list'][$num]['duration'] = "" . (toTimestamp($program['endtime']) - toTimestamp($program['starttime']));
+            $programs[$st]['list'][$num]['duration'] = "" . (strtotime($program['endtime']) - strtotime($program['starttime']));
             $programs[$st]['list'][$num]['channel'] = ($program['type'] == "GR" ? "地上D" : "BS" ) . ":". $program['channel'] . "ch";
             if (Reserve::isReserved($program['program_disc'])) {
                 $programs[$st]['list'][$num]['rec'] = 1;

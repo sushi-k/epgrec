@@ -19,8 +19,8 @@ $reserve_id = $_GET['reserve_id'];
 try{
 	$rrec = new DBRecord( RESERVE_TBL, "id", $reserve_id );
 
-	$start_time = toTimestamp($rrec->starttime);
-	$end_time = toTimestamp($rrec->endtime );
+	$start_time = strtotime($rrec->starttime);
+	$end_time = strtotime($rrec->endtime );
 	$duration = $end_time - $start_time + $settings->former_time;
 
 	$dh = $duration / 3600;
