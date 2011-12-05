@@ -1,7 +1,6 @@
 <?php
 require_once "config.php";
 require_once  INSTALL_PATH . "/Smarty/Smarty.class.php";
-require_once  INSTALL_PATH . "/reclib.php";
 require_once  INSTALL_PATH . "/Settings.class.php";
 
 // 設定ファイルの有無を検査する

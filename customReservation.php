@@ -1,7 +1,6 @@
 <?php
 include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Reservation.class.php" );
 include_once( INSTALL_PATH . "/Settings.class.php" );
 

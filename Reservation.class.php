@@ -1,12 +1,9 @@
 <?php
 include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Settings.class.php" );
 
-
 // 予約クラス
-
 class Reservation {
 	
 	public static function simple( $program_id , $autorec = 0, $mode = 0) {
