@@ -78,8 +78,8 @@ if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) 
     $do_keyword = 1;
 }
 
+$db = DB::conn();
 try {
-    $db = DB::conn();
     $programs = $db->rows("SELECT * FROM Recorder_programTbl LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc {$options}");
     foreach ($programs as $key => $program) {
         $channel = Channel::get($program['channel_disc']);
@@ -89,22 +89,31 @@ try {
         //$programs[$key]['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE program_id='".$p->id."'");
         $programs[$key]['rec'] = 0;
     }
+} catch( exception $e ) {
+    throw $e;
+}
 
+try {
     $k_category_name = "";
-    $crecs = DBRecord::createRecords(CATEGORY_TBL);
-    $cats = array();
-    $cats[0]['id'] = 0;
-    $cats[0]['name'] = "すべて";
-    $cats[0]['selected'] = $category_id == 0 ? "selected" : "";
-    foreach( $crecs as $c ) {
-        $arr = array();
-        $arr['id'] = $c->id;
-        $arr['name'] = $c->name_jp;
-        $arr['selected'] = $c->id == $category_id ? "selected" : "";
-        if( $c->id == $category_id ) $k_category_name = $c->name_jp;
-        array_push( $cats, $arr );
+    $categories = $db->rows('SELECT * FROM Recorder_categoryTbl');
+    $first_category = array(
+        'id' => 0,
+        'name' => "すべて",
+        'selected' => $category_id == 0 ? "selected" : "",
+    );
+    foreach ($categories as $key => $category) {
+        $categories[$key]['name'] = $category['name_jp'];
+        $categories[$key]['selected'] = $category['category_disc'] == $category_id ? "selected" : "";
+        if ($catgory->category_disc == $category_id) {
+           $k_category_name = $category['name_jp'];
+        }
     }
+    array_unshift($categories, $first_category);
+} catch( exception $e ) {
+    throw $e;
+}
 
+try {
     $types = array();
     $types[0]['name'] = "すべて";
     $types[0]['value'] = "*";
@@ -134,42 +143,40 @@ try {
     }
 
     $k_station_name = "";
-    $crecs = DBRecord::createRecords(CHANNEL_TBL);
-    $stations = array();
-    $stations[0]['id'] = 0;
-    $stations[0]['name'] = "すべて";
-    $stations[0]['selected'] = (! $station) ? "selected" : "";
-    foreach( $crecs as $c ) {
-        $arr = array();
-        $arr['id'] = $c->id;
-        $arr['name'] = $c->name;
-        $arr['selected'] = $station == $c->id ? "selected" : "";
-        if( $station == $c->id ) $k_station_name = $c->name;
-        array_push( $stations, $arr );
+    $channels = $db->rows('SELECT * FROM Recorder_channelTbl');
+    $first_channel[0]['id'] = 0;
+    $first_channel[0]['name'] = "すべて";
+    $first_channel[0]['selected'] = (!$station) ? "selected" : "";
+    foreach ($channels as $key => $channel) {
+        $channels[$key]['selected'] = $station == $channel['channel_disc'] ? "selected" : "";
+        if ($station == $channel['channel_disc']) {
+           $k_station_name = $c->name;
+        }
     }
+    array_unshift($channels, $first_channel);
     $weekofdays["$weekofday"]["selected"] = "selected" ;
-} catch( exception $e ) {
+} catch (Exception $e) {
     throw $e;
 }
 
 $smarty = new Smarty();
 $smarty->assign("sitetitle","番組検索");
-$smarty->assign("do_keyword", $do_keyword );
-$smarty->assign( "programs", $programs );
-$smarty->assign( "cats", $cats );
-$smarty->assign( "k_category", $category_id );
-$smarty->assign( "k_category_name", $k_category_name );
-$smarty->assign( "types", $types );
-$smarty->assign( "k_type", $type );
-$smarty->assign( "search" , $search );
-$smarty->assign( "use_regexp", $use_regexp );
-$smarty->assign( "stations", $stations );
-$smarty->assign( "k_station", $station );
-$smarty->assign( "k_station_name", $k_station_name );
-$smarty->assign( "weekofday", $weekofday );
-$smarty->assign( "k_weekofday", $weekofdays["$weekofday"]["name"] );
-$smarty->assign( "weekofday", $weekofday );
-$smarty->assign( "weekofdays", $weekofdays );
-$smarty->assign( "autorec_modes", $autorec_modes );
+$smarty->assign("do_keyword", $do_keyword);
+$smarty->assign("programs", $programs);
+$smarty->assign("cats", $categories);
+$smarty->assign("k_category", $category_id);
+$smarty->assign("k_category_name", $k_category_name);
+$smarty->assign("types", $types);
+$smarty->assign("k_type", $type);
+$smarty->assign("search" , $search);
+$smarty->assign("use_regexp", $use_regexp);
+$smarty->assign("stations", $channels);
+$smarty->assign("k_station", $station);
+$smarty->assign("k_station_name", $k_station_name);
+$smarty->assign("weekofday", $weekofday);
+$smarty->assign("k_weekofday", $weekofdays["$weekofday"]["name"]);
+$smarty->assign("weekofday", $weekofday);
+$smarty->assign("weekofdays", $weekofdays);
+$smarty->assign("autorec_modes", $autorec_modes);
 $smarty->display("programTable.html");
 
