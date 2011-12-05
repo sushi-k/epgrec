@@ -1,10 +1,48 @@
 <?php
 /**
- *
+ * 番組表作成のための、録画、録画データからのxml dump, xmlの解析登録を行う
  *
  */
-class RegisterService
+class RecorderService
 {
+    public static function doRecord($options = array())
+    {
+        $command = '';
+        foreach ($options as $key => $value) {
+            if (!is_numeric($value)) {
+                $value = '"' . $value . '"';
+            }
+            $command .= strtoupper($key) . "={$value} ";
+        }
+        $command .= INSTALL_PATH . "/do-record.sh >/dev/null 2>&1";
+        return exec($command);
+    }
+
+    /**
+     * isDumped
+     *
+     * １時間以内のepgdumpデータがあるかどうか
+     */
+    public static function isDumped($xml_file) {
+        if(!file_exists($xml_file)) {
+            return false;
+        }
+
+        // 1時間以上前のファイルなら削除してやり直す
+        if( (time() - filemtime( $xml_file )) > 3600 ) {
+            unlink($xml_file);
+            return false;
+        }
+
+        // ファイルサイズ0の場合friioに問題がある可能性
+        if (filesize($xml_file) <= 0) {
+            unlink($xml_file);
+            throw new RuntimeException("invalid dump log: {$xml_file} is empty.");
+        }
+
+        return true;
+    }
+
     private static function updateChannel($type, $xml) {
         try {
             $db = DB::conn();
@@ -118,10 +156,10 @@ class RegisterService
         }
 
         // channel抽出
-        RegisterService::updateChannel($type, $xml);
+        RecorderService::updateChannel($type, $xml);
 
         // programme 取得
-        RegisterService::updateProgram($type, $xml);
+        RecorderService::updateProgram($type, $xml);
     }
 
     public static function cleanup()

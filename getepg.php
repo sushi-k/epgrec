@@ -7,44 +7,6 @@ require_once 'config.php';
 require_once INSTALL_PATH . '/Keyword.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
 
-/**
- * is_dumped
- *
- * １時間以内のepgdumpデータがあるかどうか
- */
-function is_dumped($xml_file) {
-    if(!file_exists($xml_file)) {
-       return false;
-    }
-
-    // 1時間以上前のファイルなら削除してやり直す
-    if( (time() - filemtime( $xml_file )) > 3600 ) {
-        unlink($xml_file);
-        return false;
-    }
-
-    // ファイルサイズ0の場合friioに問題がある可能性
-    if (filesize($xml_file) <= 0) {
-        unlink($xml_file);
-        throw new RuntimeException("invalid dump log: {$xml_file} is empty.");
-    }
-
-    return true;
-}
-
-function do_record($options = array())
-{
-    $command = '';
-    foreach ($options as $key => $value) {
-        if (!is_numeric($value)) {
-            $value = '"' . $value . '"';
-        }
-        $command .= strtoupper($key) . "={$value} ";
-    }
-    $command .= INSTALL_PATH . "/do-record.sh >/dev/null 2>&1";
-    return exec($command);
-}
-
 $settings = Settings::factory();
 
 $temp_xml_bs  = $settings->temp_xml."_bs";
@@ -60,7 +22,7 @@ if( $settings->bs_tuners != 0 ) {
     // 録画重複チェック
     $num = DBRecord::countRecords(RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
     if($num == 0) {
-        if (!is_dumped($temp_xml_bs)) {
+        if (!RecorderService::isDumped($temp_xml_bs)) {
             $cmdline = "CHANNEL=".BS_EPG_CHANNEL." DURATION=180 TYPE=BS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
             exec( $cmdline );
         }
@@ -75,7 +37,7 @@ if( $settings->bs_tuners != 0 ) {
     if ($settings->cs_rec_flg != 0) {
         $num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
         if ($num == 0) {
-            if (!is_dumped($temp_xml_cs1)) {
+            if (!RecorderService::isDumped($temp_xml_cs1)) {
                 $cmdline = "CHANNEL=".CS1_EPG_CHANNEL." DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
                 exec( $cmdline );
             }
@@ -87,7 +49,7 @@ if( $settings->bs_tuners != 0 ) {
         }
         $num = DBRecord::countRecords(  RESERVE_TBL, "WHERE complete = '0' AND (type = 'BS' OR type = 'CS') AND endtime > now() AND starttime < addtime( now(), '00:03:05')" );
         if($num == 0) {
-            if (!is_dumped($temp_xml_cs2)) {
+            if (!RecorderService::isDumped($temp_xml_cs2)) {
                 $cmdline = "CHANNEL=".CS2_EPG_CHANNEL." DURATION=120 TYPE=CS TUNER=0 MODE=0 OUTPUT=".$settings->temp_data." ".DO_RECORD . " >/dev/null 2>&1";
                 exec( $cmdline );
             }
@@ -105,12 +67,12 @@ if ($settings->gr_tuners != 0) {
     foreach (ChannelMaster::$GR as $key => $channel_no) {
         // 録画重複チェック
         $db = DB::conn();
-        $row = $db->row("SELECT COUNT(*) FROM Recorder_reserveTbl WHERE complete = '0' AND type = 'GR' AND endtime > NOW() AND starttime < addtime( NOW(), '00:01:10')");
+        $row = $db->row("SELECT COUNT(*) FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_reserveTbl.program_disc = Recorder_programTbl.program_disc WHERE complete = '0' AND type = 'GR' AND endtime > NOW() AND starttime < addtime( NOW(), '00:01:10')");
         if (is_array($row) && current($row) == 0) {
             $temp_filename = str_replace('.ts', "_GR{$channel_no}.ts", $settings->temp_data);
 
             // 直近1時間のtsない時だけ作る
-            if (!is_dumped($temp_filename)) {
+            if (!RecorderService::isDumped($temp_filename)) {
                 $options = array(
                     'CHANNEL' => $channel_no,
                     'DURATION' => 60,
@@ -119,7 +81,7 @@ if ($settings->gr_tuners != 0) {
                     'MODE' => 0,
                     'OUTPUT' => $temp_filename,
                 );
-                do_record($options);
+                RecorderService::doRecord($options);
             }
 
             // dump
