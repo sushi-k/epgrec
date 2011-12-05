@@ -3,7 +3,8 @@
  *
  *
  */
-class Program extends Model {
+class Program extends Model
+{
 
     public static function get($program_disc)
     {
