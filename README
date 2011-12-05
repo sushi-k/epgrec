@@ -106,9 +106,6 @@ reservationform.php
 sendstream.php
 -録画中に視聴するためのストリーミングを流すスクリプト（未完成）
 
-simpleReservation.php
--簡易予約実行（JavaScriptから呼ばれる）
-
 systemSetting.php
 -システム設定ページ
 
