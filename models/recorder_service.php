@@ -71,9 +71,8 @@ class RecorderService
         foreach ($xml->programme as $program) {
             $channel_disc = (string)$program['channel']; 
             $channel = $db->row('SELECT * FROM Recorder_channelTbl WHERE channel_disc = ?', array($channel_disc));
-            $starttime = str_replace(" +0900", '', $program['start'] );
-            $endtime = str_replace( " +0900", '', $program['stop'] );
-            $desc = (string)$program->desc;
+            $starttime = str_replace(" +0900", '', $program['start']);
+            $endtime = str_replace(" +0900", '', $program['stop']);
             $cat_ja = '';
             $cat_en = '';
             foreach ($program->category as $cat) {
@@ -96,23 +95,11 @@ class RecorderService
                 $db->replace('Recorder_categoryTbl', $row);
 
                 // 重複チェック 同時間帯にある番組
-                $is_batting = $db->row('SELECT * FROM Recorder_programTbl WHERE channel_disc = ? AND starttime < ? AND endtime > ?', array($channel_disc, $starttime, $endtime));
+                $is_batting = $db->rows('SELECT * FROM Recorder_programTbl WHERE channel_disc = ? AND starttime < ? AND endtime > ?', array($channel_disc, $starttime, $endtime));
                 if ($is_batting !== false) {
                     // 重複発生＝おそらく放映時間の変更
-                    foreach ($is_batting as $rec) {
-                        var_dump($is_batting);
-                        exit;
-                        // 自動録画予約された番組は放映時間変更と同時にいったん削除する
-                        try {
-                            $reserve = new DBRecord(RESERVE_TBL, "program_id", $rec->id );
-                            if( $reserve->autorec ) {
-                                Reservation::cancel( $reserve->id );
-                            }
-                        } catch (Exception $e) {
-                            throw $e;
-                        }
-                        // 番組削除
-                        $rec->delete();
+                    foreach ($is_batting as $batting_program) {
+                        $db->query('DELETE FROM Recorder_programTbl WHERE program_disc = ?', array($batting_program['program_disc']));
                     }
                 }
                 $row = array(
@@ -122,7 +109,7 @@ class RecorderService
                     'type' => $type,
                     'channel' => $channel['channel'],
                     'title' => (string)$program->title,
-                    'description' => $desc,
+                    'description' => (string)$program->desc,
                     'starttime' => $starttime,
                     'endtime' => $endtime,
                 );
