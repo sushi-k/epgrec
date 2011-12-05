@@ -92,7 +92,7 @@ mediatomb.php
 postsettings.php
 　設定の更新（設定ページから呼ばれる）
 
-programTable.php
+search.php
 　番組検索ページ
 
 reclib.php
