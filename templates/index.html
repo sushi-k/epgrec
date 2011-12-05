@@ -101,7 +101,7 @@
 			});
 		},
 		rec:function(id){
-			$.get(INISet.prgRecordURL, { program_id: id } ,function(data){
+			$.get('api.php', { method: 'simpleReservation', program_id: id } ,function(data){
 				if(data.match(/^error/i)){
 					alert(data);
 					$('#floatBox4Dialog').dialog('close');
