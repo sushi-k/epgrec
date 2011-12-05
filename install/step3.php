@@ -11,16 +11,16 @@ $settings->save();
 
 // データベース接続チェック
 $dbh = @mysql_connect( $settings->db_host, $settings->db_user, $settings->db_pass );
-if( $dbh == false ) {
-	jdialog( "MySQLに接続できません。ホスト名/ユーザー名/パスワードを再チェックしてください", "step2.php" );
-	exit();
+if ($dbh == false) {
+    jdialog( "MySQLに接続できません。ホスト名/ユーザー名/パスワードを再チェックしてください", "step2.php" );
+    exit();
 }
 
 $sqlstr = "use ".$settings->db_name;
 $res = @mysql_query( $sqlstr );
 if( $res == false ) {
-	jdialog( "データベース名が異なるようです", "step2.php" );
-	exit();
+    jdialog( "データベース名が異なるようです", "step2.php" );
+    exit();
 }
 
 // DBテーブルの作成
@@ -37,13 +37,13 @@ try {
 
     $rec = new DBRecord( CATEGORY_TBL );
     $rec->createTable( CATEGORY_STRUCT );
-    
+
     $rec = new DBRecord( KEYWORD_TBL );
     $rec->createTable( KEYWORD_STRUCT );
 }
 catch( Exception $e ) {
-	jdialog("テーブルの作成に失敗しました。データベースに権限がない等の理由が考えられます。", "step2.php" );
-	exit();
+    jdialog("テーブルの作成に失敗しました。データベースに権限がない等の理由が考えられます。", "step2.php" );
+    exit();
 }
 
 $smarty = new Smarty();
