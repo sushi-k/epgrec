@@ -1,8 +1,8 @@
 <?php
-include_once('config.php');
-include_once( INSTALL_PATH . '/DBRecord.class.php' );
-include_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
-include_once( INSTALL_PATH . '/Settings.class.php' );
+require_once 'config.php';
+require_once INSTALL_PATH . '/DBRecord.class.php';
+require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
+require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
 
@@ -74,29 +74,20 @@ if(isset( $_POST['do_search'] )) {
 }
 $options .= " ORDER BY starttime ASC LIMIT 300";
 $do_keyword = 0;
-if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) )
+if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) ) {
 	$do_keyword = 1;
+}
 	
-try{
-	
-	$precs = DBRecord::createRecords(PROGRAM_TBL, $options );
-	
-	$programs = array();
-	foreach( $precs as $p ) {
-		$ch  = new DBRecord(CHANNEL_TBL, "id", $p->channel_id );
-		$cat = new DBRecord(CATEGORY_TBL, "id", $p->category_id );
-		$arr = array();
-		$arr['type'] = $p->type;
-		$arr['station_name'] = $ch->name;
-		$arr['starttime'] = $p->starttime;
-		$arr['endtime'] = $p->endtime;
-		$arr['title'] = $p->title;
-		$arr['description'] = $p->description;
-		$arr['id'] = $p->id;
-		$arr['cat'] = $cat->name_en;
-		$arr['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE program_id='".$p->id."'");
-		
-		array_push( $programs, $arr );
+try {
+    $db = DB::conn();
+    $programs = $db->rows("SELECT * FROM Recorder_programTbl LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc {$options}");
+	foreach ($programs as $key => $program) {
+        $channel = Channel::get($program['channel_disc']);
+		$category = new DBRecord(CATEGORY_TBL, "category_disc", $program['category_disc']);
+		$programs[$key]['station_name'] = $channel->name;
+		$programs[$key]['cat'] = $program['name_en'];
+		//$programs[$key]['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE program_id='".$p->id."'");
+        $programs[$key]['rec'] = 0;
 	}
 	
 	$k_category_name = "";
@@ -157,29 +148,28 @@ try{
 		array_push( $stations, $arr );
 	}
 	$weekofdays["$weekofday"]["selected"] = "selected" ;
+} catch( exception $e ) {
+    throw $e;
+}
 
-	$smarty = new Smarty();
-	$smarty->assign("sitetitle","番組検索");
-	$smarty->assign("do_keyword", $do_keyword );
-	$smarty->assign( "programs", $programs );
-	$smarty->assign( "cats", $cats );
-	$smarty->assign( "k_category", $category_id );
-	$smarty->assign( "k_category_name", $k_category_name );
-	$smarty->assign( "types", $types );
-	$smarty->assign( "k_type", $type );
-	$smarty->assign( "search" , $search );
-	$smarty->assign( "use_regexp", $use_regexp );
-	$smarty->assign( "stations", $stations );
-	$smarty->assign( "k_station", $station );
-	$smarty->assign( "k_station_name", $k_station_name );
-	$smarty->assign( "weekofday", $weekofday );
-	$smarty->assign( "k_weekofday", $weekofdays["$weekofday"]["name"] );
-	$smarty->assign( "weekofday", $weekofday );
-	$smarty->assign( "weekofdays", $weekofdays );
-	$smarty->assign( "autorec_modes", $autorec_modes );
-	$smarty->display("programTable.html");
-}
-catch( exception $e ) {
-	exit( $e->getMessage() );
-}
-?>
+$smarty = new Smarty();
+$smarty->assign("sitetitle","番組検索");
+$smarty->assign("do_keyword", $do_keyword );
+$smarty->assign( "programs", $programs );
+$smarty->assign( "cats", $cats );
+$smarty->assign( "k_category", $category_id );
+$smarty->assign( "k_category_name", $k_category_name );
+$smarty->assign( "types", $types );
+$smarty->assign( "k_type", $type );
+$smarty->assign( "search" , $search );
+$smarty->assign( "use_regexp", $use_regexp );
+$smarty->assign( "stations", $stations );
+$smarty->assign( "k_station", $station );
+$smarty->assign( "k_station_name", $k_station_name );
+$smarty->assign( "weekofday", $weekofday );
+$smarty->assign( "k_weekofday", $weekofdays["$weekofday"]["name"] );
+$smarty->assign( "weekofday", $weekofday );
+$smarty->assign( "weekofdays", $weekofdays );
+$smarty->assign( "autorec_modes", $autorec_modes );
+$smarty->display("programTable.html");
+
