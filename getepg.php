@@ -129,8 +129,8 @@ if ($settings->gr_tuners != 0) {
 
             // parse
             if (file_exists($xml)) {
-                RegisterService::storeProgram('GR', $xml);
-                RegisterService::cleanup();
+                RecorderService::storeProgram('GR', $xml);
+                RecorderService::cleanup();
                 // unlink($xml);
             }
         }
