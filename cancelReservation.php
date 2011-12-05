@@ -1,7 +1,6 @@
 <?php
 /**
- * 予約済みデータのキャンセルの場合、録画ファイルを削除する処理が追加されていたが、
- * 今回は録画ファイルをシステム上で管理しないので、処理を消した。
+ * キャンセルする場合は該当レコードをcrontabから削除する必要がある。
  */
 require_once 'config.php';
 require_once INSTALL_PATH . '/DBRecord.class.php';
