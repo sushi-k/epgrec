@@ -16,15 +16,16 @@ if (isset($_GET['program_id'])) {
     $reserve_id = $_GET['reserve_id'];
 }
 
-// 手動取り消しのときには、その番組を自動録画対象から外す
-if ($program_id) {
-    Program::disableAutorec($program_id);
-}
-
 // 予約取り消し実行
 try {
+    // 手動取り消しのときには、その番組を自動録画対象から外す
+    if ($program_id) {
+        Program::disableAutorec($program_id);
+    }
+
     // ２つの引数のうち、falseでないものを処理するようにできているらしい
     Reservation::cancel($reserve_id, $program_id);
 } catch (Exception $e) {
-    exit("Error" . $e->getMessage());
+    echo("Error" . $e->getMessage());
+    exit;
 }

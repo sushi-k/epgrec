@@ -5,6 +5,55 @@
  */
 class RecorderService
 {
+    // 予約番組付きのcrontabを作る
+    // 同一行があったら追加しない。
+    public static function generateCrontab()
+    {
+        $db = DB::conn();
+        $rows = $db->rows('SELECT * FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_programTbl.program_disc = Recorder_reserveTbl.program_disc WHERE complete = 0 AND starttime > NOW()');
+
+        $list = array();
+        foreach ($rows as $row) {
+            $list[] = RecorderService::convertCron($row);
+        }
+
+        $crontab = shell_exec('crontab -l');
+
+        foreach ($list as $key => $line) {
+            if (strpos($crontab, $line) !== false) {
+                unset($list[$key]);
+            } else {
+                $crontab .= $line . PHP_EOL;
+            }
+        }
+
+        return $crontab;
+    }
+
+    // レコードをcronのコマンドに変換する
+    public static function convertCron($row)
+    {
+        $delay = 60;
+
+        $start_date = strtotime($row['starttime']);
+        $start_date -= $delay;
+
+        $end_date = strtotime($row['endtime']);
+
+        $i = (int)date('i', $start_date);
+        $h = (int)date('H', $start_date);
+        $d = (int)date('d', $start_date);
+        $m = (int)date('m', $start_date);
+
+        $cmd = '/home/ha1t/bin/recfriio --b25 --strip';
+        $save_path = "/home/ha1t/tv/{$row['title']}_" . date("Ymd_His", $start_date) . '.ts';
+
+        $time = $end_date - $start_date;
+        $cron = "{$i} {$h} {$d} {$m} * {$cmd} {$row['channel']} {$time} \"{$save_path}\"";
+
+        return $cron;
+    }
+
     public static function doRecord($options = array())
     {
         $command = '';
