@@ -1,12 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>{$sitetitle}</title>
 <meta http-equiv="Content-Style-Type" content="text/css">
-
 {literal}
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
@@ -150,13 +147,13 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
 <input type="hidden" name="do_search" value="1" />
 検索語句<input type="text" size="20" name="search" value="{$search}" />
 局<select name="station">
-  {foreach from=$stations item=st}
+  {foreach from=$channels item=st}
     <option value="{$st.id}" {$st.selected}>{$st.name}</option>
   {/foreach}
   </select>
 カテゴリ<select name="category_id">
-  {foreach from=$cats item=cat}
-  <option value="{$cat.id}" {$cat.selected}>{$cat.name}</option>
+  {foreach from=$categories item=cat}
+  <option value="{$cat.category_disc}" {$cat.selected}>{$cat.name_jp}</option>
   {/foreach}
 </select>
 <input type="submit" value="絞り込む" />
