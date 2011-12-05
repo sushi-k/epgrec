@@ -45,7 +45,6 @@ $exec_files = array(
 	DO_RECORD,
 	COMPLETE_CMD,
 	INSTALL_PATH."/getepg.php",
-	INSTALL_PATH."/storeProgram.php",
 	$gen_thumbnail,
 );
 

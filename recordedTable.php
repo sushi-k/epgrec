@@ -1,8 +1,8 @@
 <?php
-include_once('config.php');
-include_once( INSTALL_PATH . '/DBRecord.class.php' );
-include_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
-include_once( INSTALL_PATH . '/Settings.class.php' );
+require_once('config.php');
+require_once( INSTALL_PATH . '/DBRecord.class.php' );
+require_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
+require_once( INSTALL_PATH . '/Settings.class.php' );
 
 $settings = Settings::factory();
 
