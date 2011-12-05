@@ -20,7 +20,7 @@ class Program extends Model
     // @TODO 同時間帯に別のチャンネルを予約している場合に警告
     public static function reserve($program_disc) {
         $db = DB::conn();
-        $program = $db->row('SELECT * FROM Recorder_programTbl WHERE program_disc = ?', array($program_id));
+        $program = $db->row('SELECT * FROM Recorder_programTbl WHERE program_disc = ?', array($program_disc));
         $row = array(
             'program_disc' => $program['program_disc'],
             'autorec' => 0,
