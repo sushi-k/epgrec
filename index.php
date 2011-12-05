@@ -56,7 +56,7 @@ foreach ($channel_map as $channel_disc => $channel) {
     $prev_end = $top_time;
     try {
         $channel = $db->row("SELECT * FROM Recorder_channelTbl WHERE channel_disc = ?", array($channel_disc));
-        $items = $db->rows('SELECT * FROM Recorder_programTbl WHERE channel_disc = ? AND endtime > ? AND starttime < ? ORDER BY starttime ASC', array($channel_disc, toDatetime($top_time), toDatetime($last_time)));
+        $items = $db->rows('SELECT * FROM Recorder_programTbl WHERE channel_disc = ? AND endtime > ? AND starttime < ? ORDER BY starttime ASC', array($channel_disc, date('Y-m-d H:i:s', $top_time), date('Y-m-d H:i:s', $last_time)));
         $programs[$st]["station_name"]  = $channel['name'];
         $programs[$st]["channel_disc"]  = $channel['channel_disc'];
         $programs[$st]['list'] = array();
@@ -206,7 +206,7 @@ $smarty->assign( "height_per_min", $settings->height_per_hour / 60 );
 $sitetitle = date( "Y", $top_time ) . "年" . date( "m", $top_time ) . "月" . date( "d", $top_time ) . "日". date( "H", $top_time ) .
               "時～".( $type == "GR" ? "地上デジタル" : "BSデジタル" )."番組表";
 $smarty->assign("sitetitle", $sitetitle );
-$smarty->assign("top_time", str_replace( "-", "/" ,toDatetime($top_time)) );
-$smarty->assign("last_time", str_replace( "-", "/" ,toDatetime($last_time)) );
+$smarty->assign("top_time", str_replace( "-", "/" ,date('Y-m-d H:i:s', $top_time)) );
+$smarty->assign("last_time", str_replace( "-", "/" ,date('Y-m-d H:i:s', $last_time)) );
 $smarty->display("index.html");
-?>
+

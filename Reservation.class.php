@@ -80,8 +80,8 @@ class Reservation {
 			$tuners = ($crec->type == "GR") ? $settings->gr_tuners : $settings->bs_tuners;
 			$battings = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 															  "AND type = '".$crec->type."' ".
-															  "AND starttime < '".toDatetime($end_time) ."' ".
-															  "AND endtime > '".toDatetime($rec_start)."'"
+															  "AND starttime < '".date('Y-m-d H:i:s', $end_time) ."' ".
+															  "AND endtime > '".date('Y-m-d H:i:s', $rec_start)."'"
 			);
 			
 			if( $battings >= $tuners ) {
@@ -91,7 +91,7 @@ class Reservation {
 					// 前後の予約数
 					$nexts = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 																	"AND type = '".$crec->type."' ".
-																	"AND starttime = '".toDatetime($end_time - $settings->former_time)."'");
+																	"AND starttime = '".date('Y-m-d H:i:s', $end_time - $settings->former_time)."'");
 					
 					$prevs = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 																"AND type = '".$crec->type."' ".
@@ -132,9 +132,9 @@ class Reservation {
 						// 始まっていない予約？
 						if( $prev_start_time > (time() + PADDING_TIME + $settings->former_time) ) {
 							// 開始時刻を元に戻す
-							$prev_starttime = toDatetime( $prev_start_time + $settings->former_time );
+							$prev_starttime = date('Y-m-d H:i:s',  $prev_start_time + $settings->former_time );
 							// 終わりをちょっとだけずらす
-							$prev_endtime   = toDatetime( strtotime($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
+							$prev_endtime   = date('Y-m-d H:i:s',  strtotime($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
 							
 							// tryのネスト
 							try {
@@ -254,12 +254,12 @@ class Reservation {
 			$rrec->title = $title;
 			$rrec->description = $description;
 			$rrec->category_id = $category_id;
-			$rrec->starttime = toDatetime( $rec_start );
-			$rrec->endtime = toDatetime( $end_time );
+			$rrec->starttime = date('Y-m-d H:i:s',  $rec_start );
+			$rrec->endtime = date('Y-m-d H:i:s',  $end_time );
 			$rrec->path = $filename;
 			$rrec->autorec = $autorec;
 			$rrec->mode = $mode;
-			$rrec->reserve_disc = md5( $crec->channel_disc . toDatetime( $start_time ). toDatetime( $end_time ) );
+			$rrec->reserve_disc = md5( $crec->channel_disc . date('Y-m-d H:i:s',  $start_time ). date('Y-m-d H:i:s',  $end_time ) );
 			
 			// 予約実行
 			$cmdline = $settings->at." ".date("H:i m/d/Y", $at_start);

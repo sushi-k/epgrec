@@ -52,8 +52,8 @@ $mode = $_POST['record_mode'];
 $rval = 0;
 try{
 	$rval = Reservation::custom(
-		toDatetime($start_time),
-		toDatetime($end_time),
+		date('Y-m-d H:i:s', $start_time),
+		date('Y-m-d H:i:s', $end_time),
 		$channel_id,
 		$title,
 		$description,
