@@ -1,18 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>{$sitetitle}</title>
 <meta http-equiv="Content-Style-Type" content="text/css">
-
-{literal}
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript">
+{literal}
 	var PRG = {
 		delkey:function(id){
-			$.get(INISet.prgDelKeyURL, { keyword_id: id } ,function(data){
+			$.get('api.php', { method: 'deleteKeyword', keyword_id: id } ,function(data){
 				if(data.match(/^error/i)){
 					alert(data);
 				}else{
@@ -21,9 +18,10 @@
 			});
 		}
 	}
+{/literal}
 </script>
 <style type="text/css">
-<!--
+{literal}
 body {padding:4px;margin:0;font-size:10pt;}
 a {text-decoration:none;}
 
@@ -61,9 +59,8 @@ table#reservation_table tr.ctg_anime, #category_select a.ctg_anime {background-c
 table#reservation_table tr.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
 table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
 table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
--->
-</style>
 {/literal}
+</style>
 </head>
 <body>
 <h2>{$sitetitle}</h2>
@@ -99,14 +96,5 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
 {else}
   キーワードはありません
 {/if}
-
-
-{literal}
-<script type="text/javascript">
-var INISet = {
-	prgDelKeyURL : 'deleteKeyword.php'		// キーワード削除
-}
-</script>
-{/literal}
 </body>
 </html>

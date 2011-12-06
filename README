@@ -67,9 +67,6 @@ config.php.sample
 customReservation.php
 -詳細予約実行（JavaScriptから呼ばれる）
 
-deleteKeyword.php
--キーワードの削除実行（keywordTable.phpから呼ばれる）
-
 envSetting.php
 -環境設定
 
@@ -84,7 +81,8 @@ keywordTable.php
 
 api.php
 -saveSettings 設定の更新（設定ページから呼ばれる）
--channelInfo チャンネル情報を返す（JavaScriptから呼ばれる）
+-channelInfo チャンネル情報を返す
+-deleteKeyword キーワードの削除実行（keywordTable.phpから呼ばれる）
 
 search.php
 -番組検索ページ
