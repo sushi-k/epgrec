@@ -77,7 +77,7 @@
 	var PRG = {
 		chdialog:function(disc){
 			$('#channelDialog').dialog('close');
-			$.get('channelInfo.php', { channel_disc: disc },function(data) {
+			$.get('api.php', { method: 'channelInfo', channel_disc: disc },function(data) {
 				if(data.match(/^error/i)){
 					alert(data);
 				}
@@ -544,8 +544,6 @@ h2 {padding: 4px}
   {/foreach}
  </div>
 </div>
-
-
 
 <div id="floatBox4Dialog">jQuery UI Dialog</div>
 <div id="channelDialog">jQuery UI Dialog</div>

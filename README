@@ -58,9 +58,6 @@ cancelReservation.php
 changeReservation.php
 -JavaScriptから呼ばれる予約内容の更新
 
-channelInfo.php
--チャンネル情報を返す（JavaScriptから呼ばれる）
-
 channelSetSID.php
 -チャンネルに対応するSIDを更新する（JavaScriptから呼ばれる）
 
@@ -85,8 +82,9 @@ index.php
 keywordTable.php
 -キーワードの管理ページ
 
-api:saveSettings
--設定の更新（設定ページから呼ばれる）
+api.php
+-saveSettings 設定の更新（設定ページから呼ばれる）
+-channelInfo チャンネル情報を返す（JavaScriptから呼ばれる）
 
 search.php
 -番組検索ページ
