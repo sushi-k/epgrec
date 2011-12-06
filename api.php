@@ -16,11 +16,26 @@ class API_Controller
 
         Program::reserve($_GET['program_id']);
     }
+
+    public function saveSettings()
+    {
+        require_once INSTALL_PATH . "/Smarty/Smarty.class.php";
+        require_once INSTALL_PATH."/Settings.class.php";
+
+        $settings = Settings::factory();
+        $settings->post();
+        $settings->save();
+
+        $smarty = new Smarty();
+        $smarty->assign('message', '設定が保存されました');
+        $smarty->assign('url', 'index.php');
+        $smarty->display("dialog.html");
+    }
 }
 
 // dispatch
 $controller = new API_Controller();
-if (in_array($_GET['method'], array('simpleReservation'))) {
-    $controller->$_GET['method']();
+if (in_array($_REQUEST['method'], array('simpleReservation', 'saveSettings'))) {
+    $controller->$_REQUEST['method']();
 }
 

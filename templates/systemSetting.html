@@ -61,8 +61,8 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 
 <h2>MySQLデータベース設定</h2>
 
-<form id="system_setting" method="post" action="{$post_to}">
-
+<form id="system_setting" method="post" action="api.php">
+<input type-"hidden" name="method" value="saveSettings" />
 
 <h3>MySQLホスト名</h3>
 <div class="setting">

@@ -85,7 +85,7 @@ index.php
 keywordTable.php
 -キーワードの管理ページ
 
-postsettings.php
+api:saveSettings
 -設定の更新（設定ページから呼ばれる）
 
 search.php

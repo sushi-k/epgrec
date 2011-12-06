@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -9,11 +8,9 @@
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/messages_ja.js"></script>
-
 <script type="text/javascript">
 <!--
 {literal}
-
 	var PRG = {
 		force_cont:function() {
 			if( $('#id_force_cont_rec' ).val() == 0 ) {
@@ -28,17 +25,13 @@
 		$("#env_setting").validate();
 		PRG.force_cont();
 	});
-
 {/literal}
-
 -->
 </script>
-
 
 <style type="text/css">
 <!--
 {literal}
-
 body {padding:4px;margin:0;font-size:10pt; width: 85%;}
 a {text-decoration:none;}
 
@@ -46,22 +39,16 @@ a {text-decoration:none;}
 .small {font-size:75%;}
 
 div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
-
 {/literal}
 -->
 </style>
 </head>
 <body>
 
-
-
-<form id="env_setting" method="post" action="{$post_to}">
-
+<form id="env_setting" method="post" action="api.php">
+<input type-"hidden" name="method" value="saveSettings" />
 <div>{$message}</div>
-
 <h2>デジタルチューナー設定</h2>
-
-
 <h3>地デジチューナーの台数</h3>
 <div class="setting">
 <div class="caption">サーバーに接続されている地デジチューナーの台数を設定してください。地デジチューナーを持っていない場合、0にします。</div>
