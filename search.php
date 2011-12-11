@@ -1,6 +1,5 @@
 <?php
 require_once 'config.php';
-require_once INSTALL_PATH . '/DBRecord.class.php';
 require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
 
@@ -74,22 +73,23 @@ if(isset( $_POST['do_search'] )) {
 }
 $options .= " ORDER BY starttime ASC LIMIT 300";
 $do_keyword = 0;
-if( ($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) ) {
+if (($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) ) {
     $do_keyword = 1;
 }
 
-$db = DB::conn();
 try {
-    $programs = $db->rows("SELECT * FROM Recorder_programTbl LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc {$options}");
+    $db = DB::conn();
+    $sql = <<<EOD
+SELECT * FROM Recorder_programTbl
+  LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc
+  {$options}
+EOD;
+    $programs = $db->rows($sql);
     foreach ($programs as $key => $program) {
         $channel = Channel::get($program['channel_disc']);
-        $category = new DBRecord(CATEGORY_TBL, "category_disc", $program['category_disc']);
         $programs[$key]['station_name'] = $channel->name;
-        $programs[$key]['cat'] = $program['name_en'];
-        //$programs[$key]['rec'] = DBRecord::countRecords(RESERVE_TBL, "WHERE program_id='".$p->id."'");
-        $programs[$key]['rec'] = 0;
     }
-} catch( exception $e ) {
+} catch (Exception $e) {
     throw $e;
 }
 

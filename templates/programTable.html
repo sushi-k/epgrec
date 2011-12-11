@@ -202,7 +202,7 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
  </tr>
 
 {foreach from=$programs item=program}
- <tr id="resid_{$program.id}" class="ctg_{$program.cat}{if $program.rec > 0} prg_rec{/if}">
+ <tr id="resid_{$program.id}" class="ctg_{$program.name_en}{if $program.rec > 0} prg_rec{/if}">
   <td>{$program.type}</td>
   <td>{$program.station_name}</td>
   <td>{$program.starttime}</td>
