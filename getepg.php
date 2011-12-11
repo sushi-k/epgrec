@@ -75,7 +75,7 @@ if ($settings->gr_tuners != 0) {
             if (!RecorderService::isDumped($temp_filename)) {
                 $options = array(
                     'CHANNEL' => $channel_no,
-                    'DURATION' => 60,
+                    'DURATION' => 30,
                     'TYPE' => 'GR',
                     'TUNER' => 0,
                     'MODE' => 0,
