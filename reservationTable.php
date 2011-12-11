@@ -1,33 +1,22 @@
 <?php
 require_once 'config.php';
-require_once INSTALL_PATH . '/DBRecord.class.php';
 require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 
 try{
-    $rvs = DBRecord::createRecords(RESERVE_TBL, "WHERE complete='0' ORDER BY starttime ASC" );
-
-    $reservations = array();
-    foreach( $rvs as $r ) {
-        $cat = new DBRecord(CATEGORY_TBL, "id", $r->category_id );
-        $arr = array();
-        $arr['id'] = $r->id;
-        $arr['type'] = $r->type;
-        $arr['channel'] = $r->channel;
-        $arr['starttime'] = $r->starttime;
-        $arr['endtime'] = $r->endtime;
-        $arr['mode'] = $RECORD_MODE[$r->mode]['name'];
-        $arr['title'] = $r->title;
-        $arr['description'] = $r->description;
-        $arr['cat'] = $cat->name_en;
-        $arr['autorec'] = $r->autorec;
-
-        array_push( $reservations, $arr );
-    }
+    $db = DB::conn();
+    $sql = <<<EOD
+SELECT * FROM Recorder_reserveTbl
+  LEFT JOIN Recorder_programTbl ON Recorder_reserveTbl.program_disc = Recorder_programTbl.program_disc
+  LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc
+WHERE complete=0
+ORDER BY starttime ASC
+EOD;
+    $rows = $db->rows($sql);
 
     $smarty = new Smarty();
-    $smarty->assign("sitetitle","録画予約一覧");
-    $smarty->assign( "reservations", $reservations );
-    $smarty->display("reservationTable.html");
+    $smarty->assign('sitetitle', '録画予約一覧');
+    $smarty->assign('reservations', $rows);
+    $smarty->display('reservationTable.html');
 } catch (Exception $e) {
     exit($e->getMessage());
 }

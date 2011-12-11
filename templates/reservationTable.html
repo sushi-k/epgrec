@@ -136,7 +136,7 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
  </tr>
 
 {foreach from=$reservations item=reserve}
- <tr id="resid_{$reserve.id}" class="ctg_{$reserve.cat}">
+ <tr id="resid_{$reserve.id}" class="ctg_{$reserve.name_en}">
   <td>{$reserve.id}</td>
   <td>{$reserve.type}</td>
   <td id="chid_{$reserve.id}">{$reserve.channel}</td>
