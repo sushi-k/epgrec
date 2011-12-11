@@ -25,7 +25,7 @@
 		},
 		customform:function(id) {
 			$('#floatBox4Dialog').dialog('close');
-			$.get('reservationform.php', { program_id: id }, function(data) {
+			$.get('api.php', { method: 'reservationForm', program_id: id }, function(data) {
 				if(data.match(/^error/i)){
 					alert(data);
 				}
