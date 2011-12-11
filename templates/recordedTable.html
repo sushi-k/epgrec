@@ -175,7 +175,7 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
  </tr>
 
 {foreach from=$records item=rec }
- <tr id="resid_{$rec.id}" class="ctg_{$rec.cat}">
+ <tr id="resid_{$rec.id}" class="ctg_{$rec.name_en}">
   <td>{$rec.starttime}</td>
   <td>{$rec.station_name}</td>
   <td>{$rec.mode}</td>

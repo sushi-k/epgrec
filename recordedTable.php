@@ -1,8 +1,7 @@
 <?php
-require_once('config.php');
-require_once( INSTALL_PATH . '/DBRecord.class.php' );
-require_once( INSTALL_PATH . '/Smarty/Smarty.class.php' );
-require_once( INSTALL_PATH . '/Settings.class.php' );
+require_once 'config.php';
+require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
+require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
 
@@ -42,18 +41,17 @@ if (isset($_POST['do_search'])) {
 	}
 }
 
-$db = DB::conn();
-try{
-    $rows = $db->rows('SELECT * FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_reserveTbl.program_disc = Recorder_programTbl.program_disc ORDER BY starttime DESC');
-    //$rvs = DBRecord::createRecords(RESERVE_TBL, $options );
+try {
+    $db = DB::conn();
+    $sql = <<<EOD
+SELECT * FROM Recorder_reserveTbl
+  LEFT JOIN Recorder_programTbl ON Recorder_reserveTbl.program_disc = Recorder_programTbl.program_disc
+  LEFT JOIN Recorder_categoryTbl ON Recorder_categoryTbl.category_disc = Recorder_programTbl.category_disc
+  LEFT JOIN Recorder_channelTbl ON Recorder_channelTbl.channel_disc = Recorder_programTbl.channel_disc
+ORDER BY starttime DESC
+EOD;
+    $rows = $db->rows($sql);
     $records = array();
-    foreach ($rows as $key => $r) {
-        $cat = new DBRecord(CATEGORY_TBL, "category_disc", $r['category_disc']);
-        $ch  = new DBRecord(CHANNEL_TBL,  "channel_disc", $r['channel_disc']);
-        //$rows[$key]['asf'] = "".$settings->install_url."/viewer.php?reserve_id=".$r->id;
-        //$rows[$key]['thumb'] = "<img src=\"".$settings->install_url.$settings->thumbs."/".$r->path.".jpg\" />";
-        //$rows[$key]['cat'] = $cat->name_en;
-    }
 
     $categories = $db->rows('SELECT * FROM Recorder_categoryTbl');
     $channels = $db->rows('SELECT * FROM Recorder_channelTbl');
