@@ -178,5 +178,5 @@ $smarty->assign("k_weekofday", $weekofdays["$weekofday"]["name"]);
 $smarty->assign("weekofday", $weekofday);
 $smarty->assign("weekofdays", $weekofdays);
 $smarty->assign("autorec_modes", $autorec_modes);
-$smarty->display("programTable.html");
+$smarty->display("search.html");
 
