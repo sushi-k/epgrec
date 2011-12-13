@@ -5,7 +5,9 @@ require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
 
-$options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + 300 )."'";
+$args = array();
+$options = ' WHERE starttime > ?';
+$args[] = date("Y-m-d H:i:s", time() + 300);
 
 // 曜日
 $weekofdays = array(
@@ -26,7 +28,7 @@ $weekofday = 7;
 $search = "";
 $use_regexp = 0;
 $type = "*";
-$category_id = 0;
+$category_disc = false;
 $station = 0;
 
 // mysql_real_escape_stringより先に接続しておく必要がある
@@ -52,11 +54,10 @@ if(isset( $_POST['do_search'] )) {
             $options .= " AND type = '".$_POST['type']."'";
         }
     }
-    if( isset($_POST['category_id'])) {
-        if( $_POST['category_id'] != 0 ) {
-            $category_id = $_POST['category_id'];
-            $options .= " AND category_id = '".$_POST['category_id']."'";
-        }
+    if (isset($_POST['category_disc']) && !empty($_POST['category_disc'])) {
+        $category_disc = $_POST['category_disc'];
+        $options .= ' AND Recorder_programTbl.category_disc = ?';
+        $args[] = $_POST['category_disc'];
     }
     if( isset($_POST['station'])) {
         if( $_POST['station'] != 0 ) {
@@ -71,9 +72,9 @@ if(isset( $_POST['do_search'] )) {
         }
     }
 }
-$options .= " ORDER BY starttime ASC LIMIT 300";
+$options .= " ORDER BY starttime ASC LIMIT 100";
 $do_keyword = 0;
-if (($search != "") || ($type != "*") || ($category_id != 0) || ($station != 0) ) {
+if (($search != "") || ($type != "*") || ($category_disc !== false) || ($station != 0) ) {
     $do_keyword = 1;
 }
 
@@ -84,12 +85,14 @@ SELECT * FROM Recorder_programTbl
   LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc
   {$options}
 EOD;
-    $programs = $db->rows($sql);
+    $programs = $db->rows($sql, $args);
     foreach ($programs as $key => $program) {
         $channel = Channel::get($program['channel_disc']);
         $programs[$key]['station_name'] = $channel->name;
     }
 } catch (Exception $e) {
+    var_dump($sql);
+    exit;
     throw $e;
 }
 
@@ -99,12 +102,12 @@ try {
     $first_category = array(
         'id' => 0,
         'name' => "すべて",
-        'selected' => $category_id == 0 ? "selected" : "",
+        'selected' => $category_disc === false ? "selected" : "",
     );
     foreach ($categories as $key => $category) {
         $categories[$key]['name'] = $category['name_jp'];
-        $categories[$key]['selected'] = $category['category_disc'] == $category_id ? "selected" : "";
-        if ($catgory->category_disc == $category_id) {
+        $categories[$key]['selected'] = $category['category_disc'] === $category_disc ? "selected" : "";
+        if ($category['category_disc'] === $category_disc) {
            $k_category_name = $category['name_jp'];
         }
     }
@@ -149,8 +152,8 @@ try {
     $first_channel[0]['selected'] = (!$station) ? "selected" : "";
     foreach ($channels as $key => $channel) {
         $channels[$key]['selected'] = $station == $channel['channel_disc'] ? "selected" : "";
-        if ($station == $channel['channel_disc']) {
-           $k_station_name = $c->name;
+        if ($station === $channel['channel_disc']) {
+           $k_station_name = $channel['name'];
         }
     }
     array_unshift($channels, $first_channel);
@@ -164,7 +167,7 @@ $smarty->assign("sitetitle","番組検索");
 $smarty->assign("do_keyword", $do_keyword);
 $smarty->assign("programs", $programs);
 $smarty->assign("cats", $categories);
-$smarty->assign("k_category", $category_id);
+$smarty->assign("k_category", $category_disc);
 $smarty->assign("k_category_name", $k_category_name);
 $smarty->assign("types", $types);
 $smarty->assign("k_type", $type);

@@ -169,12 +169,12 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
 </select>
 局<select name="station">
   {foreach from=$stations item=st}
-    <option value="{$st.id}" {$st.selected}>{$st.name}</option>
+    <option value="{$st.channel_disc}" {$st.selected}>{$st.name}</option>
   {/foreach}
   </select>
-カテゴリ<select name="category_id">
+カテゴリ<select name="category_disc">
   {foreach from=$cats item=cat}
-  <option value="{$cat.id}" {$cat.selected}>{$cat.name}</option>
+  <option value="{$cat.category_disc}" {$cat.selected}>{$cat.name}</option>
   {/foreach}
   </select>
 曜日<select name='weekofday'>
