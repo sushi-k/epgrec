@@ -1,4 +1,5 @@
 <?php
+// @TODO 絞り込み部分にSQL Injectionがある
 require_once 'config.php';
 require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
