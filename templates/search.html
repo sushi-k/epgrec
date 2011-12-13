@@ -209,8 +209,8 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
   <td>{$program.endtime}</td>
   <td>{$program.title|escape}</td>
   <td>{$program.description|escape}</td>
-  <td><input type="button" value="録画" onClick="javascript:PRG.rec('{$program.id}')" /></td>
-  <td><input type="button" value="詳細" onClick="javascript:PRG.customform('{$program.id}')" /></td>
+  <td><input type="button" value="録画" onClick="javascript:PRG.rec('{$program.program_disc}')" /></td>
+  <td><input type="button" value="詳細" onClick="javascript:PRG.customform('{$program.program_disc}')" /></td>
  </tr>
 {/foreach}
 </table>

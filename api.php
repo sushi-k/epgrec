@@ -10,11 +10,14 @@ class API_Controller
     // 簡易予約
     public function simpleReservation()
     {
-        if (!isset($_GET['program_id'])) {
-            exit("Error: 番組が指定されていません");
+        if (!isset($_GET['program_id']) || $_GET['program_id'] == '') {
+            exit('Error: 番組idが指定されていません');
         }
 
-        Program::reserve($_GET['program_id']);
+        $result = Program::reserve($_GET['program_id']);
+        if ($result === false) {
+            exit('Error: 指定された番組idは存在しません');
+        }
     }
 
     public function saveSettings()
