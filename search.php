@@ -92,8 +92,6 @@ EOD;
         $programs[$key]['station_name'] = $channel->name;
     }
 } catch (Exception $e) {
-    var_dump($sql);
-    exit;
     throw $e;
 }
 
