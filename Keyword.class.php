@@ -1,11 +1,11 @@
 <?php
-include_once('config.php');
-include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/Reservation.class.php" );
-include_once( INSTALL_PATH . '/Settings.class.php' );
+require_once 'config.php';
+require_once INSTALL_PATH . '/DBRecord.class.php';
+require_once INSTALL_PATH . '/Reservation.class.php';
+require_once INSTALL_PATH . '/Settings.class.php';
 
 class Keyword extends DBRecord {
-	
+
 	public function __construct($property = null, $value = null ) {
 		try {
 			parent::__construct(KEYWORD_TBL, $property, $value );
@@ -14,7 +14,7 @@ class Keyword extends DBRecord {
 			throw $e;
 		}
 	}
-	
+
 	private function getPrograms() {
 		if( $this->id == 0 ) return false;
 		
@@ -144,4 +144,4 @@ class Keyword extends DBRecord {
 		parent::__destruct();
 	}
 }
-?>
+
