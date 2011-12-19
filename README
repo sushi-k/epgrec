@@ -9,12 +9,16 @@ epgrecをforkして、friioを接続してあるLinuxサーバ上で動作させ
 friioをcrontab経由で動かせるようになった。
 DBレベルで変更を始めたのでインストーラーもまともに動作しない。
 
+* TODO
+-recomplete.phpを実行させる
+-keyword登録システムを有効にする
+-DBRecordからの完全な脱出
+
 * DBRecordクラス
+epgrecは簡易O/Rマッピングを行うDBRecordクラスを足回りとして利用しています。
 
--epgrecは簡易O/Rマッピングを行うDBRecordクラスを足回りとして利用しています。
-
-・オブジェクトの作成
-$record = new DBRecord( PROGRAM_TBL|CATEGORY_TBL|CHANNEL_TBL|KEYWORD_TBL|RESERVE_TBL
+** オブジェクトの作成
+ $record = new DBRecord( PROGRAM_TBL|CATEGORY_TBL|CHANNEL_TBL|KEYWORD_TBL|RESERVE_TBL
                         [,フィールド名 ,検索語句]
 );
 
