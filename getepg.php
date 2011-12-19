@@ -1,10 +1,11 @@
 #!/usr/bin/php
 <?php
 /**
- * 番組表を取得する。crontabに登録しておく。
+ * 番組表を取得する。
+ *
+ * @TODO キーワード自動録画を実装する
  */
 require_once 'config.php';
-require_once INSTALL_PATH . '/Keyword.class.php';
 require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
