@@ -5,11 +5,13 @@
  */
 class Program extends Model
 {
+    const TABLE = 'Recorder_programTbl';
 
     public static function get($program_disc)
     {
         $db = DB::conn();
-        $row = $db->row('SELECT * FROM Recorder_programTbl WHERE program_disc = ?', array($program_disc));
+        $table = self::TABLE;
+        $row = $db->row("SELECT * FROM {$table} WHERE program_disc = ?", array($program_disc));
         if ($row === false) {
             return false;
         }
@@ -20,19 +22,20 @@ class Program extends Model
     // @TODO 同時間帯に別のチャンネルを予約している場合に警告
     public static function reserve($program_disc) {
         $db = DB::conn();
-        $program = $db->row('SELECT * FROM Recorder_programTbl WHERE program_disc = ?', array($program_disc));
+        $table = self::TABLE;
+        $program = $db->row("SELECT * FROM {$table} WHERE program_disc = ?", array($program_disc));
         $row = array(
             'program_disc' => $program['program_disc'],
             'autorec' => 0,
             'mode' => 0,
             'job' => 0,
         );
-        return $db->insert('Recorder_reserveTbl', $row);
+        return $db->insert($table, $row);
     }
 
     public static function disableAutorec($program_disc)
     {
         $db = DB::conn();
-        return $db->update(array('autorec' => 0), array('program_disc' => $program_disc));
+        return $db->update(self::TABLE, array('autorec' => 0), array('program_disc' => $program_disc));
     }
 }
