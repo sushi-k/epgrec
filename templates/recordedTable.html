@@ -152,8 +152,8 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
   {/foreach}
   </select>
 カテゴリ<select name="category_id">
-  {foreach from=$categories item=cat}
-  <option value="{$cat.category_disc}" {$cat.selected}>{$cat.name_jp}</option>
+  {foreach from=$categories item=category}
+  <option value="{$category->category_disc}" {$category->selected}>{$category->name_jp}</option>
   {/foreach}
 </select>
 <input type="submit" value="絞り込む" />
