@@ -78,10 +78,9 @@
 		chdialog:function(disc){
 			$('#channelDialog').dialog('close');
 			$.get('api.php', { method: 'channelInfo', channel_disc: disc },function(data) {
-				if(data.match(/^error/i)){
+				if (data.match(/^error/i)){
 					alert(data);
-				}
-				else {
+				} else {
 					var str = data;
 					str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.chupdate()" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">更新</a></div>';
 					$('#channelDialog').html(str);
