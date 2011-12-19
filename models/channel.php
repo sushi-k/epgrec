@@ -17,4 +17,10 @@ class Channel extends Model
         }
         return new self($row);
     }
+
+    public function setSID($sid)
+    {
+        $db = DB::conn();
+        $db->update(self::TABLE, array('sid' => $sid), array('channel_disc' => $this->channel_disc));
+    }
 }

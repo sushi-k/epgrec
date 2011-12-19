@@ -45,7 +45,7 @@ class RecorderService
         $d = (int)date('d', $start_date);
         $m = (int)date('m', $start_date);
 
-        $cmd = '/home/ha1t/bin/recfriio --b25 --strip';
+        $cmd = '/home/ha1t/bin/recfriio --b25 --strip --sid hd ';
         $save_path = "/home/ha1t/tv/{$row['title']}_" . date("Ymd_His", $start_date) . '.ts';
 
         $time = $end_date - $start_date;
