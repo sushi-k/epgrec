@@ -34,4 +34,21 @@ ORDER BY starttime DESC
 EOD;
         return $db->rows($sql);
     }
+
+    // @TODO 書きなおす
+    public static function getReservations()
+    {
+        $db = DB::conn();
+        $table = self::TABLE;
+        $program_table = Program::TABLE;
+        $category_table = Category::TABLE;
+        $sql = <<<EOD
+SELECT * FROM {$table}
+  LEFT JOIN {$program_table} ON {$table}.program_disc = {$program_table}.program_disc
+  LEFT JOIN {$category_table} ON {$program_table}.category_disc = {$category_table}.category_disc
+WHERE complete=0
+ORDER BY starttime ASC
+EOD;
+        return $db->rows($sql);
+    }
 }

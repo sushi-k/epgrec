@@ -43,7 +43,7 @@ if (isset($_POST['do_search'])) {
 
 try {
     $db = DB::conn();
-    $channels = $db->rows('SELECT * FROM Recorder_channelTbl');
+    $channels = $db->rows('SELECT * FROM ' . Channel::TABLE);
 
     $smarty = new Smarty();
     $smarty->assign('sitetitle','録画済一覧');

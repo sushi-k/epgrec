@@ -445,8 +445,8 @@ h2 {padding: 4px}
 <div class="set ctg_sel" id="category_select">
   <span class="title"><a href="javascript:CTG.toggle()">強調表示</a></span>
   <ul>
-    {foreach from=$cats item=cat}
-    <li><a href="javascript:CTG.select('{$cat.name_en}');" class="ctg_{$cat.name_en}">{$cat.name_jp}</a></li>
+    {foreach from=$categories item=category}
+    <li><a href="javascript:CTG.select('{$category->name_en}');" class="ctg_{$category->name_en}">{$category->name_jp}</a></li>
     {/foreach}
   </ul>
 </div>

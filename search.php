@@ -81,12 +81,7 @@ if (($search != "") || ($type != "*") || ($category_disc !== false) || ($station
 
 try {
     $db = DB::conn();
-    $sql = <<<EOD
-SELECT * FROM Recorder_programTbl
-  LEFT JOIN Recorder_categoryTbl ON Recorder_programTbl.category_disc = Recorder_categoryTbl.category_disc
-  {$options}
-EOD;
-    $programs = $db->rows($sql, $args);
+    $programs = Program::search($options, $args);
     foreach ($programs as $key => $program) {
         $channel = Channel::get($program['channel_disc']);
         $programs[$key]['station_name'] = $channel->name;
@@ -97,7 +92,7 @@ EOD;
 
 try {
     $k_category_name = "";
-    $categories = $db->rows('SELECT * FROM Recorder_categoryTbl');
+    $categories = $db->rows('SELECT * FROM ' . Category::TABLE);
     $first_category = array(
         'id' => 0,
         'name' => "すべて",
@@ -145,7 +140,7 @@ try {
     }
 
     $k_station_name = "";
-    $channels = $db->rows('SELECT * FROM Recorder_channelTbl');
+    $channels = $db->rows('SELECT * FROM ' . Channel::TABLE);
     $first_channel[0]['id'] = 0;
     $first_channel[0]['name'] = "すべて";
     $first_channel[0]['selected'] = (!$station) ? "selected" : "";

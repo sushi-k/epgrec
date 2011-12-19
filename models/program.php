@@ -18,6 +18,19 @@ class Program extends Model
         return new self($row);
     }
 
+    public static function search($options, $args)
+    {
+        $db = DB::conn();
+        $table = self::TABLE;
+        $category_table = Category::TABLE;
+        $sql = <<<EOD
+SELECT * FROM {$table}
+  LEFT JOIN {$category_table} ON {$table}.category_disc = {$category_table}.category_disc
+  {$options}
+EOD;
+        return $db->rows($sql, $args);
+    }
+
     // @TODO 同一番組をすでに予約している場合警告
     // @TODO 同時間帯に別のチャンネルを予約している場合に警告
     public static function reserve($program_disc) {

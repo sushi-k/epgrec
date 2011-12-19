@@ -51,13 +51,13 @@ if ($type == "BS") {
 $db = DB::conn();
 $st = 0;
 $programs = array();
-foreach ($channel_map as $channel_disc => $channel) {
+foreach ($channel_map as $channel_disc => $no_use) {
     $prev_end = $top_time;
     try {
-        $channel = $db->row("SELECT * FROM Recorder_channelTbl WHERE channel_disc = ?", array($channel_disc));
+        $channel = Channel::get($channel_disc);
         $items = $db->rows('SELECT * FROM Recorder_programTbl WHERE channel_disc = ? AND endtime > ? AND starttime < ? ORDER BY starttime ASC', array($channel_disc, date('Y-m-d H:i:s', $top_time), date('Y-m-d H:i:s', $last_time)));
-        $programs[$st]["station_name"]  = $channel['name'];
-        $programs[$st]["channel_disc"]  = $channel['channel_disc'];
+        $programs[$st]["station_name"]  = $channel->name;
+        $programs[$st]["channel_disc"]  = $channel->channel_disc;
         $programs[$st]['list'] = array();
         $num = 0;
         foreach ($items as $program) {
@@ -85,11 +85,11 @@ foreach ($channel_map as $channel_disc => $channel) {
             }
 
             // プログラムを埋める
-            $category = $db->row('SELECT * FROM Recorder_categoryTbl WHERE category_disc = ?', array($program['category_disc']));
+            $category = Category::get($program['category_disc']);
             if ($category === false) {
                 $category_name = 'none';
             } else {
-                $category_name = $category['name_en'];
+                $category_name = $category->name_en;
             }
             $programs[$st]['list'][$num]['category_name'] = $category_name;
             $programs[$st]['list'][$num]['program_disc'] = $program['program_disc'];
@@ -107,7 +107,7 @@ foreach ($channel_map as $channel_disc => $channel) {
             }
             $num++;
         }
-    } catch( exception $e ) {
+    } catch (Exception $e) {
         throw $e;
     }
 
@@ -136,7 +136,7 @@ $smarty = new Smarty();
  
 // カテゴリ一覧
 $db = DB::conn();
-$smarty->assign("cats", $db->rows("SELECT * FROM Recorder_categoryTbl"));
+$smarty->assign('categories', Category::getAll());
  
 // タイプ選択
 $types = array();
