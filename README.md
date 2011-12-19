@@ -10,6 +10,9 @@ friioをcrontab経由で動かせるようになった。
 DBレベルで変更を始めたのでインストーラーもまともに動作しない。
 
 ## TODO ##
+
+- 放送時刻変更への完璧な追従
+- DB周りをインストーラーで設定できるように
 - do-record.shを使うように
 - recomplete.phpを実行させる
 - keyword登録システムを有効にする
@@ -32,9 +35,6 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 - index.php : トップページ（番組表）
 - keywordTable.php : キーワードの管理ページ
 - api.php
--- saveSettings 設定の更新（設定ページから呼ばれる）
--- channelInfo チャンネル情報を返す
--- deleteKeyword キーワードの削除実行（keywordTable.phpから呼ばれる）
 - search.php : 番組検索ページ
 - recomplete.php : 録画終了フラグを立てるスクリプト
 - recordedTable.php : 録画済み一覧ページ
