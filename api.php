@@ -14,7 +14,7 @@ class API_Controller
             exit('Error: 番組idが指定されていません');
         }
 
-        $result = Program::reserve($_GET['program_id']);
+        $result = Reserve::simpleReserve($_GET['program_id']);
         if ($result === false) {
             exit('Error: 指定された番組idは存在しません');
         }
