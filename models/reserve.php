@@ -38,15 +38,16 @@ EOD;
     // @TODO 書きなおす
     public static function getReservations()
     {
+        $now = date("Y-m-d");
         $db = DB::conn();
         $table = self::TABLE;
         $program_table = Program::TABLE;
         $category_table = Category::TABLE;
         $sql = <<<EOD
 SELECT * FROM {$table}
-  LEFT JOIN {$program_table} ON {$table}.program_disc = {$program_table}.program_disc
+  INNER JOIN {$program_table} ON {$table}.program_disc = {$program_table}.program_disc
   LEFT JOIN {$category_table} ON {$program_table}.category_disc = {$category_table}.category_disc
-WHERE complete=0
+WHERE complete = 0 AND starttime > "{$now}"
 ORDER BY starttime ASC
 EOD;
         return $db->rows($sql);
