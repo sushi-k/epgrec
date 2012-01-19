@@ -59,7 +59,6 @@ EOD;
     // @TODO 同時間帯に別のチャンネルを予約している場合に警告
     public static function simpleReserve($program_disc) {
         $db = DB::conn();
-        $table = self::TABLE;
         $program = Program::get($program_disc);
         $row = array(
             'program_disc' => $program->program_disc,
@@ -67,6 +66,6 @@ EOD;
             'mode' => 0,
             'job' => 0,
         );
-        return $db->insert($table, $row);
+        return $db->replace(self::TABLE, $row);
     }
 }
