@@ -2,29 +2,26 @@
 require_once 'config.php';
 require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 require_once INSTALL_PATH . '/DBRecord.class.php';
-require_once INSTALL_PATH . '/Reservation.class.php';
-require_once INSTALL_PATH . '/Keyword.class.php';
 
 $weekofdays = array( "月", "火", "水", "木", "金", "土", "日", "なし" );
 
 // 新規キーワードがポストされた
-if( isset($_POST["add_keyword"]) ) {
-    if( $_POST["add_keyword"] == 1 ) {
-        try {
-            $rec = new Keyword();
-            $rec->keyword = $_POST['k_search'];
-            $rec->type = $_POST['k_type'];
-            $rec->category_id = $_POST['k_category'];
-            $rec->channel_id = $_POST['k_station'];
-            $rec->use_regexp = $_POST['k_use_regexp'];
-            $rec->weekofday = $_POST['k_weekofday'];
-            $rec->autorec_mode = $_POST['autorec_mode'];
+if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
+    try {
+        $record = array(
+            'keyword' => $_POST['k_search'],
+            'type' => $_POST['k_type'],
+            'category' => $_POST['k_category'],
+            'channel' => $_POST['k_station'],
+            'use_regexp' => $_POST['k_use_regexp'],
+            'weekofday' => $_POST['k_weekofday'],
+            'autorec_mode' => $_POST['autorec_mode'],
+        );
+        Keyword::add($record);
 
-            // 録画予約実行
-            $rec->reservation();
-        } catch( Exception $e ) {
-            exit( $e->getMessage() );
-        }
+        // @TODO 追加したキーワードを元に予約処理を走らせる
+    } catch (Exception $e) {
+        exit($e->getMessage());
     }
 }
 
