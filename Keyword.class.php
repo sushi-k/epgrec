@@ -83,35 +83,20 @@ class Keyword extends DBRecord
     }
 
     public function delete() {
-        if( $this->id == 0 ) return;
+        if ($this->id == 0) return;
 
-        $precs = array();
-        try {
-            $precs = $this->getPrograms();
-        }
-        catch( Exception $e ) {
-            throw $e;
-        }
+        $precs = $this->getPrograms();
+
         // 一気にキャンセル
         foreach( $precs as $rec ) {
-            try {
-                $reserve = new DBRecord( RESERVE_TBL, "program_id", $rec->id );
-                // 自動予約されたもののみ削除
-                if( $reserve->autorec ) {
-                    Reservation::cancel( $reserve->id );
-                    usleep( 100 );		// あんまり時間を空けないのもどう?
-                }
-            }
-            catch( Exception $e ) {
-                // 無視
+            $reserve = new DBRecord( RESERVE_TBL, "program_id", $rec->id );
+            // 自動予約されたもののみ削除
+            if( $reserve->autorec ) {
+                Reservation::cancel( $reserve->id );
+                usleep( 100 );		// あんまり時間を空けないのもどう?
             }
         }
-        try {
-            parent::delete();
-        }
-        catch( Exception $e ) {
-            throw $e;
-        }
+        parent::delete();
     }
 
     public function __destruct() {
