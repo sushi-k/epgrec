@@ -2,32 +2,27 @@
 require_once 'config.php';
 require_once INSTALL_PATH . '/DBRecord.class.php';
 require_once INSTALL_PATH . '/Reservation.class.php';
-require_once INSTALL_PATH . '/Settings.class.php';
 
 class Keyword extends DBRecord
 {
-    public function __construct($property = null, $value = null ) {
+    public function __construct($property = null, $value = null) {
         try {
-            parent::__construct(KEYWORD_TBL, $property, $value );
-        }
-        catch( Exception $e ) {
+            parent::__construct(KEYWORD_TBL, $property, $value);
+        } catch (Exception $e) {
             throw $e;
         }
     }
 
-    private function getPrograms() {
-        if( $this->id == 0 ) {
-            return false;
-        }
-
+    // 指定条件での検索結果を返す
+    private function getPrograms()
+    {
         // ちょっと先を検索する
         $options = " WHERE starttime > '".date("Y-m-d H:i:s", time() + $this->settings->padding_time + 120 )."'";
 
-        if( $this->keyword != "" ) {
-            if( $this->use_regexp ) {
+        if ($this->keyword != "") {
+            if ($this->use_regexp) {
                 $options .= " AND CONCAT(title,description) REGEXP '".mysql_real_escape_string($this->keyword)."'";
-            }
-            else {
+            } else {
                 $options .= " AND CONCAT(title,description) like '%".mysql_real_escape_string($this->keyword)."%'";
             }
         }
@@ -52,41 +47,37 @@ class Keyword extends DBRecord
 
         $recs = array();
         try {
-            $recs = DBRecord::createRecords( PROGRAM_TBL, $options );
-        }
-        catch( Exception $e ) {
+            $recs = DBRecord::createRecords(PROGRAM_TBL, $options);
+        } catch (Exception $e) {
             throw $e;
         }
 
         return $recs;
     }
 
-
-    public function reservation() {
-        if( $this->id == 0 ) return;
+    // 指定キーワードでの一括録画指定
+    public function reservation()
+    {
+        if ($this->id == 0) {
+           return;
+        }
 
         $precs = array();
         try {
             $precs = $this->getPrograms();
-        }
-        catch( Exception $e ) {
+        } catch (Exception $e) {
             throw $e;
         }
+
         if( count($precs) < 300 ) {
             // 一気に録画予約
-            foreach( $precs as $rec ) {
-                try {
-                    if( $rec->autorec ) {
-                        Reservation::simple( $rec->id, $this->id, $this->autorec_mode );
-                        usleep( 100 );		// あんまり時間を空けないのもどう?
-                    }
-                }
-                catch( Exception $e ) {
-                    // 無視
+            foreach ($precs as $rec) {
+                if ($rec->autorec) {
+                    Reservation::simple( $rec->id, $this->id, $this->autorec_mode );
+                    usleep(100);		// あんまり時間を空けないのもどう?
                 }
             }
-        }
-        else {
+        } else {
             throw new Exception( "300件以上の自動録画は実行できません" );
         }
     }
@@ -121,25 +112,6 @@ class Keyword extends DBRecord
         catch( Exception $e ) {
             throw $e;
         }
-    }
-
-    // staticなファンクションはオーバーライドできない
-    static function createKeywords( $options = "" ) {
-        $retval = array();
-        $arr = array();
-        try{
-            $tbl = new self();
-            $sqlstr = "SELECT * FROM ".$tbl->table." " .$options;
-            $result = $tbl->__query( $sqlstr );
-        }
-        catch( Exception $e ) {
-            throw $e;
-        }
-        if( $result === false ) throw new exception("レコードが存在しません");
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            array_push( $retval, new self('id', $row['id']) );
-        }
-        return $retval;
     }
 
     public function __destruct() {
