@@ -3,19 +3,25 @@
  *
  *
  */
-class Reserve
+class Reserve extends Model
 {
     const TABLE = 'Recorder_reserveTbl';
 
-    // @TODO getでfalseみるだけじゃないの
-    public function isReserved($program_disc) {
+    public static function get($program_disc)
+    {
         $db = DB::conn();
-        $result = $db->row('SELECT * FROM ' . self::TABLE . ' WHERE program_disc = ?', array($program_disc));
-        if ($result !== false) {
-            return true;
-        } else {
+        $row = $db->row('SELECT * FROM ' . self::TABLE . ' WHERE program_disc = ?', array($program_disc));
+        if ($row === false) {
             return false;
         }
+        return new self($row);
+    }
+
+    // キャンセルしたい時はcomplete = 1にしてupdate_cronの時にcrontabから消してもらう
+    public function cancel()
+    {
+        $db = DB::conn();
+        $db->update(self::TABLE, array('complete' => 1), array('program_disc' => $this->program_disc));
     }
 
     public static function getRecordedItems($options = array())

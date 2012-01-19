@@ -100,7 +100,7 @@ foreach ($channel_map as $channel_disc => $no_use) {
             $programs[$st]['list'][$num]['prg_start'] = str_replace( "-", "/", $program['starttime']);
             $programs[$st]['list'][$num]['duration'] = "" . (strtotime($program['endtime']) - strtotime($program['starttime']));
             $programs[$st]['list'][$num]['channel'] = ($program['type'] == "GR" ? "地上D" : "BS" ) . ":". $program['channel'] . "ch";
-            if (Reserve::isReserved($program['program_disc'])) {
+            if (Reserve::get($program['program_disc'])) {
                 $programs[$st]['list'][$num]['rec'] = 1;
             } else {
                 $programs[$st]['list'][$num]['rec'] = 0;
