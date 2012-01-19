@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+// 録画が完了したことを知らせるフラグ
+
 require_once "config.php";
 require_once INSTALL_PATH . "/DBRecord.class.php";
 
@@ -19,4 +21,3 @@ try {
 } catch (Exception $e) {
     exit($e->getMessage());
 }
-
