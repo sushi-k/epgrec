@@ -11,8 +11,8 @@ if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
         $record = array(
             'keyword' => $_POST['k_search'],
             'type' => $_POST['k_type'],
-            'category' => $_POST['k_category'],
-            'channel' => $_POST['k_station'],
+            'category_id' => $_POST['k_category'],
+            'channel_id' => $_POST['k_station'],
             'use_regexp' => $_POST['k_use_regexp'],
             'weekofday' => $_POST['k_weekofday'],
             'autorec_mode' => $_POST['autorec_mode'],
@@ -44,11 +44,10 @@ try {
         }
 
         $keywords[$key]['weekofday'] = $weekofdays[$keyword['weekofday']];
-
         $keywords[$key]['autorec_mode'] = $RECORD_MODE[(int)$keyword['autorec_mode']]['name'];
     }
-} catch( Exception $e ) {
-    exit( $e->getMessage() );
+} catch (Exception $e) {
+    exit($e->getMessage());
 }
 
 $smarty = new Smarty();
