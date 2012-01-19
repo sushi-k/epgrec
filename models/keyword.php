@@ -20,12 +20,11 @@ class Keyword extends Model
     // 指定条件での検索結果を返す
     private function getPrograms()
     {
-        $padding_time = 3600 * 3;
+        $padding_time = 1800; //update_cronで間に合うように少し先を検索対象に
         $endtime = date("Y-m-d H:i:s", time() + $padding_time);
 
         $params = array();
 
-        // ちょっと先を検索する
         $sql = "SELECT * FROM Recorder_programTbl WHERE starttime > ?";
         $params[] = $endtime;
 
