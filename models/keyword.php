@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * キーワード予約モデル
  *
  */
 class Keyword extends Model

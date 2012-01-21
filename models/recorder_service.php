@@ -10,7 +10,9 @@ class RecorderService
     public static function generateCrontab()
     {
         $db = DB::conn();
-        $rows = $db->rows('SELECT * FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_programTbl.program_disc = Recorder_reserveTbl.program_disc WHERE complete = 0 AND starttime > NOW()');
+        $rows = $db->rows('SELECT * FROM Recorder_reserveTbl LEFT JOIN Recorder_programTbl ON Recorder_programTbl.program_disc = Recorder_reserveTbl.program_disc WHERE starttime > NOW()');
+
+        // complete = 1ならキャンセルとみなし、crontabから削除する
 
         $list = array();
         foreach ($rows as $row) {
