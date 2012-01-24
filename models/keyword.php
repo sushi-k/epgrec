@@ -74,7 +74,7 @@ class Keyword extends Model
     public static function reserveAll()
     {
         $db = DB::conn();
-        $rows = $db->rows('SELECT id FROM Recorder_reserveTbl');
+        $rows = $db->rows('SELECT id FROM ' . self::TABLE);
         foreach ($rows as $row) {
             $keyword = self::get($row['id']);
             $keyword->reserve();
