@@ -61,8 +61,12 @@ EOD;
         return $db->rows($sql);
     }
 
-    // @TODO 同一番組をすでに予約している場合警告
-    // @TODO 同時間帯に別のチャンネルを予約している場合に警告
+    /**
+     * simpleReserve
+     *
+     * @TODO 同時間帯に別のチャンネルを予約している場合に警告
+     * 同一番組をすでに予約している場合は上書きする
+     */
     public static function simpleReserve($program_disc) {
         $db = DB::conn();
         $program = Program::get($program_disc);
