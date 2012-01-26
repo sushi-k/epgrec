@@ -16,7 +16,6 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 - DB周りをインストーラーで設定できるように
 - do-record.shを使うように
 - recomplete.phpを実行させる
-- keyword登録システムを有効にする
 - DBRecordからの完全な脱出
 - recorder_serviceにrecfriioハードコードされているのをやめる
 

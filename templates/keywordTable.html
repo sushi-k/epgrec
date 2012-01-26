@@ -64,6 +64,7 @@ table#reservation_table tr.prg_rec  {background-color: #F55;color:#FEE}
 </head>
 <body>
 <h2>{$sitetitle}</h2>
+$weekofdays = array( "月", "火", "水", "木", "金", "土", "日", "なし" );
 <div><a href="search.php">番組検索へ</a>/<a href="reservationTable.php">予約一覧へ</a></div>
 {if count($keywords)}
 <table id="reservation_table">

@@ -1,9 +1,7 @@
 <?php
+// キーワード登録、キーワード一覽
 require_once 'config.php';
 require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
-require_once INSTALL_PATH . '/DBRecord.class.php';
-
-$weekofdays = array( "月", "火", "水", "木", "金", "土", "日", "なし" );
 
 // 新規キーワードがポストされた
 if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
@@ -25,30 +23,13 @@ if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
     }
 }
 
-try {
-    $db = DB::conn();
-    $keywords = $db->rows("SELECT * FROM Recorder_keywordTbl");
-    foreach ($keywords as $key => $keyword) {
-        $keywords[$key]['type'] = $keyword['type'] == "*" ? "すべて" : $keyword['type'];
+$sql = <<<EOD
+SELECT * FROM Recorder_keywordTbl
+  LEFT JOIN Recorder_channelTbl ON Recorder_keywordTbl.channel_disc = Recorder_channelTbl.channel_disc
+  LEFT JOIN Recorder_categoryTbl ON Recorder_keywordTbl.category_disc = Recorder_categoryTbl.category_disc
+EOD;
 
-        $keywords[$key]['channel'] = 'すべて';
-        if ($keyword['channel_disc']) {
-            $crec = new DBRecord(CHANNEL_TBL, "id", $keyword['channel_disc']);
-            $keywords[$key]['channel'] = $crec->name;
-        }
-
-        $keywords[$key]['category'] = 'すべて';
-        if ($keyword['category_disc']) {
-            $crec = new DBRecord(CATEGORY_TBL, "id", $keyword['category_disc']);
-            $keywords[$key]['category'] = $crec->name_jp;
-        }
-
-        $keywords[$key]['weekofday'] = $weekofdays[$keyword['weekofday']];
-        $keywords[$key]['autorec_mode'] = $RECORD_MODE[(int)$keyword['autorec_mode']]['name'];
-    }
-} catch (Exception $e) {
-    exit($e->getMessage());
-}
+$keywords = $db->rows($sql);
 
 $smarty = new Smarty();
 $smarty->assign('keywords', $keywords);
