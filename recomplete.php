@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 // 録画が完了したことを知らせるフラグ
+// @TODO gen-thumbnailを実行する
 
 require_once "config.php";
 require_once INSTALL_PATH . "/DBRecord.class.php";

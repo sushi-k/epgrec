@@ -4,6 +4,9 @@ epgrecをforkして、friioを接続してあるLinuxサーバ上で動作させ
 全体的にクエリリクエストが多かったり、無駄な処理が多くなっている部分を修正してあります。
 かなりの量のXSSとSQL Injectionができるポイントがあるので、そのあたりも修正していく予定。
 
+## サポートOS ##
+- Ubuntu 10.04.2 LTS
+
 ## v0.1 ##
 とりあえず最低限の動作。
 friioをcrontab経由で動かせるようになった。
@@ -11,9 +14,10 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 
 ## TODO ##
 
+- DB周りをインストーラーで設定できるように
+- http://twitter.github.com/bootstrap/
 - CSRFのリスクをなくす
 - 放送時刻変更への完璧な追従
-- DB周りをインストーラーで設定できるように
 - do-record.sh & recompleteを使うように
 - recomplete.phpを実行させる
 - DBRecordからの完全な脱出
