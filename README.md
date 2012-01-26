@@ -23,7 +23,6 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 ## ファイル群 ##
 
 - DBRecord.class.php : DBRecordクラス
-- Keyword.class.php : キーワードレコードクラス（親：DBRecord）
 - Reservation.class.php : 予約クラス。静的メソッドsimple()、静的メソッドcustom()。
 - Settings.class.php : 設定の読み出し/保存を行うクラス（親：SimpleXML）
 - cancelReservation.php : JavaScriptから呼ばれる予約取り消し
