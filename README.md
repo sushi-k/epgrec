@@ -18,6 +18,7 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 - recomplete.phpを実行させる
 - DBRecordからの完全な脱出
 - recorder_serviceにrecfriioハードコードされているのをやめる
+- table name prefixをなくす
 
 ## ファイル群 ##
 
