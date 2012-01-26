@@ -29,6 +29,7 @@ SELECT * FROM Recorder_keywordTbl
   LEFT JOIN Recorder_categoryTbl ON Recorder_keywordTbl.category_disc = Recorder_categoryTbl.category_disc
 EOD;
 
+$db = DB::conn();
 $keywords = $db->rows($sql);
 
 $smarty = new Smarty();
