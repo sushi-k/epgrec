@@ -14,11 +14,12 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 - CSRFのリスクをなくす
 - 放送時刻変更への完璧な追従
 - DB周りをインストーラーで設定できるように
-- do-record.shを使うように
+- do-record.sh & recompleteを使うように
 - recomplete.phpを実行させる
 - DBRecordからの完全な脱出
 - recorder_serviceにrecfriioハードコードされているのをやめる
 - table name prefixをなくす
+- keyword削除
 
 ## ファイル群 ##
 

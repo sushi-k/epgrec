@@ -16,24 +16,20 @@
 			$('#floatBox4Dialog').dialog({title:'削除',width:500});
 			var str = '<div class="prg_title">' + title + 'を削除します</div>';
 			str += '<form><div style="text-align:center;">録画ファイルも削除する<input type="checkbox" id="delete_file" name="delete_file" value="1" /></div></form>';
-			str +='<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.rec(' + id + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">この録画を本当に削除する</a></div>';
+			str +='<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.cancel(' + id + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">この録画を本当に削除する</a></div>';
 			$('#floatBox4Dialog').html(str);
 			$('#floatBox4Dialog').dialog('open', 'center');
 		},
-		rec:function(id){
+		cancel:function(id){
 			var df = 0;
-
-			if( $('#delete_file').attr('checked') ) {
+			if ($('#delete_file').attr('checked')) {
 				df = 1;
 			}
 			$('#floatBox4Dialog').dialog('close');
-			
-			$.get(INISet.prgCancelURL, { reserve_id: id, delete_file: df } ,function(data){
-				
-				if(data.match(/^error/i)){
+			$.get('cancelReservation.php', { reserve_id: id, delete_file: df } ,function(data){
+				if (data.match(/^error/i)) {
 					alert(data);
-				}
-				else {
+				} else {
 					$('#resid_' + id ).hide();
 				}
 			});
@@ -122,13 +118,10 @@ table#reservation_table tr.ctg_anime, #category_select a.ctg_anime {background-c
 table#reservation_table tr.ctg_variety, #category_select a.ctg_variety {background-color: #FFD2EB;}
 table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: #E4F4F4;}
 
-
 #floatBox4Dialog .prg_title{font-size:120%;font-weight:bold;padding:0.4em 0;text-align:center;}
 #floatBox4Dialog .prg_rec_cfg{background:#EEE;padding:1em 2em;margin:0.4em 0;}
 #floatBox4Dialog .labelLeft {width:8em;float:left;text-align:right;}
 #floatBox4Dialog .button {padding:0.4em 1em;}
-
-
 -->
 </style>
 {/literal}
@@ -187,21 +180,9 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
  </tr>
 {/foreach}
 </table>
-
 {else}
   現在、録画済データはありません
 {/if}
-
 <div id="floatBox4Dialog">jQuery UI Dialog</div>
-
-{literal}
-<script type="text/javascript">
-var INISet = {
-	prgRecordURL : 'record.php',			// 簡易予約
-	prgRecordPlusURL : 'recordp.php',		// 詳細予約
-	prgCancelURL : 'cancelReservation.php'		// 予約キャンセル
-}
-</script>
-{/literal}
 </body>
 </html>
