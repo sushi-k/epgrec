@@ -1,7 +1,6 @@
 <?php
 // キーワード登録、キーワード一覽
 require_once 'config.php';
-require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 
 // 新規キーワードがポストされた
 if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
