@@ -1,6 +1,6 @@
 <?php
 // キーワード登録、キーワード一覽
-require_once 'config.php';
+require_once dirname(dirname(__FILE__) ) . "/config.php";
 
 // 新規キーワードがポストされた
 if (isset($_POST["add_keyword"]) && $_POST['add_keyword'] == 1) {
@@ -32,6 +32,8 @@ $db = DB::conn();
 $keywords = $db->rows($sql);
 
 $smarty = new Smarty();
+$smarty->template_dir = dirname(dirname(__FILE__)) . '/templates/'; 
+$smarty->compile_dir = dirname(dirname(__FILE__)) . '/templates_c/'; 
 $smarty->assign('keywords', $keywords);
 $smarty->assign('sitetitle', '自動録画キーワードの管理');
 $smarty->display('keywordTable.html');

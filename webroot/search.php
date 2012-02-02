@@ -1,7 +1,6 @@
 <?php
 // @TODO 絞り込み部分にSQL Injectionがある
-require_once 'config.php';
-require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
+require_once dirname(dirname(__FILE__) ) . "/config.php";
 require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
@@ -157,6 +156,8 @@ try {
 }
 
 $smarty = new Smarty();
+$smarty->template_dir = dirname(dirname(__FILE__)) . '/templates/'; 
+$smarty->compile_dir = dirname(dirname(__FILE__)) . '/templates_c/'; 
 $smarty->assign("sitetitle","番組検索");
 $smarty->assign("do_keyword", $do_keyword);
 $smarty->assign("programs", $programs);

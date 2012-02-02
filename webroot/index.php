@@ -1,6 +1,5 @@
 <?php
 require_once dirname(dirname(__FILE__) ) . "/config.php";
-require_once  INSTALL_PATH . "/Smarty/Smarty.class.php";
 require_once  INSTALL_PATH . "/Settings.class.php";
 
 // 設定ファイルの有無を検査する

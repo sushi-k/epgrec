@@ -1,6 +1,5 @@
 <?php
-require_once 'config.php';
-require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
+require_once dirname(dirname(__FILE__) ) . "/config.php";
 require_once INSTALL_PATH . '/Settings.class.php';
 
 $settings = Settings::factory();
@@ -46,6 +45,8 @@ try {
     $channels = $db->rows('SELECT * FROM ' . Channel::TABLE);
 
     $smarty = new Smarty();
+    $smarty->template_dir = dirname(dirname(__FILE__)) . '/templates/'; 
+    $smarty->compile_dir = dirname(dirname(__FILE__)) . '/templates_c/'; 
     $smarty->assign('sitetitle','録画済一覧');
     $smarty->assign('records', Reserve::getRecordedItems($options));
     $smarty->assign('search', $search);
