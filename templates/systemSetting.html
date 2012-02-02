@@ -4,18 +4,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="css/bootstrap.css" /> 
 <title>{$sitetitle}</title>
-
-<!--
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/messages_ja.js"></script>
--->
-
 <script type="text/javascript">
 <!--
 {literal}
-
 	var PRG = {
 		thumbs:function() {
 			if( $('#id_use_thumbs' ).val() == 0 ) {
@@ -32,25 +28,17 @@
 		$("#system_setting").validate();
 		PRG.thumbs();
 	});
-
 {/literal}
-
 -->
 </script>
-
-
 <style type="text/css">
 <!--
 {literal}
-
 body {padding:4px;margin:0;font-size:10pt; width: 85%;}
 a {text-decoration:none;}
-
 .bold {font-weight:bold;}
 .small {font-size:75%;}
-
 div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
-
 {/literal}
 -->
 </style>
@@ -62,7 +50,7 @@ div.setting { padding: 0px; margin-left: 20px; margin-bottom: 20px;}
 <h2>MySQLデータベース設定</h2>
 
 <form id="system_setting" method="post" action="api.php">
-<input type-"hidden" name="method" value="saveSettings" />
+<input type="hidden" name="method" value="saveSettings" />
 
 <h3>MySQLホスト名</h3>
 <div class="setting">
