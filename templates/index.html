@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>{$sitetitle}</title>
 <meta http-equiv="Content-Style-Type" content="text/css" />
-<link rel="stylesheet" href="bootstrap.css" /> 
+<link rel="stylesheet" href="css/bootstrap.css" /> 
 <link rel="stylesheet" href="css/jquery-ui-1.7.2.custom.css" />
 {literal}
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
@@ -321,7 +321,9 @@
 </script>
 <style type="text/css">
 <!--
-body {padding:0;margin:0;font-size:10pt;}
+body {
+  padding-top: 40px;
+}
 a {text-decoration:none;}
 
 .bold {font-weight:bold;}
@@ -434,7 +436,19 @@ h2 {padding: 4px}
 {/literal}
 </head>
 <body>
-<h1>{$sitetitle}</h1>
+<div class="topbar">
+  <div class="fill">
+    <div class="container">
+      <a class="brand" href="#">{$sitetitle}</a>
+      <ul class="nav">
+        <li><a href="index.php">番組表</a></li>
+        <li><a href="search.php">番組検索</a></li>
+        <li><a href="reservationTable.php">予約一覧</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <div id="float_titles" style="width: {math equation="x + 80" x=$chs_width}px;height:120px;">
   <div id="float_follows">
     <div class="set">
