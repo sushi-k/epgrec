@@ -1,17 +1,14 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>{$sitetitle}</title>
-<meta http-equiv="Content-Style-Type" content="text/css">
-
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="stylesheet" href="css/bootstrap.css" /> 
+<link rel="stylesheet" href="css/jquery-ui-1.7.2.custom.css" />
 {literal}
-
 <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
-<link rel="stylesheet" href="start/jquery-ui-1.7.2.custom.css" type="text/css">
 <script type="text/javascript" src="js/mdabasic.js"></script>
 <script type="text/javascript">
 	function tvtimes_scroll(){
@@ -43,7 +40,7 @@
 			var startTime = new Date(TG.children('.prg_start').html());
 			var duration = parseInt(TG.children('.prg_duration').html());
 			var endTime = new Date(startTime.getTime() + duration * 1000);
-			var prgID = parseInt(TG.children('.prg_id').html());
+			var prgID = TG.children('.prg_id').html();
 
 			var str = '<div class="prg_title">' + TG.children('.prg_title').html() +'</div>' + 
 				'<div class="prg_rec_cfg ui-corner-all"><div class="prg_channel"><span class=" labelLeft">チャンネル：</span><span class="bold">' + TG.children('.prg_channel').html() + '</span></div>' +
@@ -53,7 +50,7 @@
 			if ($(this).hasClass('prg_rec')) {
 				str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.cancel(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">予約キャンセル</a></div>';
 			} else {
-				str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.rec(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">簡易予約</a>　<a href="javascript:PRG.customform(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">予約カスタマイズ</a></div>';
+				str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.rec(\'' + prgID + '\')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">簡易予約</a>　<a href="javascript:PRG.customform(' + prgID + ')" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">予約カスタマイズ</a></div>';
 			}
 			$('#floatBox4Dialog').html(str);
 			$('#floatBox4Dialog').dialog('open', 'center');
@@ -81,11 +78,10 @@
 	var PRG = {
 		chdialog:function(disc){
 			$('#channelDialog').dialog('close');
-			$.get('channelInfo.php', { channel_disc: disc },function(data) {
-				if(data.match(/^error/i)){
+			$.get('api.php', { method: 'channelInfo', channel_disc: disc },function(data) {
+				if (data.match(/^error/i)){
 					alert(data);
-				}
-				else {
+				} else {
 					var str = data;
 					str += '<div style="margin:2em 0 1em 0;text-align:center;"><a href="javascript:PRG.chupdate()" class="ui-state-default ui-corner-all ui-dialog-buttonpane button">更新</a></div>';
 					$('#channelDialog').html(str);
@@ -105,7 +101,7 @@
 			});
 		},
 		rec:function(id){
-			$.get(INISet.prgRecordURL, { program_id: id } ,function(data){
+			$.get('api.php', { method: 'simpleReservation', program_id: id } ,function(data){
 				if(data.match(/^error/i)){
 					alert(data);
 					$('#floatBox4Dialog').dialog('close');
@@ -128,7 +124,7 @@
 		},
 		customform:function(id) {
 			$('#floatBox4Dialog').dialog('close');
-			$.get('reservationform.php', { program_id: id }, function(data) {
+			$.get('api.php', { method: 'reservationForm', program_id: id }, function(data) {
 				if(data.match(/^error/i)){
 					alert(data);
 				}
@@ -180,10 +176,9 @@
 				if(data.match(/^error/i)){
 					$('#floatBox4Dialog').dialog('close');
 					alert(data);
-				}
-				else {
+				} else {
 					var id = parseInt(data);
-					if( id ) {
+					if (id) {
 						$('#prgID_' + id).addClass('prg_rec');
 					}
 					$('#floatBox4Dialog').dialog('close');
@@ -323,13 +318,12 @@
 		CTG.INI();
 		MDA.SCR.INI();	// 番組表の位置保存
 	});
-
-
 </script>
-
 <style type="text/css">
 <!--
-body {padding:0;margin:0;font-size:10pt;}
+body {
+  padding-top: 40px;
+}
 a {text-decoration:none;}
 
 .bold {font-weight:bold;}
@@ -428,7 +422,6 @@ h2 {padding: 4px}
 
 #tableNowBas {position:absolute;background:red;width:100%;top:190px;height:2px;overflow:hidden;}
 
-
 #floatBox4Dialog .prg_title{font-size:120%;font-weight:bold;padding:0.4em 0;text-align:center;}
 #floatBox4Dialog .prg_rec_cfg{background:#EEE;padding:1em 2em;margin:0.4em 0;}
 #floatBox4Dialog .labelLeft {width:8em;float:left;text-align:right;}
@@ -438,37 +431,38 @@ h2 {padding: 4px}
 #channelDialog .prg_rec_cfg{background:#EEE;padding:1em 2em;margin:0.4em 0;}
 #channelDialog .labelLeft {width:8em;float:left;text-align:right;}
 #channelDialog .button {padding:0.4em 1em;}
-
 -->
 </style>
-
-
 {/literal}
-
-
 </head>
-
 <body>
-
-<h2>{$sitetitle}</h2>
-
-
-<div id="float_titles" style="width: {math equation="x + 80" x=$chs_width}px;height:120px;">
-<div id="float_follows">
-
-<div class="set">
-  <ul>
-    <li><a href="envSetting.php">環境設定</a></li>
-  </ul>
+<div class="topbar">
+  <div class="fill">
+    <div class="container">
+      <a class="brand" href="#">{$sitetitle}</a>
+      <ul class="nav">
+        <li><a href="index.php">番組表</a></li>
+        <li><a href="search.php">番組検索</a></li>
+        <li><a href="reservationTable.php">予約一覧</a></li>
+      </ul>
+    </div>
+  </div>
 </div>
 
-<div class="set ctg_sel" id="category_select">
- <span class="title"><a href="javascript:CTG.toggle()">強調表示</a></span>
+<div id="float_titles" style="width: {math equation="x + 80" x=$chs_width}px;height:120px;">
+  <div id="float_follows">
+    <div class="set">
+      <ul>
+        <li><a href="envSetting.php">環境設定</a></li>
+      </ul>
+    </div>
 
- <ul>
-   {foreach from=$cats item=cat}
-   <li><a href="javascript:CTG.select('{$cat.name_en}');" class="ctg_{$cat.name_en}">{$cat.name_jp}</a></li>
-   {/foreach}
+<div class="set ctg_sel" id="category_select">
+  <span class="title"><a href="javascript:CTG.toggle()">強調表示</a></span>
+  <ul>
+    {foreach from=$categories item=category}
+    <li><a href="javascript:CTG.select('{$category->name_en}');" class="ctg_{$category->name_en}">{$category->name_jp}</a></li>
+    {/foreach}
   </ul>
 </div>
 
@@ -494,7 +488,7 @@ h2 {padding: 4px}
 
  <div class="set">
   <ul>
-    <li><a href="programTable.php">番組検索</a></li>
+    <li><a href="search.php">番組検索</a></li>
     <li><a href="reservationTable.php">録画予約一覧</a></li>
     <li><a href="recordedTable.php">録画済一覧</a></li>
   </ul>
@@ -537,11 +531,11 @@ h2 {padding: 4px}
 </div>
 
 <div id="tv_chs" style="width: {$chs_width}px" >
-   {foreach from=$programs item=program }
+   {foreach from=$programs item=program}
    <div class="ch_set" style="width: {$ch_set_width}px" >
     <div class="ch_programs">
-    {foreach from=$program.list item=item }
-      <div {if $item.id}id="prgID_{$item.id}"{/if} class="prg {if ! $item.id}prg_none {/if} ctg_{$item.category_name}{if $item.rec gt 0 } prg_rec{/if}" style="height:{$item.height}px;">
+    {foreach from=$program.list item=item}
+      <div {if $item.program_disc}id="prgID_{$item.program_disc}"{/if} class="prg {if ! $item.program_disc}prg_none {/if} ctg_{$item.category_name}{if $item.rec gt 0 } prg_rec{/if}" style="height:{$item.height}px;">
         <div class="prg_dummy">
           <div class="prg_title">{$item.title|escape}</div>
           <div class="prg_subtitle">{$item.starttime}</div>
@@ -549,7 +543,7 @@ h2 {padding: 4px}
           <div class="prg_channel">{$item.channel}</div>
           <div class="prg_start">{$item.prg_start}</div>
           <div class="prg_duration">{$item.duration}</div>
-          <div class="prg_id">{$item.id}</div>
+          <div class="prg_id">{$item.program_disc}</div>
         </div>
       </div>
     {/foreach}
@@ -565,15 +559,12 @@ h2 {padding: 4px}
  </div>
 </div>
 
-
-
 <div id="floatBox4Dialog">jQuery UI Dialog</div>
 <div id="channelDialog">jQuery UI Dialog</div>
 
 {literal}
 <script type="text/javascript">
 var INISet = {
-	prgRecordURL : 'simpleReservation.php',		// 簡易予約
 	prgRecordPlusURL : 'recordp.php',		// 詳細予約
 	prgCancelURL : 'cancelReservation.php',		// 予約キャンセル
 	dotMin : {/literal}{$height_per_min}{literal},

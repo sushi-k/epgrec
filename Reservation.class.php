@@ -1,12 +1,9 @@
 <?php
 include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Settings.class.php" );
 
-
 // 予約クラス
-
 class Reservation {
 	
 	public static function simple( $program_id , $autorec = 0, $mode = 0) {
@@ -48,8 +45,8 @@ class Reservation {
 		$settings = Settings::factory();
 
 		// 時間を計算
-		$start_time = toTimestamp( $starttime );
-		$end_time = toTimestamp( $endtime ) + $settings->extra_time;
+		$start_time = strtotime( $starttime );
+		$end_time = strtotime( $endtime ) + $settings->extra_time;
 		
 		if( $start_time < (time() + PADDING_TIME + 10) ) {	// 現在時刻より3分先より小さい＝すでに開始されている番組
 			$start_time = time() + PADDING_TIME + 10;		// 録画開始時間を3分10秒先に設定する
@@ -80,8 +77,8 @@ class Reservation {
 			$tuners = ($crec->type == "GR") ? $settings->gr_tuners : $settings->bs_tuners;
 			$battings = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 															  "AND type = '".$crec->type."' ".
-															  "AND starttime < '".toDatetime($end_time) ."' ".
-															  "AND endtime > '".toDatetime($rec_start)."'"
+															  "AND starttime < '".date('Y-m-d H:i:s', $end_time) ."' ".
+															  "AND endtime > '".date('Y-m-d H:i:s', $rec_start)."'"
 			);
 			
 			if( $battings >= $tuners ) {
@@ -91,7 +88,7 @@ class Reservation {
 					// 前後の予約数
 					$nexts = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 																	"AND type = '".$crec->type."' ".
-																	"AND starttime = '".toDatetime($end_time - $settings->former_time)."'");
+																	"AND starttime = '".date('Y-m-d H:i:s', $end_time - $settings->former_time)."'");
 					
 					$prevs = DBRecord::countRecords( RESERVE_TBL, "WHERE complete = '0' ".
 																"AND type = '".$crec->type."' ".
@@ -128,13 +125,13 @@ class Reservation {
 						$prev_autorec      = $trecs[$i]->autorec;
 						$prev_mode         = $trecs[$i]->mode;
 						
-						$prev_start_time = toTimestamp($prev_starttime);
+						$prev_start_time = strtotime($prev_starttime);
 						// 始まっていない予約？
 						if( $prev_start_time > (time() + PADDING_TIME + $settings->former_time) ) {
 							// 開始時刻を元に戻す
-							$prev_starttime = toDatetime( $prev_start_time + $settings->former_time );
+							$prev_starttime = date('Y-m-d H:i:s',  $prev_start_time + $settings->former_time );
 							// 終わりをちょっとだけずらす
-							$prev_endtime   = toDatetime( toTimestamp($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
+							$prev_endtime   = date('Y-m-d H:i:s',  strtotime($prev_endtime) - $settings->former_time - $settings->rec_switch_time );
 							
 							// tryのネスト
 							try {
@@ -254,12 +251,12 @@ class Reservation {
 			$rrec->title = $title;
 			$rrec->description = $description;
 			$rrec->category_id = $category_id;
-			$rrec->starttime = toDatetime( $rec_start );
-			$rrec->endtime = toDatetime( $end_time );
+			$rrec->starttime = date('Y-m-d H:i:s',  $rec_start );
+			$rrec->endtime = date('Y-m-d H:i:s',  $end_time );
 			$rrec->path = $filename;
 			$rrec->autorec = $autorec;
 			$rrec->mode = $mode;
-			$rrec->reserve_disc = md5( $crec->channel_disc . toDatetime( $start_time ). toDatetime( $end_time ) );
+			$rrec->reserve_disc = md5( $crec->channel_disc . date('Y-m-d H:i:s',  $start_time ). date('Y-m-d H:i:s',  $end_time ) );
 			
 			// 予約実行
 			$cmdline = $settings->at." ".date("H:i m/d/Y", $at_start);
@@ -316,8 +313,7 @@ class Reservation {
 			// エラー
 			$rrec->delete();
 			throw new Exception( "job番号の取得に失敗" );
-		}
-		catch( Exception $e ) {
+		} catch( Exception $e ) {
 			if( $rrec != null ) {
 				if( $rrec->id ) {
 					// 予約を取り消す
@@ -346,7 +342,7 @@ class Reservation {
 			}
 			if( ! $rec->complete ) {
 				// 未実行の予約である
-				if( toTimestamp($rec->starttime) < (time() + PADDING_TIME + $settings->former_time) )
+				if( strtotime($rec->starttime) < (time() + PADDING_TIME + $settings->former_time) )
 					throw new Exception("過去の録画予約です");
 				exec( $settings->atrm . " " . $rec->job );
 			}

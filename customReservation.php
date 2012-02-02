@@ -1,7 +1,6 @@
 <?php
 include_once('config.php');
 include_once( INSTALL_PATH . "/DBRecord.class.php" );
-include_once( INSTALL_PATH . "/reclib.php" );
 include_once( INSTALL_PATH . "/Reservation.class.php" );
 include_once( INSTALL_PATH . "/Settings.class.php" );
 
@@ -52,8 +51,8 @@ $mode = $_POST['record_mode'];
 $rval = 0;
 try{
 	$rval = Reservation::custom(
-		toDatetime($start_time),
-		toDatetime($end_time),
+		date('Y-m-d H:i:s', $start_time),
+		date('Y-m-d H:i:s', $end_time),
 		$channel_id,
 		$title,
 		$description,

@@ -19,10 +19,8 @@ if(! file_exists( "../config.php" ) ) {
 }
 
 include_once("../config.php");
-include_once(INSTALL_PATH."/reclib.php");
 
 // do-record.shの存在チェック
-
 if(! file_exists( DO_RECORD ) ) {
 	exit("do-record.shが存在しません<br>do-record.sh.pt1やdo-record.sh.friioを参考に作成してください<br>" );
 }
@@ -38,19 +36,15 @@ $rw_dirs = array(
 	INSTALL_PATH."/cache",
 );
 
-$gen_thumbnail = INSTALL_PATH."/gen-thumbnail.sh";
-if( defined("GEN_THUMBNAIL") )
-	$gen_thumbnail = GEN_THUMBNAIL;
-
-
 $exec_files = array(
 	DO_RECORD,
 	COMPLETE_CMD,
 	INSTALL_PATH."/getepg.php",
-	INSTALL_PATH."/storeProgram.php",
-	$gen_thumbnail,
+	GEN_THUMBNAIL,
 );
 
+$is_writable = true;
+$error_messages = array();
 echo "<p><b>ディレクトリのパーミッションチェック（777）</b></p>";
 echo "<div>";
 foreach($rw_dirs as $value ) {
@@ -58,12 +52,21 @@ foreach($rw_dirs as $value ) {
 	
 	$perm = getPerm( $value );
 	if( $perm != "777" ) {
-		exit('<font color="red">...'.$perm.'... missing</font><br>このディレクトリを書き込み許可にしてください（ex. chmod 777 '.$value.'）</div>' );
+		$error_messages[] = '<font color="red">...'.$perm.'... missing</font><br>このディレクトリを書き込み許可にしてください（ex. chmod 777 '.$value.'）</div>';
+		$is_writable = false;
+		echo "...".$perm."...ng<br>";
+	} else {
+		echo "...".$perm."...ok<br>";
 	}
-	echo "...".$perm."...ok<br>";
 }
-echo "</div>";
 
+if ($is_writable !== true) {
+	echo implode('<br>', $error_messages);
+	echo "</div>";
+	exit;
+} else {
+	echo "</div>";
+}
 
 echo "<p><b>ファイルのパーミッションチェック（755）</b></p>";
 echo "<div>";
@@ -85,7 +88,7 @@ echo "<p><b>地上デジタルチャンネルの設定確認</b></p>";
 echo "<div>現在、config.phpでは以下のチャンネルの受信が設定されています。受信不可能なチャンネルが混ざっていると番組表が表示できません。</div>";
 
 echo "<ul>";
-foreach( $GR_CHANNEL_MAP as $key => $value ) {
+foreach( ChannelMaster::$GR as $key => $value ) {
 	echo "<li>物理チャンネル".$value."</li>";
 }
 echo "</ul>";

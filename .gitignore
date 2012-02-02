@@ -1,0 +1,4 @@
+templates_c/*
+settings/*
+config.php
+do-record.sh
