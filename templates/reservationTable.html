@@ -36,7 +36,7 @@
 			var id_title = $('#id_title').val();
 			var id_description = $('#id_description').val();
 
-			$.post('changeReservation.php', { reserve_id: id_reserve_id,
+			$.post('api.php', { method: 'editReservation', reserve_id: id_reserve_id,
 							  title: id_title,
 							  description: id_description }, function( data ) {
 				if(data.match(/^error/i)){

@@ -31,7 +31,6 @@ DBレベルで変更を始めたのでインストーラーもまともに動作
 - Reservation.class.php : 予約クラス。静的メソッドsimple()、静的メソッドcustom()。
 - Settings.class.php : 設定の読み出し/保存を行うクラス（親：SimpleXML）
 - cancelReservation.php : JavaScriptから呼ばれる予約取り消し
-- changeReservation.php : JavaScriptから呼ばれる予約内容の更新
 - channelSetSID.php : チャンネルに対応するSIDを更新する（JavaScriptから呼ばれる）
 - config.php.sample : config.phpのサンプルファイル
 - customReservation.php : 詳細予約実行（JavaScriptから呼ばれる）

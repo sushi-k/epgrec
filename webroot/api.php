@@ -20,6 +20,24 @@ class API_Controller
         }
     }
 
+    // reserve_id,title,descriptionを受け取り更新する
+    public function editReservation()
+    {
+        if (!isset($_POST['reserve_id'])) {
+            exit('Error: 予約idが指定されていません');
+        }
+
+        $reserve_id = $_POST['reserve_id'];
+        $program = Program::get($reserve_id); 
+        if ($program === false) {
+            exit('Error: 指定された番組idは存在しません');
+        }
+
+        $program->update(
+            array('title' => $_POST['title'], 'description' => $_POST['description'])
+        ); 
+    }
+
     public function saveSettings()
     {
         require_once INSTALL_PATH."/Settings.class.php";
@@ -141,7 +159,7 @@ EOD;
 
 // dispatch
 $controller = new API_Controller();
-if (in_array($_REQUEST['method'], array('simpleReservation', 'saveSettings', 'channelInfo', 'deleteKeyword'))) {
+if (in_array($_REQUEST['method'], array('simpleReservation', 'saveSettings', 'channelInfo', 'deleteKeyword', 'editReservation'))) {
     $controller->$_REQUEST['method']();
 }
 

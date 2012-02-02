@@ -18,6 +18,12 @@ class Program extends Model
         return new self($row);
     }
 
+    public function update(array $row)
+    {
+        $db = DB::conn();
+        return $db->update(self::TABLE, $row, array('program_disc' => $this->program_disc));
+    }
+
     public static function search($options, $args)
     {
         $db = DB::conn();

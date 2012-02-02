@@ -51,15 +51,13 @@
 			var id_title = $('#id_title').val();
 			var id_description = $('#id_description').val();
 
-			$.post('changeReservation.php', { reserve_id: id_reserve_id,
+			$.post('api.php', { method: 'editReservation', reserve_id: id_reserve_id,
 							  title: id_title,
 							  description: id_description }, function( data ) {
 				if(data.match(/^error/i)){
 					alert(data);
 					$('#floatBox4Dialog').dialog('close');
-
-				}
-				else {
+				} else {
 					$('#tid_' + id_reserve_id ).html( id_title );
 					$('#did_' + id_reserve_id ).html( id_description );
 					$('#floatBox4Dialog').dialog('close');
@@ -168,15 +166,15 @@ table#reservation_table tr.ctg_10, #category_select a.ctg_10 {background-color: 
  </tr>
 
 {foreach from=$records item=rec }
- <tr id="resid_{$rec.id}" class="ctg_{$rec.name_en}">
+ <tr id="resid_{$rec.program_disc}" class="ctg_{$rec.name_en}">
   <td>{$rec.starttime}</td>
   <td>{$rec.station_name}</td>
   <td>{$rec.mode}</td>
   {if $use_thumbs == 1}<td><a href="{$rec.asf}">{$rec.thumb}</a></td>{/if}
-  <td><a href="{$rec.asf}" id="tid_{$rec.id}">{$rec.title}</a></td>
-  <td><a href="{$rec.asf}" id="did_{$rec.id}">{$rec.description}</a></td>
-  <td><input type="button" value="変更" onClick="javascript:PRG.editdialog('{$rec.id}')" /></td>
-  <td><input type="button" value="削除" onClick="javascript:PRG.dialog('{$rec.id}','{$rec.title}')" /></td>
+  <td><a href="{$rec.asf}" id="tid_{$rec.program_disc}">{$rec.title}</a></td>
+  <td><a href="{$rec.asf}" id="did_{$rec.program_disc}">{$rec.description}</a></td>
+  <td><input type="button" value="変更" onClick="javascript:PRG.editdialog('{$rec.program_disc}')" /></td>
+  <td><input type="button" value="削除" onClick="javascript:PRG.dialog('{$rec.program_disc}','{$rec.title}')" /></td>
  </tr>
 {/foreach}
 </table>
