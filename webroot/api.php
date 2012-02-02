@@ -3,7 +3,7 @@
  *
  *
  */
-require_once 'config.php';
+require_once dirname(dirname(__FILE__) ) . "/config.php";
 
 class API_Controller
 {
@@ -22,7 +22,6 @@ class API_Controller
 
     public function saveSettings()
     {
-        require_once INSTALL_PATH . "/Smarty/Smarty.class.php";
         require_once INSTALL_PATH."/Settings.class.php";
 
         $settings = Settings::factory();
@@ -30,6 +29,8 @@ class API_Controller
         $settings->save();
 
         $smarty = new Smarty();
+        $smarty->template_dir = dirname(dirname(__FILE__)) . '/templates/'; 
+        $smarty->compile_dir = dirname(dirname(__FILE__)) . '/templates_c/'; 
         $smarty->assign('message', '設定が保存されました');
         $smarty->assign('url', 'index.php');
         $smarty->display("dialog.html");
@@ -88,7 +89,6 @@ EOD;
     public function reservationForm()
     {
         require_once INSTALL_PATH . '/DBRecord.class.php';
-        require_once INSTALL_PATH . '/Smarty/Smarty.class.php';
 
         if (!isset($_GET['program_id'])) {
            exit('Error: 番組IDが指定されていません');
@@ -112,6 +112,8 @@ EOD;
             }
 
             $smarty = new Smarty();
+            $smarty->template_dir = dirname(dirname(__FILE__)) . '/templates/'; 
+            $smarty->compile_dir = dirname(dirname(__FILE__)) . '/templates_c/'; 
             $smarty->assign( "syear", $syear );
             $smarty->assign( "smonth", $smonth );
             $smarty->assign( "sday", $sday );
